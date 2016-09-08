@@ -1,0 +1,15 @@
+[
+{
+  "modid": "playerrevive",
+  "name": "Player Revive",
+  "description": "",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["CreativeMD"],
+  "credits": "",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
