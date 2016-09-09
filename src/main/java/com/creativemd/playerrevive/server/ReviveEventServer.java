@@ -15,6 +15,7 @@ import com.creativemd.playerrevive.capability.CapaReviveProvider;
 import com.creativemd.playerrevive.packet.PlayerRevivalPacket;
 import com.mojang.authlib.GameProfile;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.CompressedStreamTools;
@@ -25,26 +26,50 @@ import net.minecraft.util.datafix.FixTypes;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
+import scala.collection.parallel.ParIterableLike.Min;
 
 public class ReviveEventServer {
 	
+	private static Boolean isClient = null;
+	
+	public static boolean isClient()
+	{
+		if(isClient == null){
+			try {
+				isClient = Class.forName("net.minecraft.client.Minecraft") != null;
+			} catch (ClassNotFoundException e) {
+				isClient = false;
+			}
+		}
+		return isClient;
+	}
+	
 	public static boolean isReviveActive()
 	{
-		if(FMLServerHandler.instance().getServer() != null)
-			return !FMLServerHandler.instance().getServer().isSinglePlayer();
-		return false;
+		if(isClient())
+			return !isSinglePlayer();
+		return true;
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private static boolean isSinglePlayer()
+	{
+		return Minecraft.getMinecraft().isSingleplayer();
 	}
 	
 	@SubscribeEvent
 	public void tick(ServerTickEvent event)
 	{
-		if(event.phase == Phase.START && isReviveActive())
+		if(event.phase == Phase.END && isReviveActive())
 		{
 			ArrayList<UUID> removeFromList = new ArrayList<>();
 			for (UUID uuid : PlayerReviveServer.playerRevivals.keySet()) {
