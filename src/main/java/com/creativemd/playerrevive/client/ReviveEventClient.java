@@ -2,12 +2,14 @@ package com.creativemd.playerrevive.client;
 
 import java.awt.Container;
 
+import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.Revival;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
+import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
 import net.minecraft.client.Minecraft;
@@ -19,6 +21,8 @@ import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
+import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
@@ -42,16 +46,21 @@ public class ReviveEventClient {
 				gui = (SubGuiRevive) ((ContainerSub) player.openContainer).gui.getTopLayer();
 			//else
 				//System.out.println(player.openContainer);
-			player.setHealth(0.5F);
+			
 			if(revive == null)
 			{
-				if(gui != null)
+				if(gui != null && !((SubContainerRevive) gui.container).isHelping)
+				{
+					((SubContainerRevive) gui.container).isHelping = true;
 					gui.closeGui();
+				}
 			}else{
 				if(gui == null)
 					GuiHandler.openGui("plrevive", new NBTTagCompound());
+				//player.setHealth(0.5F);
 			}
-		}
+		}else if(player == null)
+			PlayerReviveClient.playerRevive = null;
 	}
 	
 }

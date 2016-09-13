@@ -1,5 +1,7 @@
 package com.creativemd.playerrevive;
 
+import java.util.UUID;
+
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
@@ -17,6 +19,7 @@ import com.creativemd.playerrevive.server.ReviveEventServer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -38,7 +41,11 @@ public class PlayerRevive {
 	public static float playerReviveTime = 100;
 	public static int playerReviveSurviveTime = 1200;
 	
+	public static int playerHealthAfter = 2;
+	public static int playerFoodAfter = 6;
+	
 	public static boolean banPlayerAfterDeath = false;
+	
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event)
@@ -62,7 +69,7 @@ public class PlayerRevive {
 				else
 					revive = PlayerReviveServer.playerRevivals.get(EntityPlayer.getUUID(player.getGameProfile()));
 				if(revive != null)
-					return new SubContainerRevive(player, revive);
+					return new SubContainerRevive(player, revive, false);
 				return null;
 			}
 			
@@ -70,6 +77,27 @@ public class PlayerRevive {
 			public Revival getClientRevival()
 			{
 				return PlayerReviveClient.playerRevive;
+			}
+		});
+		
+		GuiHandler.registerGuiHandler("plreviver", new CustomGuiHandler() {
+			
+			@Override
+			@SideOnly(Side.CLIENT)
+			public SubGui getGui(EntityPlayer player, NBTTagCompound nbt) {
+				return new SubGuiRevive();
+			}
+			
+			@Override
+			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
+				Revival revive = null;
+				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+					revive = new Revival();
+				else
+					revive = PlayerReviveServer.playerRevivals.get(UUID.fromString(nbt.getString("uuid")));
+				if(revive != null)
+					return new SubContainerRevive(player, revive, true);
+				return null;
 			}
 		});
 		
