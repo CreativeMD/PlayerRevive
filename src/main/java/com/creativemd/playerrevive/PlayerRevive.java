@@ -64,7 +64,7 @@ public class PlayerRevive {
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
 				Revival revive = null;
-				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+				if(player.getEntityWorld().isRemote)
 					revive = getClientRevival();
 				else
 					revive = PlayerReviveServer.playerRevivals.get(EntityPlayer.getUUID(player.getGameProfile()));
@@ -91,7 +91,7 @@ public class PlayerRevive {
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
 				Revival revive = null;
-				if(FMLCommonHandler.instance().getEffectiveSide().isClient())
+				if(player.getEntityWorld().isRemote)
 					revive = new Revival();
 				else
 					revive = PlayerReviveServer.playerRevivals.get(UUID.fromString(nbt.getString("uuid")));
