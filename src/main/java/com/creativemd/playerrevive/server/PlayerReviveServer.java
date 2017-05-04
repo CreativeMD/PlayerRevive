@@ -1,38 +1,67 @@
 package com.creativemd.playerrevive.server;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.UUID;
 
+import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.playerrevive.Revival;
+import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.fml.server.FMLServerHandler;
 
 public class PlayerReviveServer {
 	
-	/**Information needs to be saved inside the player file!**/
-	public static HashMap<UUID, Revival> playerRevivals = new HashMap<>();
+	//private static MinecraftServer server = FMLServerHandler.instance().getServer();
 	
 	public static boolean isPlayerBleeding(EntityPlayer player)
 	{
-		return playerRevivals.containsKey(EntityPlayer.getUUID(player.getGameProfile()));
+		return !player.getCapability(Revival.reviveCapa, null).isHealty();
+	}
+	
+	public static void sendUpdatePacket(EntityPlayer player)
+	{
+		ReviveUpdatePacket packet = new ReviveUpdatePacket(player);
+		PacketHandler.sendPacketToTrackingPlayers(packet, (EntityPlayerMP) player);
+		PacketHandler.sendPacketToPlayer(packet, (EntityPlayerMP) player);
+	}
+	
+	public static void startBleeding(EntityPlayer player)
+	{
+		getRevival(player).startBleeding();
+		sendUpdatePacket(player);
+	}
+	
+	public static void stopBleeding(EntityPlayer player)
+	{
+		getRevival(player).stopBleeding();
+		sendUpdatePacket(player);
 	}
 	
 	public static Revival getRevival(EntityPlayer player)
 	{
-		return playerRevivals.get(EntityPlayer.getUUID(player.getGameProfile()));
+		return player.getCapability(Revival.reviveCapa, null);
 	}
 	
+	@SideOnly(Side.SERVER)
 	public static void removePlayerAsHelper(EntityPlayer player)
 	{
-		for (UUID uuid : playerRevivals.keySet()) {
-			Revival revive = playerRevivals.get(uuid);
+		for (Iterator<EntityPlayerMP> iterator = player.getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+			EntityPlayerMP member = iterator.next();
+			Revival revive = getRevival(member);
 			revive.revivingPlayers.remove(player);
 		}
-	}
-	
-	public void initSide()
-	{
 		
 	}
 	
+	public void loadSide()
+	{
+		
+	}
 }

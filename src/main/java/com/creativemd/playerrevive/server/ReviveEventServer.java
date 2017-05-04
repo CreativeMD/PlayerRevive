@@ -1,45 +1,35 @@
 package com.creativemd.playerrevive.server;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.UUID;
 
-import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.DamageBledToDeath;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
 import com.creativemd.playerrevive.capability.CapaReviveProvider;
-import com.creativemd.playerrevive.packet.PlayerRevivalPacket;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListBansEntry;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.datafix.FixTypes;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
-import scala.collection.parallel.ParIterableLike.Min;
 
 public class ReviveEventServer {
 	
@@ -70,6 +60,8 @@ public class ReviveEventServer {
 		return Minecraft.getMinecraft().isSingleplayer();
 	}
 	
+	//private static MinecraftServer server = FMLServerHandler.instance().getServer();
+	
 	@SubscribeEvent
 	public void tick(ServerTickEvent event)
 	{
@@ -77,59 +69,50 @@ public class ReviveEventServer {
 		{
 			ArrayList<UUID> removeFromList = new ArrayList<>();
 			
-			
-			
-			for (UUID uuid : PlayerReviveServer.playerRevivals.keySet()) {
-				Revival revive = PlayerReviveServer.playerRevivals.get(uuid);
-				revive.tick();
+			for (Iterator<EntityPlayerMP> iterator = FMLServerHandler.instance().getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+				EntityPlayerMP player = iterator.next();
+				Revival revive = PlayerReviveServer.getRevival(player);
 				
-				EntityPlayer player = FMLServerHandler.instance().getServer().getPlayerList().getPlayerByUUID(uuid);
-				if(player != null)
+				if(!revive.isHealty())
 				{
+					revive.tick();
+					
 					player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
 					player.setHealth(PlayerRevive.playerHealthAfter);
-				}
-				
-				if(revive.isRevived() || revive.isDead())
-				{
+					player.capabilities.disableDamage = true;
 					
-					removeFromList.add(uuid);
-					
-					
-					if(player == null)
+					if(revive.isRevived() || revive.isDead())
 					{
-						//TODO Modify player save data
-					}else{
-						if(revive.isDead())
+						PlayerReviveServer.stopBleeding(player);						
+						
+						if(player != null)
 						{
-							player.setHealth(0.0F);
-							player.onDeath(DamageBledToDeath.bledToDeath);
+							player.capabilities.disableDamage = false;
 							
+							if(revive.isDead())
+							{
+								player.setHealth(0.0F);
+								player.onDeath(DamageBledToDeath.bledToDeath);
+								
+							}
+							for (int i = 0; i < revive.revivingPlayers.size(); i++) {
+								revive.revivingPlayers.get(i).closeScreen();
+							}
 						}
-						for (int i = 0; i < revive.revivingPlayers.size(); i++) {
-							revive.revivingPlayers.get(i).closeScreen();
-						}
-						PacketHandler.sendPacketToPlayer(new PlayerRevivalPacket(null), (EntityPlayerMP) player);
-					}
-					
-					if(revive.isDead() && PlayerRevive.banPlayerAfterDeath)
-					{
-						GameProfile profile = null;
-						if(player == null)
-							profile = new GameProfile(uuid, "");
-						else
+						
+						if(revive.isDead() && PlayerRevive.banPlayerAfterDeath)
+						{
+							GameProfile profile = null;
 							profile = player.getGameProfile();
-						FMLServerHandler.instance().getServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
-						try {
-							FMLServerHandler.instance().getServer().getPlayerList().getBannedPlayers().writeChanges();
-						} catch (IOException e) {
-							e.printStackTrace();
+							FMLServerHandler.instance().getServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
+							try {
+								FMLServerHandler.instance().getServer().getPlayerList().getBannedPlayers().writeChanges();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
 						}
 					}
 				}
-			}
-			for (int i = 0; i < removeFromList.size(); i++) {
-				PlayerReviveServer.playerRevivals.remove(removeFromList.get(i));
 			}
 		}		
 	}
@@ -137,10 +120,17 @@ public class ReviveEventServer {
 	@SubscribeEvent
 	public void playerLeave(PlayerLoggedOutEvent event)
 	{
+		Revival revive = PlayerReviveServer.getRevival(event.player);
+		if(!revive.isHealty())
+		{
+			PlayerReviveServer.stopBleeding(event.player);
+			event.player.setHealth(0.0F);
+			event.player.onDeath(DamageBledToDeath.bledToDeath);
+		}
 		PlayerReviveServer.removePlayerAsHelper(event.player);
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void playerJoin(PlayerLoggedInEvent event)
 	{
 		if(!isReviveActive())
@@ -148,16 +138,16 @@ public class ReviveEventServer {
 		Revival revive = PlayerReviveServer.playerRevivals.get(EntityPlayer.getUUID(event.player.getGameProfile()));
 		if(revive != null)
 			PacketHandler.sendPacketToPlayer(new PlayerRevivalPacket(revive), (EntityPlayerMP) event.player);
-	}
+	}*/
 	
 	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent.EntityInteract event)
 	{
-		if(!PlayerReviveServer.isPlayerBleeding(event.getEntityPlayer()) && event.getTarget() instanceof EntityPlayer)
+		if(!PlayerReviveServer.isPlayerBleeding(event.getEntityPlayer()) && event.getTarget() instanceof EntityPlayer && !event.getEntityLiving().world.isRemote)
 		{
 			EntityPlayer player = (EntityPlayer) event.getTarget();
 			Revival revive = PlayerReviveServer.getRevival(player);
-			if(revive != null)
+			if(!revive.isHealty())
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
 				nbt.setString("uuid", EntityPlayer.getUUID(player.getGameProfile()).toString());
@@ -182,17 +172,13 @@ public class ReviveEventServer {
 	@SubscribeEvent
 	public void playerDied(LivingDeathEvent event)
 	{
-		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive())
+		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			UUID uuid = EntityPlayer.getUUID(player.getGameProfile());
-			Revival revive = PlayerReviveServer.playerRevivals.get(uuid);
-			if(revive == null)
-			{
-				revive = new Revival();
-				PlayerReviveServer.playerRevivals.put(uuid, revive);
-				PacketHandler.sendPacketToPlayer(new PlayerRevivalPacket(revive), (EntityPlayerMP) player);
-			}
+			Revival revive = PlayerReviveServer.getRevival(player);
+			if(revive.isHealty())
+				PlayerReviveServer.startBleeding(player);
+			
 			if(!revive.isDead())
 			{
 				event.setCanceled(true);
@@ -200,7 +186,6 @@ public class ReviveEventServer {
 				player.getFoodStats().setFoodLevel(1);
 			}
 		}
-		//Revival revive2 = ((EntityPlayer) event.getEntityLiving()).getCapability(Revival.reviveCapa, null);
 	}
 	
 	@SubscribeEvent
