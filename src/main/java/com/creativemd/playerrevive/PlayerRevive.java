@@ -8,26 +8,22 @@ import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.capability.CapaReviveStorage;
-import com.creativemd.playerrevive.client.PlayerReviveClient;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
-import com.creativemd.playerrevive.packet.PlayerRevivalPacket;
-import com.creativemd.playerrevive.packet.PlayerRevivalProgress;
+import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import net.minecraftforge.fml.common.Mod.EventHandler;
 
 @Mod(modid = PlayerRevive.modid, version = PlayerRevive.version, name = "Player Revive", acceptedMinecraftVersions = "")
 public class PlayerRevive {
@@ -46,12 +42,10 @@ public class PlayerRevive {
 	
 	public static boolean banPlayerAfterDeath = false;
 	
-	
 	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		CreativeCorePacket.registerPacket(PlayerRevivalPacket.class, "PLRevival");
-		CreativeCorePacket.registerPacket(PlayerRevivalProgress.class, "PLProgress");
+		CreativeCorePacket.registerPacket(ReviveUpdatePacket.class, "PRUpdate");
 		
 		GuiHandler.registerGuiHandler("plrevive", new CustomGuiHandler() {
 			
@@ -63,20 +57,7 @@ public class PlayerRevive {
 			
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
-				Revival revive = null;
-				if(player.getEntityWorld().isRemote)
-					revive = getClientRevival();
-				else
-					revive = PlayerReviveServer.playerRevivals.get(EntityPlayer.getUUID(player.getGameProfile()));
-				if(revive != null)
-					return new SubContainerRevive(player, revive, false);
-				return null;
-			}
-			
-			@SideOnly(Side.CLIENT)
-			public Revival getClientRevival()
-			{
-				return PlayerReviveClient.playerRevive;
+				return new SubContainerRevive(player, PlayerReviveServer.getRevival(player), false);
 			}
 		});
 		
@@ -91,13 +72,11 @@ public class PlayerRevive {
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
 				Revival revive = null;
-				if(player.getEntityWorld().isRemote)
-					revive = new Revival();
+				if(player.world.isRemote)
+					revive = PlayerReviveServer.getRevival(player.world.getPlayerEntityByUUID(UUID.fromString(nbt.getString("uuid"))));
 				else
-					revive = PlayerReviveServer.playerRevivals.get(UUID.fromString(nbt.getString("uuid")));
-				if(revive != null)
-					return new SubContainerRevive(player, revive, true);
-				return null;
+					revive = PlayerReviveServer.getRevival(player.getServer().getPlayerList().getPlayerByUUID(UUID.fromString(nbt.getString("uuid"))));
+				return new SubContainerRevive(player, revive, true);
 			}
 		});
 		
@@ -105,7 +84,7 @@ public class PlayerRevive {
 		
 		MinecraftForge.EVENT_BUS.register(new ReviveEventServer());
 		
-		proxy.initSide();
+		proxy.loadSide();
 	}
 	
 }

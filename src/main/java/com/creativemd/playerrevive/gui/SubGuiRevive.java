@@ -1,9 +1,5 @@
 package com.creativemd.playerrevive.gui;
 
-import javax.swing.text.html.parser.Entity;
-
-import com.creativemd.creativecore.gui.GuiRenderHelper;
-import com.creativemd.creativecore.gui.client.style.DisplayStyle;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.controls.gui.GuiButton;
@@ -11,22 +7,17 @@ import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
 import com.creativemd.creativecore.gui.controls.gui.GuiProgressBar;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
-import com.creativemd.playerrevive.client.PlayerReviveClient;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGameOver;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.multiplayer.WorldClient;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class SubGuiRevive extends SubGui {
 	
-	public static Style emptyStyle = new Style("empty", DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay, DisplayStyle.emptyDisplay);
-	
 	public SubGuiRevive() {
-		super(100, 60);
-		setStyle(emptyStyle);
+		super(100, 80);
+		setStyle(Style.emptyStyle);
 	}
 	
 	public GuiProgressBar bar;
@@ -37,18 +28,28 @@ public class SubGuiRevive extends SubGui {
 		Revival revive = ((SubContainerRevive) container).revive;
 		bar = (GuiProgressBar) new GuiProgressBar("progress", 0, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
 		controls.add(bar);
-		label = new GuiLabel("Time left: " + revive.getTimeLeft(), 0, 20);
+		label = new GuiLabel("Time left " + formatTime(revive.getTimeLeft()), 0, 20);
 		controls.add(label);
 		if(!((SubContainerRevive) container).isHelping)
 		{
-			controls.add(new GuiButton("disconnect", 30, 40) {
+			controls.add(new GuiButton("give up", 30, 40) {
+				
+				@Override
+				public void onClicked(int x, int y, int button) {
+					NBTTagCompound nbt = new NBTTagCompound();
+		    		nbt.setBoolean("giveup", true);
+		    		sendPacketToServer(nbt);
+				}
+			});
+			
+			controls.add(new GuiButton("disconnect", 20, 60) {
 			
 				@Override
 				public void onClicked(int x, int y, int button) {
 					Minecraft mc = Minecraft.getMinecraft();
-					if (mc.theWorld != null)
+					if (mc.world != null)
 		            {
-		                mc.theWorld.sendQuittingDisconnectingPacket();
+		                mc.world.sendQuittingDisconnectingPacket();
 		            }
 					
 		            mc.loadWorld((WorldClient)null);
@@ -56,6 +57,22 @@ public class SubGuiRevive extends SubGui {
 				}
 			});
 		}
+	}
+	
+	public String formatTime(int timeLeft)
+	{
+		int lengthOfMinute = 20*60;
+		int lengthOfHour = lengthOfMinute*60;
+		
+		int hours = timeLeft/lengthOfHour;
+		timeLeft -= hours*lengthOfHour;
+		
+		int minutes = timeLeft/lengthOfMinute;
+		timeLeft -= minutes*lengthOfMinute;
+		
+		int seconds = timeLeft/20;
+		
+		return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
 	}
 	
 	@Override
@@ -66,7 +83,8 @@ public class SubGuiRevive extends SubGui {
 		{
 			revive.readFromNBT(nbt);
 			bar.pos = revive.getProgress();
-			label.caption = "Time left: " + revive.getTimeLeft();
+			
+			label.caption = "Time left " + formatTime(revive.getTimeLeft());
 		}
 	}
 	

@@ -15,6 +15,8 @@ public class Revival implements INBTSerializable<NBTTagCompound> {
 	@CapabilityInject(Revival.class)
 	public static Capability<Revival> reviveCapa = null;
 	
+	private boolean healty = true;
+	
 	private float progress;
 	private int timeLeft;
 	
@@ -31,8 +33,25 @@ public class Revival implements INBTSerializable<NBTTagCompound> {
 		progress += revivingPlayers.size();
 		
 		for (int i = 0; i < revivingPlayers.size(); i++) {
-			revivingPlayers.get(i).addExhaustion(1.5F);
+			revivingPlayers.get(i).addExhaustion(0.5F);
 		}
+	}
+	
+	public boolean isHealty()
+	{
+		return healty;
+	}
+	
+	public void stopBleeding()
+	{
+		this.healty = true;
+	}
+	
+	public void startBleeding()
+	{
+		this.healty = false;
+		this.progress = 0;
+		timeLeft = PlayerRevive.playerReviveSurviveTime;
 	}
 	
 	public float getProgress()
@@ -55,16 +74,24 @@ public class Revival implements INBTSerializable<NBTTagCompound> {
 		return timeLeft;
 	}
 	
+	public void kill()
+	{
+		timeLeft = 0;
+		progress = 0;
+	}
+	
 	public void writeToNBT(NBTTagCompound nbt)
 	{
 		nbt.setInteger("timeLeft", timeLeft);
 		nbt.setFloat("progress", progress);
+		nbt.setBoolean("healty", healty);
 	}
 	
 	public void readFromNBT(NBTTagCompound nbt)
 	{
 		timeLeft = nbt.getInteger("timeLeft");
 		progress = nbt.getFloat("progress");
+		healty = nbt.getBoolean("healty");
 	}
 
 	@Override
@@ -78,5 +105,5 @@ public class Revival implements INBTSerializable<NBTTagCompound> {
 	public void deserializeNBT(NBTTagCompound nbt) {
 		readFromNBT(nbt);
 	}
-	
+
 }

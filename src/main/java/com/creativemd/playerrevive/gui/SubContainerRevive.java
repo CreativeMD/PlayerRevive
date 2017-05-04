@@ -42,7 +42,14 @@ public class SubContainerRevive extends SubContainer{
 
 	@Override
 	public void onPacketReceive(NBTTagCompound nbt) {
-		
+		if(nbt.getBoolean("giveup") && !isHelping)
+		{
+			Revival revive = PlayerReviveServer.getRevival(player);
+			if(!revive.isHealty())
+			{
+				revive.kill();
+			}
+		}
 	}
 	
 	@Override
@@ -51,8 +58,6 @@ public class SubContainerRevive extends SubContainer{
 		super.onClosed();
 		if(isHelping && !player.getEntityWorld().isRemote)
 			PlayerReviveServer.removePlayerAsHelper(player);
-		//System.out.println("CLOSING!");
-		
 	}
 
 }
