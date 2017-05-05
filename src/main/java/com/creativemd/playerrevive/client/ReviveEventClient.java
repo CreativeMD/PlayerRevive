@@ -20,6 +20,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -44,20 +45,16 @@ public class ReviveEventClient {
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Pre event)
 	{
-		Revival revive = PlayerReviveServer.getRevival(event.getEntityPlayer());
+		EntityPlayer player = event.getEntityPlayer();
+		Revival revive = PlayerReviveServer.getRevival(player);
 		if(!revive.isHealty())
 		{
-			try {
-				sleeping.set(event.getEntityPlayer(), true);
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				e.printStackTrace();
-			}
-			event.getEntityPlayer().rotationYaw = -90;
-			event.getEntityPlayer().rotationPitch = 90;
+			double time = System.nanoTime()/10000000D;
+			player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX, player.posY, player.posZ, Math.cos(Math.toRadians(time))*0.04, 0, Math.sin(Math.toRadians(time))*0.04);
 		}
 	}
 	
-	@SubscribeEvent
+	/*@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post event)
 	{
 		Revival revive = PlayerReviveServer.getRevival(event.getEntityPlayer());
@@ -69,7 +66,7 @@ public class ReviveEventClient {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 
 	@SubscribeEvent
 	public void tick(RenderTickEvent event)

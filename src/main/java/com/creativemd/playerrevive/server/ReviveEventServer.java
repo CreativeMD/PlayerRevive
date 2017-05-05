@@ -18,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListBansEntry;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -74,7 +75,7 @@ public class ReviveEventServer {
 				Revival revive = PlayerReviveServer.getRevival(player);
 				
 				if(!revive.isHealty())
-				{
+				{			
 					revive.tick();
 					
 					player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
