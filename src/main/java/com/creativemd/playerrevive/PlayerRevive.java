@@ -8,6 +8,7 @@ import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.capability.CapaReviveStorage;
+import com.creativemd.playerrevive.config.PlayerReviveConfig;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
@@ -18,9 +19,10 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -32,9 +34,9 @@ public class PlayerRevive {
 	public static PlayerReviveServer proxy;
 	
 	public static final String modid = "playerrevive";
-	public static final String version = "0.1";
+	public static final String version = "1.0";
 	
-	public static float playerReviveTime = 100;
+	public static int playerReviveTime = 100;
 	public static int playerReviveSurviveTime = 1200;
 	
 	public static int playerHealthAfter = 2;
@@ -85,6 +87,11 @@ public class PlayerRevive {
 		MinecraftForge.EVENT_BUS.register(new ReviveEventServer());
 		
 		proxy.loadSide();
+		
+		if(Loader.isModLoaded("igcm"))
+		{
+			PlayerReviveConfig.loadConfig();
+		}
 	}
 	
 }
