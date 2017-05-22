@@ -15,8 +15,13 @@ import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
+import net.minecraft.client.particle.ParticleLava;
+import net.minecraft.command.CommandBase;
+import net.minecraft.command.CommandException;
+import net.minecraft.command.ICommandSender;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.fml.common.Loader;
@@ -24,6 +29,8 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -43,6 +50,44 @@ public class PlayerRevive {
 	public static int playerFoodAfter = 6;
 	
 	public static boolean banPlayerAfterDeath = false;
+	
+	@EventHandler
+	public void serverStart(FMLServerStartingEvent event)
+	{
+		event.registerServerCommand(new CommandBase() {
+			
+			@Override
+			public String getUsage(ICommandSender sender) {
+				return "revive a bleeding player";
+			}
+			
+			@Override
+			public String getName() {
+				return "revive";
+			}
+			
+			@Override
+			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
+				EntityPlayer player = null;
+				if(args.length > 1)
+				{
+					player = server.getPlayerList().getPlayerByUsername(args[0]);
+				}else if(sender instanceof EntityPlayer)
+					player = (EntityPlayer) sender;
+				
+				if(player != null)
+				{
+					PlayerReviveServer.stopBleeding(player);
+				}
+			}
+			
+			@Override
+			public boolean isUsernameIndex(String[] args, int index)
+		    {
+		        return index == 1;
+		    }
+		});
+	}
 	
 	@EventHandler
 	public void init(FMLInitializationEvent event)

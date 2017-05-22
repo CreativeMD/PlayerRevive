@@ -7,6 +7,7 @@ import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
+import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
@@ -21,6 +22,9 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.ContainerPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.fml.client.FMLClientHandler;
@@ -30,6 +34,7 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedInEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.ClientTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.RenderTickEvent;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.fml.relauncher.Side;
@@ -49,12 +54,21 @@ public class ReviveEventClient {
 		Revival revive = PlayerReviveServer.getRevival(player);
 		if(!revive.isHealty())
 		{
-			double time = System.nanoTime()/10000000D;
-			player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX, player.posY, player.posZ, Math.cos(Math.toRadians(time))*0.04, 0, Math.sin(Math.toRadians(time))*0.04);
+			double percentage = 1D-(revive.getTimeLeft()/(double)PlayerRevive.playerReviveSurviveTime);
+			int amount = (int) Math.floor(percentage*1.3D);
+			for(int i = 0; i < amount; i++)
+			{
+				player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX-1, player.posY, player.posZ, 0, 0, 0);
+			}
+			try {
+				sleeping.set(event.getEntityPlayer(), true);
+			} catch (IllegalArgumentException | IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
-	/*@SubscribeEvent
+	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post event)
 	{
 		Revival revive = PlayerReviveServer.getRevival(event.getEntityPlayer());
@@ -66,7 +80,40 @@ public class ReviveEventClient {
 				e.printStackTrace();
 			}
 		}
-	}*/
+	}
+	
+	@SubscribeEvent
+	public void cameraSetup(CameraSetup event)
+	{
+		Revival revive = PlayerReviveServer.getRevival(mc.player);
+		if(!revive.isHealty())
+		{
+			GlStateManager.translate(0, 0, -1.5);
+			event.setYaw(0);
+			event.setPitch(-90);
+		}
+	}
+	
+	@SubscribeEvent
+	public void playerTick(PlayerTickEvent event)
+	{
+		if(event.phase == Phase.START)
+			return ;
+		Revival revive = PlayerReviveServer.getRevival(event.player);
+		if(!revive.isHealty() && event.player != mc.player)
+		{
+			AxisAlignedBB axisalignedbb = event.player.getEntityBoundingBox();
+			double width = 0.6;
+            double height = 1.8;
+            
+			event.player.setEntityBoundingBox(new AxisAlignedBB(event.player.posX - height, event.player.posY - width/2D, event.player.posZ - width/2D, event.player.posX, event.player.posY + width/2D, event.player.posZ + width/2D));
+		}
+	}
+	
+	public boolean lastShader = false;
+	public boolean lastHighTension = false;
+	
+	public static TensionSound sound;
 
 	@SubscribeEvent
 	public void tick(RenderTickEvent event)
@@ -79,17 +126,55 @@ public class ReviveEventClient {
 			SubGuiRevive gui = null;
 			if(player.openContainer instanceof ContainerSub && ((ContainerSub) player.openContainer).gui.getTopLayer() instanceof SubGuiRevive)
 				gui = (SubGuiRevive) ((ContainerSub) player.openContainer).gui.getTopLayer();
-			//else
-				//System.out.println(player.openContainer);
 			
 			if(revive.isHealty())
 			{
+				lastHighTension = false;
+				if(lastShader)
+				{
+					mc.entityRenderer.loadEntityShader(mc.getRenderViewEntity());
+					lastShader = false;
+				}
+				
+				if(sound != null)
+				{
+					sound.volume -= 0.001F;
+					if(sound.volume <= 0)
+					{
+						mc.getSoundHandler().stopSound(sound);
+						sound = null;
+					}
+				}
 				if(gui != null && !((SubContainerRevive) gui.container).isHelping)
 				{
 					((SubContainerRevive) gui.container).isHelping = true;
 					gui.closeGui();
 				}
 			}else{
+				if(revive.getTimeLeft() < 400)
+				{
+					if(!lastHighTension)
+					{
+						mc.getSoundHandler().stopSound(sound);
+						sound = null;
+						mc.getSoundHandler().playSound(new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), 1.0F, 1.0F, false));
+						lastHighTension = true;
+					}
+				}else{
+					if(!lastShader)
+					{
+						if(sound != null)
+							mc.getSoundHandler().stopSound(sound);
+						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), 1.0F, 1.0F, true);
+						mc.getSoundHandler().playSound(sound);
+					}
+				}
+				
+				if(!lastShader)
+				{
+					mc.entityRenderer.loadShader(new ResourceLocation("shaders/post/blur.json"));
+					lastShader = true;
+				}
 				if(gui == null)
 					GuiHandler.openGui("plrevive", new NBTTagCompound());
 				//player.setHealth(0.5F);

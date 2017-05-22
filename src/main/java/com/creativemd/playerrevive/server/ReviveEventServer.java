@@ -75,8 +75,11 @@ public class ReviveEventServer {
 				Revival revive = PlayerReviveServer.getRevival(player);
 				
 				if(!revive.isHealty())
-				{			
+				{
 					revive.tick();
+					
+					if(revive.getTimeLeft() % 20 == 0)
+						PlayerReviveServer.sendUpdatePacket(player);
 					
 					player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
 					player.setHealth(PlayerRevive.playerHealthAfter);
@@ -88,7 +91,7 @@ public class ReviveEventServer {
 						
 						if(player != null)
 						{
-							player.capabilities.disableDamage = false;
+							player.capabilities.disableDamage = player.capabilities.isCreativeMode;
 							
 							if(revive.isDead())
 							{
@@ -119,6 +122,7 @@ public class ReviveEventServer {
 	}
 	
 	@SubscribeEvent
+	@SideOnly(Side.SERVER)
 	public void playerLeave(PlayerLoggedOutEvent event)
 	{
 		Revival revive = PlayerReviveServer.getRevival(event.player);
@@ -128,7 +132,8 @@ public class ReviveEventServer {
 			event.player.setHealth(0.0F);
 			event.player.onDeath(DamageBledToDeath.bledToDeath);
 		}
-		PlayerReviveServer.removePlayerAsHelper(event.player);
+		if(!event.player.world.isRemote)
+			PlayerReviveServer.removePlayerAsHelper(event.player);
 	}
 	
 	/*@SubscribeEvent
