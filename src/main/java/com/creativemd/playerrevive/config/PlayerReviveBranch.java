@@ -30,7 +30,7 @@ public class PlayerReviveBranch extends ConfigBranch {
 
 	@Override
 	public boolean requiresSynchronization() {
-		return false;
+		return true;
 	}
 
 	@Override
