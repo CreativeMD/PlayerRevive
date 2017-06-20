@@ -13,6 +13,7 @@ import com.creativemd.playerrevive.capability.CapaReviveProvider;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -195,9 +196,9 @@ public class ReviveEventServer {
 	}
 	
 	@SubscribeEvent
-	public void attachCapability(AttachCapabilitiesEvent.Entity event)
+	public void attachCapability(AttachCapabilitiesEvent<Entity> event)
 	{
-		if(event.getEntity() instanceof EntityPlayer)
+		if(event.getObject() instanceof EntityPlayer)
 		{
 			event.addCapability(new ResourceLocation(PlayerRevive.modid, "revive"), new CapaReviveProvider());
 		}

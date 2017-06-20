@@ -14,7 +14,7 @@ import net.minecraftforge.fml.relauncher.Side;
 public class PlayerReviveBranch extends ConfigBranch {
 
 	public PlayerReviveBranch() {
-		super("Player Revive", new ItemStack(Items.TOTEM));
+		super("Player Revive", new ItemStack(Items.TOTEM_OF_UNDYING));
 	}
 
 	@Override
