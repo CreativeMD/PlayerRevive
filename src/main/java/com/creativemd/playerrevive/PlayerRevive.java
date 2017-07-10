@@ -15,6 +15,7 @@ import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.particle.ParticleLava;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
@@ -26,13 +27,16 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -56,6 +60,11 @@ public class PlayerRevive {
 	public static int playerFoodAfter = 6;
 	
 	public static boolean banPlayerAfterDeath = false;
+	
+	@SubscribeEvent
+	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
+	    event.getRegistry().registerAll(deathSound, revivedSound);
+	}
 	
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event)
@@ -96,10 +105,17 @@ public class PlayerRevive {
 	}
 	
 	@EventHandler
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		MinecraftForge.EVENT_BUS.register(this);
+	}
+	
+	@EventHandler
 	public void init(FMLInitializationEvent event)
 	{
-		GameRegistry.register(deathSound);
-		GameRegistry.register(revivedSound);
+		//GameRegistry.register(deathSound);
+		//GameRegistry.register(revivedSound);
+		
 		CreativeCorePacket.registerPacket(ReviveUpdatePacket.class, "PRUpdate");
 		
 		GuiHandler.registerGuiHandler("plrevive", new CustomGuiHandler() {
