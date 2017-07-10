@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3i;
 public class SubGuiRevive extends SubGui {
 	
 	public SubGuiRevive() {
-		super(200, 100);
+		super(200, 120);
 		setStyle(Style.emptyStyle);
 	}
 	
@@ -39,7 +39,7 @@ public class SubGuiRevive extends SubGui {
 		controls.add(label);
 		if(!((SubContainerRevive) container).isHelping)
 		{
-			controls.add(new GuiButton("give up", 80, 40) {
+			controls.add(new GuiButton("give up", 80, 60) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
@@ -49,7 +49,7 @@ public class SubGuiRevive extends SubGui {
 				}
 			});
 			
-			controls.add(new GuiButton("disconnect", 70, 60) {
+			controls.add(new GuiButton("disconnect", 70, 80) {
 			
 				@Override
 				public void onClicked(int x, int y, int button) {
@@ -64,9 +64,9 @@ public class SubGuiRevive extends SubGui {
 				}
 			});
 			
-			controls.add(new GuiTextfield("chat", "", 0, 80, 160, 10).setStyle(Style.liteStyle));
+			controls.add(new GuiTextfield("chat", "", 0, 100, 160, 10).setStyle(Style.liteStyle));
 			
-			controls.add(new GuiButton("send", 170, 80, 23, 10) {
+			controls.add(new GuiButton("send", 170, 100, 23, 10) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
