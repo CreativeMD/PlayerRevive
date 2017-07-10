@@ -16,11 +16,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListBansEntry;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.SoundCategory;
+import net.minecraft.util.SoundEvent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -98,8 +103,12 @@ public class ReviveEventServer {
 							{
 								player.setHealth(0.0F);
 								player.onDeath(DamageBledToDeath.bledToDeath);
+
 								
-							}
+								player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);						
+							}//else
+								//player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
+							
 							for (int i = 0; i < revive.revivingPlayers.size(); i++) {
 								revive.revivingPlayers.get(i).closeScreen();
 							}
@@ -132,6 +141,7 @@ public class ReviveEventServer {
 			PlayerReviveServer.stopBleeding(event.player);
 			event.player.setHealth(0.0F);
 			event.player.onDeath(DamageBledToDeath.bledToDeath);
+			event.player.world.playSound(null, event.player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);		
 		}
 		if(!event.player.world.isRemote)
 			PlayerReviveServer.removePlayerAsHelper(event.player);
@@ -183,15 +193,13 @@ public class ReviveEventServer {
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			Revival revive = PlayerReviveServer.getRevival(player);
-			if(revive.isHealty())
-				PlayerReviveServer.startBleeding(player);
 			
-			if(!revive.isDead())
-			{
-				event.setCanceled(true);
-				player.setHealth(0.5F);
-				player.getFoodStats().setFoodLevel(1);
-			}
+			PlayerReviveServer.startBleeding(player);
+			
+			event.setCanceled(true);
+			player.setHealth(0.5F);
+			player.getFoodStats().setFoodLevel(1);
+			player.getServer().getPlayerList().sendMessage(new TextComponentString(player.getDisplayNameString() + " is bleeding ..."));
 		}
 	}
 	

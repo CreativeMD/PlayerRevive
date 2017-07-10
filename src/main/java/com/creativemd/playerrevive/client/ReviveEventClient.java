@@ -60,6 +60,11 @@ public class ReviveEventClient {
 			{
 				player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX-1, player.posY, player.posZ, 0, 0, 0);
 			}
+			
+			player.renderOffsetX = 0;
+			player.renderOffsetY = 0;
+			player.renderOffsetZ = 0;
+			
 			try {
 				sleeping.set(event.getEntityPlayer(), true);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
@@ -138,12 +143,8 @@ public class ReviveEventClient {
 				
 				if(sound != null)
 				{
-					sound.volume -= 0.001F;
-					if(sound.volume <= 0)
-					{
-						mc.getSoundHandler().stopSound(sound);
-						sound = null;
-					}
+					mc.getSoundHandler().stopSound(sound);
+					sound = null;
 				}
 				if(gui != null && !((SubContainerRevive) gui.container).isHelping)
 				{
@@ -156,8 +157,8 @@ public class ReviveEventClient {
 					if(!lastHighTension)
 					{
 						mc.getSoundHandler().stopSound(sound);
-						sound = null;
-						mc.getSoundHandler().playSound(new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), 1.0F, 1.0F, false));
+						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), 1.0F, 1.0F, false);
+						mc.getSoundHandler().playSound(sound);
 						lastHighTension = true;
 					}
 				}else{
