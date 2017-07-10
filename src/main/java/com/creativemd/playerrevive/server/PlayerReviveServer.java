@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import com.creativemd.creativecore.common.packet.PacketHandler;
+import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 
@@ -12,6 +13,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
@@ -41,6 +43,7 @@ public class PlayerReviveServer {
 	public static void stopBleeding(EntityPlayer player)
 	{
 		getRevival(player).stopBleeding();
+		player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
 		sendUpdatePacket(player);
 	}
 	
