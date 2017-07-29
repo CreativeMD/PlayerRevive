@@ -30,6 +30,7 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
@@ -64,7 +65,20 @@ public class ReviveEventServer {
 	@SideOnly(Side.CLIENT)
 	private static boolean isSinglePlayer()
 	{
-		return Minecraft.getMinecraft().isSingleplayer();
+		return Minecraft.getMinecraft().isSingleplayer() && !Minecraft.getMinecraft().getIntegratedServer().getPublic();
+	}
+	
+	public static MinecraftServer getMinecraftServer()
+	{
+		if(isClient())
+			return getMinecraftServerClient();
+		return FMLServerHandler.instance().getServer();
+	}
+	
+	@SideOnly(Side.CLIENT)
+	private static MinecraftServer getMinecraftServerClient()
+	{
+		return Minecraft.getMinecraft().getIntegratedServer();
 	}
 	
 	//private static MinecraftServer server = FMLServerHandler.instance().getServer();
@@ -76,7 +90,7 @@ public class ReviveEventServer {
 		{
 			ArrayList<UUID> removeFromList = new ArrayList<>();
 			
-			for (Iterator<EntityPlayerMP> iterator = FMLServerHandler.instance().getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+			for (Iterator<EntityPlayerMP> iterator = getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
 				EntityPlayerMP player = iterator.next();
 				Revival revive = PlayerReviveServer.getRevival(player);
 				
@@ -118,9 +132,9 @@ public class ReviveEventServer {
 						{
 							GameProfile profile = null;
 							profile = player.getGameProfile();
-							FMLServerHandler.instance().getServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
+							 getMinecraftServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
 							try {
-								FMLServerHandler.instance().getServer().getPlayerList().getBannedPlayers().writeChanges();
+								 getMinecraftServer().getPlayerList().getBannedPlayers().writeChanges();
 							} catch (IOException e) {
 								e.printStackTrace();
 							}
@@ -186,7 +200,7 @@ public class ReviveEventServer {
 		}
 	}
 	
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void playerDied(LivingDeathEvent event)
 	{
 		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
@@ -195,6 +209,7 @@ public class ReviveEventServer {
 			Revival revive = PlayerReviveServer.getRevival(player);
 			
 			PlayerReviveServer.startBleeding(player);
+			player.capabilities.disableDamage = true;
 			
 			event.setCanceled(true);
 			player.setHealth(0.5F);
