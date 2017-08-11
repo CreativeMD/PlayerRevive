@@ -52,10 +52,9 @@ public class PlayerReviveServer {
 		return player.getCapability(Revival.reviveCapa, null);
 	}
 	
-	@SideOnly(Side.SERVER)
 	public static void removePlayerAsHelper(EntityPlayer player)
 	{
-		for (Iterator<EntityPlayerMP> iterator = player.getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+		for (Iterator<EntityPlayerMP> iterator = ReviveEventServer.getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
 			EntityPlayerMP member = iterator.next();
 			Revival revive = getRevival(member);
 			revive.revivingPlayers.remove(player);
