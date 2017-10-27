@@ -43,7 +43,7 @@ public class ReviveUpdatePacket extends CreativeCorePacket {
 	@Override
 	@SideOnly(Side.CLIENT)
 	public void executeClient(EntityPlayer player) {
-		EntityPlayer member = Minecraft.getMinecraft().world.getPlayerEntityByUUID(uuid);
+		EntityPlayer member = Minecraft.getMinecraft().theWorld.getPlayerEntityByUUID(uuid);
 		if(member != null)
 			PlayerReviveServer.getRevival(member).readFromNBT(nbt);
 	}

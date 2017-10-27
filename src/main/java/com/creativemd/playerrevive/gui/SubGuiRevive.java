@@ -54,9 +54,9 @@ public class SubGuiRevive extends SubGui {
 				@Override
 				public void onClicked(int x, int y, int button) {
 					Minecraft mc = Minecraft.getMinecraft();
-					if (mc.world != null)
+					if (mc.theWorld != null)
 		            {
-		                mc.world.sendQuittingDisconnectingPacket();
+		                mc.theWorld.sendQuittingDisconnectingPacket();
 		            }
 					
 		            mc.loadWorld((WorldClient)null);
@@ -153,11 +153,5 @@ public class SubGuiRevive extends SubGui {
     	if(((SubContainerRevive) container).isHelping)
     		super.closeGui();
     }
-	
-	@Override
-	public boolean hasGrayBackground()
-	{
-		return false;
-	}
 	
 }

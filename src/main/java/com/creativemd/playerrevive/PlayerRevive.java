@@ -8,14 +8,12 @@ import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.capability.CapaReviveStorage;
-import com.creativemd.playerrevive.config.PlayerReviveConfig;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
-import net.minecraft.client.particle.ParticleLava;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -26,12 +24,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
@@ -63,16 +59,6 @@ public class PlayerRevive {
 		event.registerServerCommand(new CommandBase() {
 			
 			@Override
-			public String getUsage(ICommandSender sender) {
-				return "revive a bleeding player";
-			}
-			
-			@Override
-			public String getName() {
-				return "revive";
-			}
-			
-			@Override
 			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 				EntityPlayer player = null;
 				if(args.length > 1)
@@ -92,6 +78,16 @@ public class PlayerRevive {
 		    {
 		        return index == 1;
 		    }
+
+			@Override
+			public String getCommandName() {
+				return "revive";
+			}
+
+			@Override
+			public String getCommandUsage(ICommandSender sender) {
+				return "revive a bleeding player";
+			}
 		});
 	}
 	
@@ -127,8 +123,8 @@ public class PlayerRevive {
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
 				Revival revive = null;
-				if(player.world.isRemote)
-					revive = PlayerReviveServer.getRevival(player.world.getPlayerEntityByUUID(UUID.fromString(nbt.getString("uuid"))));
+				if(player.worldObj.isRemote)
+					revive = PlayerReviveServer.getRevival(player.worldObj.getPlayerEntityByUUID(UUID.fromString(nbt.getString("uuid"))));
 				else
 					revive = PlayerReviveServer.getRevival(player.getServer().getPlayerList().getPlayerByUUID(UUID.fromString(nbt.getString("uuid"))));
 				return new SubContainerRevive(player, revive, true);
@@ -140,11 +136,6 @@ public class PlayerRevive {
 		MinecraftForge.EVENT_BUS.register(new ReviveEventServer());
 		
 		proxy.loadSide();
-		
-		if(Loader.isModLoaded("igcm"))
-		{
-			PlayerReviveConfig.loadConfig();
-		}
 	}
 	
 }

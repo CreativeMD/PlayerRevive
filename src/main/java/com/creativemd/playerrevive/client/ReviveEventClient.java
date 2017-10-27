@@ -58,7 +58,7 @@ public class ReviveEventClient {
 			int amount = (int) Math.floor(percentage*1.3D);
 			for(int i = 0; i < amount; i++)
 			{
-				player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX-1, player.posY, player.posZ, 0, 0, 0);
+				player.worldObj.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX-1, player.posY, player.posZ, 0, 0, 0);
 			}
 			
 			player.renderOffsetX = 0;
@@ -90,7 +90,7 @@ public class ReviveEventClient {
 	@SubscribeEvent
 	public void cameraSetup(CameraSetup event)
 	{
-		Revival revive = PlayerReviveServer.getRevival(mc.player);
+		Revival revive = PlayerReviveServer.getRevival(mc.thePlayer);
 		if(!revive.isHealty())
 		{
 			GlStateManager.translate(0, 0, -1.5);
@@ -105,7 +105,7 @@ public class ReviveEventClient {
 		if(event.phase == Phase.START)
 			return ;
 		Revival revive = PlayerReviveServer.getRevival(event.player);
-		if(!revive.isHealty() && event.player != mc.player)
+		if(!revive.isHealty() && event.player != mc.thePlayer)
 		{
 			AxisAlignedBB axisalignedbb = event.player.getEntityBoundingBox();
 			double width = 0.6;
@@ -123,7 +123,7 @@ public class ReviveEventClient {
 	@SubscribeEvent
 	public void tick(RenderTickEvent event)
 	{
-		EntityPlayer player = mc.player;
+		EntityPlayer player = mc.thePlayer;
 		if(event.phase == Phase.END && player != null)
 		{
 			Revival revive = PlayerReviveServer.getRevival(player);

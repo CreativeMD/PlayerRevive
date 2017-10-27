@@ -43,7 +43,7 @@ public class PlayerReviveServer {
 	public static void stopBleeding(EntityPlayer player)
 	{
 		getRevival(player).stopBleeding();
-		player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
+		player.worldObj.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
 		sendUpdatePacket(player);
 	}
 	
@@ -54,7 +54,7 @@ public class PlayerReviveServer {
 	
 	public static void removePlayerAsHelper(EntityPlayer player)
 	{
-		for (Iterator<EntityPlayerMP> iterator = ReviveEventServer.getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+		for (Iterator<EntityPlayerMP> iterator = ReviveEventServer.getMinecraftServer().getPlayerList().getPlayerList().iterator(); iterator.hasNext();) {
 			EntityPlayerMP member = iterator.next();
 			Revival revive = getRevival(member);
 			revive.revivingPlayers.remove(player);

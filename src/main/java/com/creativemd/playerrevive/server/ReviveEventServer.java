@@ -90,7 +90,7 @@ public class ReviveEventServer {
 		{
 			ArrayList<UUID> removeFromList = new ArrayList<>();
 			
-			for (Iterator<EntityPlayerMP> iterator = getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+			for (Iterator<EntityPlayerMP> iterator = getMinecraftServer().getPlayerList().getPlayerList().iterator(); iterator.hasNext();) {
 				EntityPlayerMP player = iterator.next();
 				Revival revive = PlayerReviveServer.getRevival(player);
 				
@@ -119,7 +119,7 @@ public class ReviveEventServer {
 								player.onDeath(DamageBledToDeath.bledToDeath);
 
 								
-								player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);						
+								player.worldObj.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);						
 							}//else
 								//player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
 							
@@ -155,9 +155,9 @@ public class ReviveEventServer {
 			PlayerReviveServer.stopBleeding(event.player);
 			event.player.setHealth(0.0F);
 			event.player.onDeath(DamageBledToDeath.bledToDeath);
-			event.player.world.playSound(null, event.player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);		
+			event.player.worldObj.playSound(null, event.player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);		
 		}
-		if(!event.player.world.isRemote)
+		if(!event.player.worldObj.isRemote)
 			PlayerReviveServer.removePlayerAsHelper(event.player);
 	}
 	
@@ -174,7 +174,7 @@ public class ReviveEventServer {
 	@SubscribeEvent
 	public void playerInteract(PlayerInteractEvent.EntityInteract event)
 	{
-		if(!PlayerReviveServer.isPlayerBleeding(event.getEntityPlayer()) && event.getTarget() instanceof EntityPlayer && !event.getEntityLiving().world.isRemote)
+		if(!PlayerReviveServer.isPlayerBleeding(event.getEntityPlayer()) && event.getTarget() instanceof EntityPlayer && !event.getEntityLiving().worldObj.isRemote)
 		{
 			EntityPlayer player = (EntityPlayer) event.getTarget();
 			Revival revive = PlayerReviveServer.getRevival(player);
@@ -203,7 +203,7 @@ public class ReviveEventServer {
 	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void playerDied(LivingDeathEvent event)
 	{
-		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
+		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().worldObj.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			Revival revive = PlayerReviveServer.getRevival(player);
@@ -214,7 +214,7 @@ public class ReviveEventServer {
 			event.setCanceled(true);
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
-			player.getServer().getPlayerList().sendMessage(new TextComponentString(player.getDisplayNameString() + " is bleeding ..."));
+			player.getServer().getPlayerList().sendChatMsg(new TextComponentString(player.getDisplayNameString() + " is bleeding ..."));
 		}
 	}
 	
