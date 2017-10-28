@@ -2,8 +2,10 @@ package com.creativemd.playerrevive.client;
 
 import java.awt.Container;
 import java.lang.reflect.Field;
+import java.util.Iterator;
 
 import com.creativemd.creativecore.gui.container.SubContainer;
+import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.mc.ContainerSub;
 import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
@@ -129,8 +131,15 @@ public class ReviveEventClient {
 			Revival revive = PlayerReviveServer.getRevival(player);
 			
 			SubGuiRevive gui = null;
-			if(player.openContainer instanceof ContainerSub && ((ContainerSub) player.openContainer).gui.getTopLayer() instanceof SubGuiRevive)
-				gui = (SubGuiRevive) ((ContainerSub) player.openContainer).gui.getTopLayer();
+			if(player.openContainer instanceof ContainerSub)
+			{
+				for (Iterator<SubGui> iterator = ((ContainerSub) player.openContainer).gui.getLayers().iterator(); iterator.hasNext();) {
+					SubGui subGui = iterator.next();
+					if(subGui instanceof SubGuiRevive)
+						gui = (SubGuiRevive) subGui;
+				}
+			}
+				
 			
 			if(revive.isHealty())
 			{

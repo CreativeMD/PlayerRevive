@@ -23,7 +23,7 @@ import net.minecraft.util.math.Vec3i;
 public class SubGuiRevive extends SubGui {
 	
 	public SubGuiRevive() {
-		super(200, 120);
+		super(200, 140);
 		setStyle(Style.emptyStyle);
 	}
 	
@@ -39,34 +39,27 @@ public class SubGuiRevive extends SubGui {
 		controls.add(label);
 		if(!((SubContainerRevive) container).isHelping)
 		{
-			controls.add(new GuiButton("give up", 80, 60) {
+			controls.add(new GuiButton("give up", 80, 80) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
-					NBTTagCompound nbt = new NBTTagCompound();
-		    		nbt.setBoolean("giveup", true);
-		    		sendPacketToServer(nbt);
+					
+					openYesNoDialog("Do you really want to give up?");
 				}
 			});
 			
-			controls.add(new GuiButton("disconnect", 70, 80) {
+			controls.add(new GuiButton("disconnect", 70, 100) {
 			
 				@Override
 				public void onClicked(int x, int y, int button) {
-					Minecraft mc = Minecraft.getMinecraft();
-					if (mc.world != null)
-		            {
-		                mc.world.sendQuittingDisconnectingPacket();
-		            }
 					
-		            mc.loadWorld((WorldClient)null);
-		            mc.displayGuiScreen(new GuiMainMenu());
+					openYesNoDialog("Do you really want to disconnect?");
 				}
 			});
 			
-			controls.add(new GuiTextfield("chat", "", 0, 100, 160, 10).setStyle(Style.liteStyle));
+			controls.add(new GuiTextfield("chat", "", 0, 120, 160, 10).setStyle(Style.liteStyle));
 			
-			controls.add(new GuiButton("send", 170, 100, 23, 10) {
+			controls.add(new GuiButton("send", 170, 120, 23, 10) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
@@ -84,6 +77,28 @@ public class SubGuiRevive extends SubGui {
 			}.setStyle(Style.liteStyle));
 		}
 	}
+	
+	public void onDialogClosed(String text, String[] buttons, String clicked)
+    {
+		if(clicked.equals("Yes"))
+		{
+			if(text.equals("Do you really want to give up?"))
+			{
+				NBTTagCompound nbt = new NBTTagCompound();
+	    		nbt.setBoolean("giveup", true);
+	    		sendPacketToServer(nbt);
+			}else{
+				Minecraft mc = Minecraft.getMinecraft();
+				if (mc.world != null)
+	            {
+	                mc.world.sendQuittingDisconnectingPacket();
+	            }
+				
+	            mc.loadWorld((WorldClient)null);
+	            mc.displayGuiScreen(new GuiMainMenu());
+			}
+		}
+    }
 	
 	@Override
 	public boolean onKeyPressed(char character, int key) {
