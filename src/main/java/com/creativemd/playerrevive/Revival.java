@@ -2,6 +2,7 @@ package com.creativemd.playerrevive;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import com.creativemd.playerrevive.api.IRevival;
 import net.minecraft.entity.player.EntityPlayer;
@@ -13,21 +14,19 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public class Revival implements IRevival {
 	
-	@CapabilityInject(Revival.class)
-	public static Capability<Revival> reviveCapa = null;
-	
 	private boolean healty = true;
 	
 	private float progress;
 	private int timeLeft;
 	
-	public ArrayList<EntityPlayer> revivingPlayers = new ArrayList<>();
+	public final ArrayList<EntityPlayer> revivingPlayers = new ArrayList<>();
 	
 	public Revival() {
 		this.progress = 0;
 		timeLeft = PlayerRevive.playerReviveSurviveTime;
 	}
-	
+
+	@Override
 	public void tick()
 	{
 		timeLeft--;
@@ -36,6 +35,11 @@ public class Revival implements IRevival {
 		for (int i = 0; i < revivingPlayers.size(); i++) {
 			revivingPlayers.get(i).addExhaustion(0.5F);
 		}
+	}
+
+	@Override
+	public List<EntityPlayer> getRevivingPlayers() {
+		return revivingPlayers;
 	}
 
 	@Override

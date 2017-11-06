@@ -1,9 +1,14 @@
 package com.creativemd.playerrevive.api;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.List;
+
 public interface IRevival extends INBTSerializable<NBTTagCompound> {
+
+    void tick();
 
     boolean isHealty();
 
@@ -20,4 +25,6 @@ public interface IRevival extends INBTSerializable<NBTTagCompound> {
     int getTimeLeft();
 
     void kill();
+
+    List<EntityPlayer> getRevivingPlayers();
 }

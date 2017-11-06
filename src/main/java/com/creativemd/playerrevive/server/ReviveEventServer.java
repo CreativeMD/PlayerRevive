@@ -8,8 +8,8 @@ import java.util.UUID;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.api.DamageBledToDeath;
 import com.creativemd.playerrevive.PlayerRevive;
-import com.creativemd.playerrevive.Revival;
-import com.creativemd.playerrevive.capability.CapaReviveProvider;
+import com.creativemd.playerrevive.api.IRevival;
+import com.creativemd.playerrevive.CapaReviveProvider;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
@@ -88,7 +88,7 @@ public class ReviveEventServer {
 			
 			for (Iterator<EntityPlayerMP> iterator = getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
 				EntityPlayerMP player = iterator.next();
-				Revival revive = PlayerReviveServer.getRevival(player);
+				IRevival revive = PlayerReviveServer.getRevival(player);
 				
 				if(!revive.isHealty())
 				{
@@ -119,8 +119,8 @@ public class ReviveEventServer {
 							}//else
 								//player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
 							
-							for (int i = 0; i < revive.revivingPlayers.size(); i++) {
-								revive.revivingPlayers.get(i).closeScreen();
+							for (int i = 0; i < revive.getRevivingPlayers().size(); i++) {
+								revive.getRevivingPlayers().get(i).closeScreen();
 							}
 						}
 						
@@ -145,7 +145,7 @@ public class ReviveEventServer {
 	@SideOnly(Side.SERVER)
 	public void playerLeave(PlayerLoggedOutEvent event)
 	{
-		Revival revive = PlayerReviveServer.getRevival(event.player);
+		IRevival revive = PlayerReviveServer.getRevival(event.player);
 		if(!revive.isHealty())
 		{
 			PlayerReviveServer.stopBleeding(event.player);
@@ -173,12 +173,12 @@ public class ReviveEventServer {
 		if(!PlayerReviveServer.isPlayerBleeding(event.getEntityPlayer()) && event.getTarget() instanceof EntityPlayer && !event.getEntityLiving().world.isRemote)
 		{
 			EntityPlayer player = (EntityPlayer) event.getTarget();
-			Revival revive = PlayerReviveServer.getRevival(player);
+			IRevival revive = PlayerReviveServer.getRevival(player);
 			if(!revive.isHealty())
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
 				nbt.setString("uuid", EntityPlayer.getUUID(player.getGameProfile()).toString());
-				revive.revivingPlayers.add(event.getEntityPlayer());
+				revive.getRevivingPlayers().add(event.getEntityPlayer());
 				GuiHandler.openGui("plreviver", nbt, event.getEntityPlayer());
 				//System.out.println("OPEN GUI!");
 			}
@@ -202,7 +202,7 @@ public class ReviveEventServer {
 		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			Revival revive = PlayerReviveServer.getRevival(player);
+			IRevival revive = PlayerReviveServer.getRevival(player);
 			
 			PlayerReviveServer.startBleeding(player);
 			player.capabilities.disableDamage = true;
