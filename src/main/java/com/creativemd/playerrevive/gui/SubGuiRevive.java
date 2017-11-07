@@ -10,6 +10,7 @@ import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
 
+import com.creativemd.playerrevive.api.IRevival;
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
@@ -32,7 +33,7 @@ public class SubGuiRevive extends SubGui {
 	
 	@Override
 	public void createControls() {
-		Revival revive = ((SubContainerRevive) container).revive;
+		IRevival revive = ((SubContainerRevive) container).revive;
 		bar = (GuiProgressBar) new GuiProgressBar("progress", 50, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
 		controls.add(bar);
 		label = new GuiLabel("Time left " + formatTime(revive.getTimeLeft()), 50, 20);
@@ -138,8 +139,8 @@ public class SubGuiRevive extends SubGui {
 	@Override
 	public void onTick() {
 		double timer = 10000000D;
-		
-		Revival revive = ((SubContainerRevive) container).revive;
+
+		IRevival revive = ((SubContainerRevive) container).revive;
 		if(revive != null && revive.getTimeLeft() < 400)
 		{
 			timer = 1000000D;
@@ -152,10 +153,10 @@ public class SubGuiRevive extends SubGui {
 	@Override
 	public void receiveContainerPacket(NBTTagCompound nbt)
 	{
-		Revival revive = ((SubContainerRevive) container).revive;
+		IRevival revive = ((SubContainerRevive) container).revive;
 		if(revive != null)
 		{
-			revive.readFromNBT(nbt);
+			revive.deserializeNBT(nbt);
 			bar.pos = revive.getProgress();
 			
 			label.caption = "Time left " + formatTime(revive.getTimeLeft());

@@ -1,4 +1,4 @@
-package com.creativemd.playerrevive;
+package com.creativemd.playerrevive.api;
 
 import net.minecraft.util.DamageSource;
 

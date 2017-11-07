@@ -11,6 +11,7 @@ import com.creativemd.creativecore.gui.mc.GuiContainerSub;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
+import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
@@ -53,7 +54,7 @@ public class ReviveEventClient {
 	public void renderPlayer(RenderPlayerEvent.Pre event)
 	{
 		EntityPlayer player = event.getEntityPlayer();
-		Revival revive = PlayerReviveServer.getRevival(player);
+		IRevival revive = PlayerReviveServer.getRevival(player);
 		if(!revive.isHealty())
 		{
 			double percentage = 1D-(revive.getTimeLeft()/(double)PlayerRevive.playerReviveSurviveTime);
@@ -78,7 +79,7 @@ public class ReviveEventClient {
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Post event)
 	{
-		Revival revive = PlayerReviveServer.getRevival(event.getEntityPlayer());
+		IRevival revive = PlayerReviveServer.getRevival(event.getEntityPlayer());
 		if(!revive.isHealty())
 		{
 			try {
@@ -92,7 +93,7 @@ public class ReviveEventClient {
 	@SubscribeEvent
 	public void cameraSetup(CameraSetup event)
 	{
-		Revival revive = PlayerReviveServer.getRevival(mc.thePlayer);
+		IRevival revive = PlayerReviveServer.getRevival(mc.thePlayer);
 		if(!revive.isHealty())
 		{
 			GlStateManager.translate(0, 0, -1.5);
@@ -106,7 +107,7 @@ public class ReviveEventClient {
 	{
 		if(event.phase == Phase.START)
 			return ;
-		Revival revive = PlayerReviveServer.getRevival(event.player);
+		IRevival revive = PlayerReviveServer.getRevival(event.player);
 		if(!revive.isHealty() && event.player != mc.thePlayer)
 		{
 			AxisAlignedBB axisalignedbb = event.player.getEntityBoundingBox();
@@ -128,7 +129,7 @@ public class ReviveEventClient {
 		EntityPlayer player = mc.thePlayer;
 		if(event.phase == Phase.END && player != null)
 		{
-			Revival revive = PlayerReviveServer.getRevival(player);
+			IRevival revive = PlayerReviveServer.getRevival(player);
 			
 			SubGuiRevive gui = null;
 			if(player.openContainer instanceof ContainerSub)

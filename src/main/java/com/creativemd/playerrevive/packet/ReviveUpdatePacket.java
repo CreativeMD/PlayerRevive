@@ -28,8 +28,7 @@ public class ReviveUpdatePacket extends CreativeCorePacket {
 
 	@Override
 	public void writeBytes(ByteBuf buf) {
-		NBTTagCompound nbt = new NBTTagCompound();
-		PlayerReviveServer.getRevival(player).writeToNBT(nbt);
+		NBTTagCompound nbt = PlayerReviveServer.getRevival(player).serializeNBT();
 		writeNBT(buf, nbt);
 		writeString(buf, player.getUniqueID().toString());
 	}
@@ -45,7 +44,7 @@ public class ReviveUpdatePacket extends CreativeCorePacket {
 	public void executeClient(EntityPlayer player) {
 		EntityPlayer member = Minecraft.getMinecraft().theWorld.getPlayerEntityByUUID(uuid);
 		if(member != null)
-			PlayerReviveServer.getRevival(member).readFromNBT(nbt);
+			PlayerReviveServer.getRevival(member).deserializeNBT(nbt);
 	}
 
 	@Override

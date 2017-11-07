@@ -3,6 +3,7 @@ package com.creativemd.playerrevive.gui;
 import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.premade.SubContainerTileEntity;
 import com.creativemd.playerrevive.Revival;
+import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -10,11 +11,11 @@ import net.minecraft.nbt.NBTTagCompound;
 
 public class SubContainerRevive extends SubContainer{
 	
-	public Revival revive;
+	public IRevival revive;
 	
 	public boolean isHelping;
 	
-	public SubContainerRevive(EntityPlayer player, Revival revive, boolean isHelping) {
+	public SubContainerRevive(EntityPlayer player, IRevival revive, boolean isHelping) {
 		super(player);
 		this.revive = revive;
 		this.isHelping = isHelping;
@@ -33,8 +34,7 @@ public class SubContainerRevive extends SubContainer{
 		currentTick++;
 		if(currentTick > 10)
 		{
-			NBTTagCompound nbt = new NBTTagCompound();
-			revive.writeToNBT(nbt);
+			NBTTagCompound nbt = revive.serializeNBT();
 			sendNBTToGui(nbt);
 			currentTick = 0;
 		}
@@ -44,7 +44,7 @@ public class SubContainerRevive extends SubContainer{
 	public void onPacketReceive(NBTTagCompound nbt) {
 		if(nbt.getBoolean("giveup") && !isHelping)
 		{
-			Revival revive = PlayerReviveServer.getRevival(player);
+			IRevival revive = PlayerReviveServer.getRevival(player);
 			if(!revive.isHealty())
 			{
 				revive.kill();
