@@ -7,6 +7,8 @@ import java.util.UUID;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
+import com.creativemd.playerrevive.api.IRevival;
+import com.creativemd.playerrevive.api.capability.CapaRevive;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,7 +26,7 @@ public class PlayerReviveServer {
 	
 	public static boolean isPlayerBleeding(EntityPlayer player)
 	{
-		return !player.getCapability(Revival.reviveCapa, null).isHealty();
+		return !player.getCapability(CapaRevive.reviveCapa, null).isHealty();
 	}
 	
 	public static void sendUpdatePacket(EntityPlayer player)
@@ -47,17 +49,17 @@ public class PlayerReviveServer {
 		sendUpdatePacket(player);
 	}
 	
-	public static Revival getRevival(EntityPlayer player)
+	public static IRevival getRevival(EntityPlayer player)
 	{
-		return player.getCapability(Revival.reviveCapa, null);
+		return player.getCapability(CapaRevive.reviveCapa, null);
 	}
 	
 	public static void removePlayerAsHelper(EntityPlayer player)
 	{
 		for (Iterator<EntityPlayerMP> iterator = ReviveEventServer.getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
 			EntityPlayerMP member = iterator.next();
-			Revival revive = getRevival(member);
-			revive.revivingPlayers.remove(player);
+			IRevival revive = getRevival(member);
+			revive.getRevivingPlayers().remove(player);
 		}
 		
 	}
