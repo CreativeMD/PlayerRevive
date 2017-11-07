@@ -7,7 +7,8 @@ import com.creativemd.creativecore.gui.container.SubContainer;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
 import com.creativemd.creativecore.gui.opener.GuiHandler;
-import com.creativemd.playerrevive.capability.CapaReviveStorage;
+import com.creativemd.playerrevive.api.IRevival;
+import com.creativemd.playerrevive.api.capability.CapaRevive;
 import com.creativemd.playerrevive.config.PlayerReviveConfig;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
@@ -15,8 +16,6 @@ import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
-import net.minecraft.block.Block;
-import net.minecraft.client.particle.ParticleLava;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -26,7 +25,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -34,10 +32,8 @@ import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -142,7 +138,7 @@ public class PlayerRevive {
 			
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
-				Revival revive = null;
+				IRevival revive = null;
 				if(player.world.isRemote)
 					revive = PlayerReviveServer.getRevival(player.world.getPlayerEntityByUUID(UUID.fromString(nbt.getString("uuid"))));
 				else
@@ -150,8 +146,7 @@ public class PlayerRevive {
 				return new SubContainerRevive(player, revive, true);
 			}
 		});
-		
-		CapabilityManager.INSTANCE.register(Revival.class, new CapaReviveStorage(), new CapaReviveStorage.Factory());
+		CapaRevive.register();
 		
 		MinecraftForge.EVENT_BUS.register(new ReviveEventServer());
 		
