@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiTextField;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
@@ -34,37 +35,37 @@ public class SubGuiRevive extends SubGui {
 	@Override
 	public void createControls() {
 		IRevival revive = ((SubContainerRevive) container).revive;
-		bar = (GuiProgressBar) new GuiProgressBar("progress", 50, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
+		bar = (GuiProgressBar) new GuiProgressBar(I18n.format("playerrevive.gui.progressbar.name"), 50, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
 		controls.add(bar);
-		label = new GuiLabel("Time left " + formatTime(revive.getTimeLeft()), 50, 20);
+		label = new GuiLabel(String.format(I18n.format("playerrevive.gui.label.time_left"), formatTime(revive.getTimeLeft())), 50, 20);
 		controls.add(label);
 		if(!((SubContainerRevive) container).isHelping)
 		{
-			controls.add(new GuiButton("give up", 80, 80) {
+			controls.add(new GuiButton(I18n.format("playerrevive.gui.button.give_up"), 80, 80) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
 					
-					openYesNoDialog("Do you really want to give up?");
+					openYesNoDialog(I18n.format("playerrevive.gui.popup.give_up"));
 				}
 			});
 			
-			controls.add(new GuiButton("disconnect", 70, 100) {
+			controls.add(new GuiButton(I18n.format("playerrevive.gui.button.disconnect"), 70, 100) {
 			
 				@Override
 				public void onClicked(int x, int y, int button) {
 					
-					openYesNoDialog("Do you really want to disconnect?");
+					openYesNoDialog(I18n.format("playerrevive.gui.popup.disconnect"));
 				}
 			});
 			
-			controls.add(new GuiTextfield("chat", "", 0, 120, 160, 10).setStyle(Style.liteStyle));
+			controls.add(new GuiTextfield(I18n.format("playerrevive.gui.input.chat"), "", 0, 120, 160, 10).setStyle(Style.liteStyle));
 			
-			controls.add(new GuiButton("send", 170, 120, 23, 10) {
+			controls.add(new GuiButton(I18n.format("playerrevive.gui.button.send"), 170, 120, 23, 10) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
-					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
+					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get(I18n.format("playerrevive.gui.input.chat"));
 					
 					if(!chat.text.equals(""))
 					{
@@ -83,7 +84,7 @@ public class SubGuiRevive extends SubGui {
     {
 		if(clicked.equals("Yes"))
 		{
-			if(text.equals("Do you really want to give up?"))
+			if(text.equals(I18n.format("playerrevive.gui.popup.give_up")))
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
 	    		nbt.setBoolean("giveup", true);
@@ -105,7 +106,7 @@ public class SubGuiRevive extends SubGui {
 	public boolean onKeyPressed(char character, int key) {
 		if(key == org.lwjgl.input.Keyboard.KEY_RETURN)
 		{
-			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
+			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get(I18n.format("playerrevive.gui.input.chat"));
 			
 			if(!chat.text.equals(""))
 			{
@@ -133,7 +134,8 @@ public class SubGuiRevive extends SubGui {
 		
 		int seconds = timeLeft/20;
 		
-		return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+		// return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
+		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 	
 	@Override
