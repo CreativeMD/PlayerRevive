@@ -1,5 +1,5 @@
 #chat message
-playerrevive.chat.bleeding=%s is bleeding
+playerrevive.chat.bleeding=%s is bleeding ...
 
 #gui-input
 playerrevive.gui.input.chat=chat
