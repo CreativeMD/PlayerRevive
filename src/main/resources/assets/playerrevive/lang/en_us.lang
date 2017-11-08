@@ -11,7 +11,7 @@ playerrevive.gui.send=send
 
 #gui=labels
 playerrevive.gui.progressbar.name=progress
-playerrevive.gui.label.time_left=Time left
+playerrevive.gui.label.time_left=Time left %s
 
 
 #gui-popup
