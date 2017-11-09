@@ -16,11 +16,11 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiMainMenu;
 import net.minecraft.client.gui.GuiTextField;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
+import net.minecraft.util.text.translation.I18n;
 
 public class SubGuiRevive extends SubGui {
 	
@@ -35,37 +35,37 @@ public class SubGuiRevive extends SubGui {
 	@Override
 	public void createControls() {
 		IRevival revive = ((SubContainerRevive) container).revive;
-		bar = (GuiProgressBar) new GuiProgressBar(I18n.format("playerrevive.gui.progressbar.name"), 50, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
+		bar = (GuiProgressBar) new GuiProgressBar("progress", 50, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
 		controls.add(bar);
-		label = new GuiLabel(String.format(I18n.format("playerrevive.gui.label.time_left"), formatTime(revive.getTimeLeft())), 50, 20);
+		label = new GuiLabel(I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())), 50, 20);
 		controls.add(label);
 		if(!((SubContainerRevive) container).isHelping)
 		{
-			controls.add(new GuiButton(I18n.format("playerrevive.gui.button.give_up"), 80, 80) {
+			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.give_up"), 80, 80) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
 					
-					openYesNoDialog(I18n.format("playerrevive.gui.popup.give_up"));
+					openYesNoDialog(I18n.translateToLocal("playerrevive.gui.popup.give_up"));
 				}
 			});
 			
-			controls.add(new GuiButton(I18n.format("playerrevive.gui.button.disconnect"), 70, 100) {
+			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.disconnect"), 70, 100) {
 			
 				@Override
 				public void onClicked(int x, int y, int button) {
 					
-					openYesNoDialog(I18n.format("playerrevive.gui.popup.disconnect"));
+					openYesNoDialog(I18n.translateToLocal("playerrevive.gui.popup.disconnect"));
 				}
 			});
 			
-			controls.add(new GuiTextfield(I18n.format("playerrevive.gui.input.chat"), "", 0, 120, 160, 10).setStyle(Style.liteStyle));
+			controls.add(new GuiTextfield("chat", "", 0, 120, 160, 10).setStyle(Style.liteStyle));
 			
-			controls.add(new GuiButton(I18n.format("playerrevive.gui.button.send"), 170, 120, 23, 10) {
+			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.send"), 170, 120, 23, 10) {
 				
 				@Override
 				public void onClicked(int x, int y, int button) {
-					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get(I18n.format("playerrevive.gui.input.chat"));
+					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 					
 					if(!chat.text.equals(""))
 					{
@@ -84,7 +84,7 @@ public class SubGuiRevive extends SubGui {
     {
 		if(clicked.equals("Yes"))
 		{
-			if(text.equals(I18n.format("playerrevive.gui.popup.give_up")))
+			if(text.equals(I18n.translateToLocal("playerrevive.gui.popup.give_up")))
 			{
 				NBTTagCompound nbt = new NBTTagCompound();
 	    		nbt.setBoolean("giveup", true);
@@ -106,7 +106,7 @@ public class SubGuiRevive extends SubGui {
 	public boolean onKeyPressed(char character, int key) {
 		if(key == org.lwjgl.input.Keyboard.KEY_RETURN)
 		{
-			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get(I18n.format("playerrevive.gui.input.chat"));
+			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 			
 			if(!chat.text.equals(""))
 			{
@@ -161,7 +161,7 @@ public class SubGuiRevive extends SubGui {
 			revive.deserializeNBT(nbt);
 			bar.pos = revive.getProgress();
 			
-			label.caption = "Time left " + formatTime(revive.getTimeLeft());
+			label.caption = I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())) + formatTime(revive.getTimeLeft());
 		}
 	}
 	
