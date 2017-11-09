@@ -13,7 +13,9 @@ import com.creativemd.playerrevive.CapaReviveProvider;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
@@ -210,7 +212,7 @@ public class ReviveEventServer {
 			event.setCanceled(true);
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
-			player.getServer().getPlayerList().sendMessage(new TextComponentString(player.getDisplayNameString() + " is bleeding ..."));
+			player.getServer().getPlayerList().sendMessage(new TextComponentString(String.format(I18n.format("playerrevive.chat.bleeding"), player.getDisplayNameString()));
 		}
 	}
 	
