@@ -13,7 +13,7 @@ import com.creativemd.playerrevive.CapaReviveProvider;
 import com.mojang.authlib.GameProfile;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItemFrame;
 import net.minecraft.entity.player.EntityPlayer;
@@ -24,6 +24,7 @@ import net.minecraft.server.management.UserListBansEntry;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -212,7 +213,7 @@ public class ReviveEventServer {
 			event.setCanceled(true);
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
-			player.getServer().getPlayerList().sendMessage(new TextComponentString(String.format(I18n.format("playerrevive.chat.bleeding"), player.getDisplayNameString())));
+			player.getServer().getPlayerList().sendMessage(new TextComponentString(String.format(I18n.translateToLocal("playerrevive.chat.bleeding"), player.getDisplayNameString())));
 		}
 	}
 	

@@ -1,16 +1,12 @@
 #chat message
 playerrevive.chat.bleeding=%s is bleeding ...
 
-#gui-input
-playerrevive.gui.input.chat=chat
-
 #gui-button
 playerrevive.gui.button.give_up=give up
 playerrevive.gui.button.disconnect=disconnect
 playerrevive.gui.button.send=send
 
 #gui=labels
-playerrevive.gui.progressbar.name=progress
 playerrevive.gui.label.time_left=Time left %s
 
 
