@@ -20,4 +20,4 @@ playerrevive.config.player_revive_time=Hulpverleningsduur
 playerrevive.config.player_revive_survive_time=Overlevingsduur
 playerrevive.config.player_health_after=Levens na
 playerrevive.config.player_food_after=Honger na
-playerrevive.config.ban_player_after_death=Verbannen na dood gaan
+playerrevive.config.ban_player_after_death=Verbannen na dood
