@@ -1,0 +1,23 @@
+#chat message
+playerrevive.chat.bleeding=%s is gewond ...
+
+#gui-button
+playerrevive.gui.button.give_up=opgeven
+playerrevive.gui.button.disconnect=connectie verbreken
+playerrevive.gui.button.send=verzenden
+
+#gui=labels
+playerrevive.gui.label.time_left=Tijd resterend %s
+
+
+#gui-popup
+playerrevive.gui.popup.give_up=Weet je zeker dat je wilt opgeven?
+playerrevive.gui.popup.disconnect=Weet je zeker dat je de verbinding wilt verbreken?
+
+#config
+playerrevive.config.branch_name=Player Revive
+playerrevive.config.player_revive_time=Hulpverleningsduur
+playerrevive.config.player_revive_survive_time=Overlevingsduur
+playerrevive.config.player_health_after=Levens na
+playerrevive.config.player_food_after=Honger na
+playerrevive.config.ban_player_after_death=Verbannen na dood gaan
