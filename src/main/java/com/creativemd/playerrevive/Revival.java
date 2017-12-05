@@ -33,12 +33,13 @@ public class Revival implements IRevival {
 		progress += revivingPlayers.size();
 		
 		for (int i = 0; i < revivingPlayers.size(); i++) {
-			revivingPlayers.get(i).addExhaustion(0.5F);
+			revivingPlayers.get(i).addExhaustion(PlayerRevive.exhaustion);
 		}
 	}
 
 	@Override
-	public List<EntityPlayer> getRevivingPlayers() {
+	public List<EntityPlayer> getRevivingPlayers()
+	{
 		return revivingPlayers;
 	}
 
