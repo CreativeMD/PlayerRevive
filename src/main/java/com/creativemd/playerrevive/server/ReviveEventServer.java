@@ -210,6 +210,9 @@ public class ReviveEventServer {
 			PlayerReviveServer.startBleeding(player);
 			player.capabilities.disableDamage = true;
 			
+			if(player.isRiding())
+				player.dismountRidingEntity();
+			
 			event.setCanceled(true);
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
