@@ -21,3 +21,4 @@ playerrevive.config.player_revive_survive_time=Survive Time
 playerrevive.config.player_health_after=Health after
 playerrevive.config.player_food_after=Food after
 playerrevive.config.ban_player_after_death=Ban After Death
+playerrevive.config.exhaustion=Exhaustion

@@ -27,6 +27,8 @@ public class PlayerReviveBranch extends ConfigBranch {
 		registerElement("playerFoodAfter", new IntegerSegment(I18n.translateToLocal("playerrevive.config.player_food_after"), 6, 1, 20));
 		
 		registerElement("banPlayerAfterDeath", new BooleanSegment(I18n.translateToLocal("playerrevive.config.ban_player_after_death"), false));
+		
+		registerElement("exhaustion", new BooleanSegment(I18n.translateToLocal("playerrevive.config.exhaustion"), false));
 	}
 
 	@Override
@@ -43,6 +45,7 @@ public class PlayerReviveBranch extends ConfigBranch {
 		PlayerRevive.playerFoodAfter = (Integer) getValue("playerFoodAfter");
 		
 		PlayerRevive.banPlayerAfterDeath = (Boolean) getValue("banPlayerAfterDeath");
+		PlayerRevive.exhaustion = (Float) getValue("exhaustion");
 	}
 
 	@Override
