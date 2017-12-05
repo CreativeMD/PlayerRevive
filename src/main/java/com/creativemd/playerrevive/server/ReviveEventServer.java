@@ -131,7 +131,7 @@ public class ReviveEventServer {
 						{
 							GameProfile profile = null;
 							profile = player.getGameProfile();
-							 getMinecraftServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
+							getMinecraftServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
 							try {
 								 getMinecraftServer().getPlayerList().getBannedPlayers().writeChanges();
 							} catch (IOException e) {
