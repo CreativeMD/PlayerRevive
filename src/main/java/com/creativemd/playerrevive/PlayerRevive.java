@@ -59,6 +59,8 @@ public class PlayerRevive {
 	public static Configuration config;
 	public static float volumeModifier = 1;
 	
+	public static float exhaustion = 0.5F;
+	
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event)
 	{
@@ -103,6 +105,15 @@ public class PlayerRevive {
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
 		volumeModifier = config.getFloat("volume", "Sound", 1.0F, 0, 2, "Volume of the music played while bleeding");
+		playerReviveTime = config.getInt("playerReviveTime", "General", playerReviveTime, 1, Integer.MAX_VALUE, "How long it takes to revive someone (in ticks). Will not be synchronized, therefore it's recommended to install IGCM.");
+		playerReviveSurviveTime = config.getInt("playerReviveSurviveTime", "General", playerReviveSurviveTime, 1, Integer.MAX_VALUE, "How long a bleeding player will survive (in ticks). Will not be synchronized, therefore it's recommended to install IGCM.");
+		
+		playerHealthAfter = config.getInt("playerHealthAfter", "General", playerHealthAfter, 1, 20, "How much health a player will have after being revived.");
+		playerFoodAfter = config.getInt("playerFoodAfter", "General", playerFoodAfter, 1, 20, "How much food a player will have after being revived.");
+		
+		banPlayerAfterDeath = config.getBoolean("banPlayerAfterDeath", "General", banPlayerAfterDeath, "If true someone who died will be banned from the server.");
+		
+		exhaustion = config.getFloat("exhaustion", "General", exhaustion, 0, 10000, "How exhausted helping players are (determines how much food will be drained).");
 		config.save();
 	}
 	
