@@ -3,14 +3,20 @@ package com.creativemd.playerrevive.gui;
 import com.creativemd.creativecore.common.utils.ColorUtils;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.container.SubGui;
+import com.creativemd.creativecore.gui.controls.gui.GuiAnalogeSlider;
 import com.creativemd.creativecore.gui.controls.gui.GuiButton;
 import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
 import com.creativemd.creativecore.gui.controls.gui.GuiProgressBar;
 import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
 
 import com.creativemd.playerrevive.api.IRevival;
+import com.creativemd.playerrevive.client.PlayerReviveClient;
+import com.creativemd.playerrevive.client.ReviveEventClient;
+import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
+
 import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ChatLine;
@@ -21,6 +27,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.event.world.NoteBlockEvent.Play;
 
 public class SubGuiRevive extends SubGui {
 	
@@ -77,6 +84,8 @@ public class SubGuiRevive extends SubGui {
 					}
 				}
 			}.setStyle(Style.liteStyle));
+			
+			controls.add(new GuiAnalogeSlider("volume", 160, 0, 40, 10, PlayerRevive.volumeModifier, 0, 1).setStyle(Style.liteStyle));
 		}
 	}
 	
@@ -136,6 +145,20 @@ public class SubGuiRevive extends SubGui {
 		
 		// return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
 		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
+	}
+	
+	@CustomEventSubscribe
+	public void controlChanged(GuiControlChangedEvent event)
+	{
+		if(event.source.is("volume"))
+		{
+			PlayerRevive.volumeModifier = ((GuiAnalogeSlider) event.source).value;
+			PlayerRevive.config.load();
+			PlayerRevive.config.get("Sound", "volume", 1.0F).set(PlayerRevive.volumeModifier);
+			PlayerRevive.config.save();
+			if(ReviveEventClient.sound != null)
+				ReviveEventClient.sound.volume = PlayerRevive.volumeModifier;
+		}
 	}
 	
 	@Override
