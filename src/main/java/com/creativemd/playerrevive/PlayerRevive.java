@@ -25,6 +25,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
@@ -56,6 +57,9 @@ public class PlayerRevive {
 	public static int playerFoodAfter = 6;
 	
 	public static boolean banPlayerAfterDeath = false;
+	
+	public static Configuration config;
+	public static float volumeModifier = 1;
 	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
@@ -104,6 +108,10 @@ public class PlayerRevive {
 	public void preInit(FMLPreInitializationEvent event)
 	{
 		MinecraftForge.EVENT_BUS.register(this);
+		config = new Configuration(event.getSuggestedConfigurationFile());
+		config.load();
+		volumeModifier = config.getFloat("volume", "Sound", 1.0F, 0, 2, "Volume of the music played while bleeding");
+		config.save();
 	}
 	
 	@EventHandler

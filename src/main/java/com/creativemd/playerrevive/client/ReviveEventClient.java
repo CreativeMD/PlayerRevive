@@ -140,7 +140,6 @@ public class ReviveEventClient {
 						gui = (SubGuiRevive) subGui;
 				}
 			}
-				
 			
 			if(revive.isHealty())
 			{
@@ -167,7 +166,7 @@ public class ReviveEventClient {
 					if(!lastHighTension)
 					{
 						mc.getSoundHandler().stopSound(sound);
-						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), 1.0F, 1.0F, false);
+						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), PlayerRevive.volumeModifier, 1.0F, false);
 						mc.getSoundHandler().playSound(sound);
 						lastHighTension = true;
 					}
@@ -176,7 +175,7 @@ public class ReviveEventClient {
 					{
 						if(sound != null)
 							mc.getSoundHandler().stopSound(sound);
-						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), 1.0F, 1.0F, true);
+						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), PlayerRevive.volumeModifier, 1.0F, true);
 						mc.getSoundHandler().playSound(sound);
 					}
 				}
