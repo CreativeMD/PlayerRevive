@@ -26,6 +26,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -57,6 +58,9 @@ public class PlayerRevive {
 	public static int playerFoodAfter = 6;
 	
 	public static boolean banPlayerAfterDeath = false;
+	
+	public static Configuration config;
+	public static float volumeModifier = 1;
 	
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event)
@@ -94,6 +98,15 @@ public class PlayerRevive {
 		        return index == 1;
 		    }
 		});
+	}
+	
+	@EventHandler
+	public void preInit(FMLPreInitializationEvent event)
+	{
+		config = new Configuration(event.getSuggestedConfigurationFile());
+		config.load();
+		volumeModifier = config.getFloat("volume", "Sound", 1.0F, 0, 2, "Volume of the music played while bleeding");
+		config.save();
 	}
 	
 	@EventHandler
