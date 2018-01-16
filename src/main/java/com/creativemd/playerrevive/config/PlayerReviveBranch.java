@@ -2,6 +2,7 @@ package com.creativemd.playerrevive.config;
 
 import com.creativemd.igcm.api.ConfigBranch;
 import com.creativemd.igcm.api.segments.BooleanSegment;
+import com.creativemd.igcm.api.segments.FloatSegment;
 import com.creativemd.igcm.api.segments.IntegerSegment;
 import com.creativemd.playerrevive.PlayerRevive;
 
@@ -28,7 +29,7 @@ public class PlayerReviveBranch extends ConfigBranch {
 		
 		registerElement("banPlayerAfterDeath", new BooleanSegment(I18n.translateToLocal("playerrevive.config.ban_player_after_death"), false));
 		
-		registerElement("exhaustion", new BooleanSegment(I18n.translateToLocal("playerrevive.config.exhaustion"), false));
+		registerElement("exhaustion", new FloatSegment(I18n.translateToLocal("playerrevive.config.exhaustion"), 0.5F, 0, 10000));
 	}
 
 	@Override
