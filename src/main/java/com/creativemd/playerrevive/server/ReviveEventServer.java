@@ -145,7 +145,6 @@ public class ReviveEventServer {
 	}
 	
 	@SubscribeEvent
-	@SideOnly(Side.SERVER)
 	public void playerLeave(PlayerLoggedOutEvent event)
 	{
 		IRevival revive = PlayerReviveServer.getRevival(event.player);

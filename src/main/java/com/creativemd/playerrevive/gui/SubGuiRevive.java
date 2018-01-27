@@ -100,11 +100,7 @@ public class SubGuiRevive extends SubGui {
 	    		sendPacketToServer(nbt);
 			}else{
 				Minecraft mc = Minecraft.getMinecraft();
-				if (mc.world != null)
-	            {
-	                mc.world.sendQuittingDisconnectingPacket();
-	            }
-				
+				mc.world.sendQuittingDisconnectingPacket();				
 	            mc.loadWorld((WorldClient)null);
 	            mc.displayGuiScreen(new GuiMainMenu());
 			}
