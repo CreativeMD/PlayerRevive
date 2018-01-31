@@ -109,7 +109,7 @@ public class SubGuiRevive extends SubGui {
 	
 	@Override
 	public boolean onKeyPressed(char character, int key) {
-		if(key == org.lwjgl.input.Keyboard.KEY_RETURN)
+		if(!((SubContainerRevive) container).isHelping && key == org.lwjgl.input.Keyboard.KEY_RETURN)
 		{
 			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 			
