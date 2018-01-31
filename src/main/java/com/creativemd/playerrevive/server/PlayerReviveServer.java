@@ -45,7 +45,8 @@ public class PlayerReviveServer {
 	public static void stopBleeding(EntityPlayer player)
 	{
 		getRevival(player).stopBleeding();
-		player.worldObj.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
+		if(!PlayerRevive.disableSounds)
+			player.worldObj.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
 		sendUpdatePacket(player);
 	}
 	

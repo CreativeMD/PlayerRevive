@@ -62,6 +62,8 @@ public class PlayerRevive {
 	
 	public static float exhaustion = 0.5F;
 	
+	public static boolean disableSounds = false;
+	
 	@EventHandler
 	public void serverStart(FMLServerStartingEvent event)
 	{
@@ -115,6 +117,8 @@ public class PlayerRevive {
 		banPlayerAfterDeath = config.getBoolean("banPlayerAfterDeath", "General", banPlayerAfterDeath, "If true someone who died will be banned from the server.");
 		
 		exhaustion = config.getFloat("exhaustion", "General", exhaustion, 0, 10000, "How exhausted helping players are (determines how much food will be drained).");
+		
+		disableSounds = config.getBoolean("disableSounds", "Sound", false, "Disable revive and dead sound");
 		config.save();
 	}
 	
