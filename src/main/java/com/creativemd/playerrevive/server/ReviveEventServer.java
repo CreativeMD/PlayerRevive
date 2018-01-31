@@ -117,8 +117,8 @@ public class ReviveEventServer {
 								player.setHealth(0.0F);
 								player.onDeath(DamageBledToDeath.bledToDeath);
 
-								
-								player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);						
+								if(!PlayerRevive.disableSounds)
+									player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);						
 							}//else
 								//player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
 							
@@ -153,7 +153,8 @@ public class ReviveEventServer {
 			PlayerReviveServer.stopBleeding(event.player);
 			event.player.setHealth(0.0F);
 			event.player.onDeath(DamageBledToDeath.bledToDeath);
-			event.player.world.playSound(null, event.player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);		
+			if(!PlayerRevive.disableSounds)
+				event.player.world.playSound(null, event.player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);		
 		}
 		if(!event.player.world.isRemote)
 			PlayerReviveServer.removePlayerAsHelper(event.player);
