@@ -66,7 +66,9 @@ public class SubGuiRevive extends SubGui {
 				}
 			});
 			
-			controls.add(new GuiTextfield("chat", "", 0, 120, 160, 10).setStyle(Style.liteStyle));
+			GuiTextfield chat = new GuiTextfield("chat", "", 0, 120, 160, 10);
+			chat.maxLength = 256;
+			controls.add(chat.setStyle(Style.liteStyle));
 			
 			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.send"), 170, 120, 23, 10) {
 				
@@ -78,8 +80,9 @@ public class SubGuiRevive extends SubGui {
 					{
 						gui.sendChatMessage(chat.text);
 						
-						chat.cursorPosition = 0;
+						chat.setSelectionPos(0);
 						chat.selEnd = 0;
+						chat.cursorPosition = 0;
 						chat.text = "";
 					}
 				}
@@ -117,8 +120,9 @@ public class SubGuiRevive extends SubGui {
 			{
 				gui.sendChatMessage(chat.text);
 				
-				chat.cursorPosition = 0;
+				chat.setSelectionPos(0);
 				chat.selEnd = 0;
+				chat.cursorPosition = 0;
 				chat.text = "";
 			}
 			return true;
