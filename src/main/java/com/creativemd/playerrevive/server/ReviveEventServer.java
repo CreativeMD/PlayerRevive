@@ -199,7 +199,7 @@ public class ReviveEventServer {
 		}
 	}
 	
-	@SubscribeEvent(priority = EventPriority.HIGH)
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerDied(LivingDeathEvent event)
 	{
 		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().worldObj.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
