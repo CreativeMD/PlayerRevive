@@ -64,6 +64,7 @@ public class PlayerRevive {
 	public static float exhaustion = 0.5F;
 	
 	public static boolean disableSounds = false;
+	public static boolean disableBleedingMessage = false;
 	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
@@ -126,6 +127,7 @@ public class PlayerRevive {
 		exhaustion = config.getFloat("exhaustion", "General", exhaustion, 0, 10000, "How exhausted helping players are (determines how much food will be drained).");
 		
 		disableSounds = config.getBoolean("disableSounds", "Sound", false, "Disable revive and dead sound");
+		disableBleedingMessage = config.getBoolean("disableBleedingMessage", "General", false, "");
 		config.save();
 	}
 	
