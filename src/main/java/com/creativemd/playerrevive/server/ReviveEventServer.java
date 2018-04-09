@@ -216,7 +216,8 @@ public class ReviveEventServer {
 			event.setCanceled(true);
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
-			player.getServer().getPlayerList().sendChatMsg(new TextComponentString(String.format(I18n.translateToLocal("playerrevive.chat.bleeding"), player.getDisplayNameString())));
+			if(!PlayerRevive.disableBleedingMessage)
+				player.getServer().getPlayerList().sendChatMsg(new TextComponentString(String.format(I18n.translateToLocal("playerrevive.chat.bleeding"), player.getDisplayNameString())));
 		}
 	}
 	
