@@ -1,6 +1,6 @@
 package com.creativemd.playerrevive.gui;
 
-import com.creativemd.creativecore.common.utils.ColorUtils;
+import com.creativemd.creativecore.common.utils.mc.ColorUtils;
 import com.creativemd.creativecore.gui.client.style.Style;
 import com.creativemd.creativecore.gui.container.SubGui;
 import com.creativemd.creativecore.gui.controls.gui.GuiAnalogeSlider;
@@ -10,24 +10,16 @@ import com.creativemd.creativecore.gui.controls.gui.GuiProgressBar;
 import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.playerrevive.PlayerRevive;
-import com.creativemd.playerrevive.Revival;
-
 import com.creativemd.playerrevive.api.IRevival;
-import com.creativemd.playerrevive.client.PlayerReviveClient;
 import com.creativemd.playerrevive.client.ReviveEventClient;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.event.world.NoteBlockEvent.Play;
 
 public class SubGuiRevive extends SubGui {
 	
