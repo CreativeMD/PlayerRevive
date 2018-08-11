@@ -57,11 +57,23 @@ public class ReviveEventClient {
 		IRevival revive = PlayerReviveServer.getRevival(player);
 		if(!revive.isHealty())
 		{
-			double percentage = 1D-(revive.getTimeLeft()/(double)PlayerRevive.playerReviveSurviveTime);
-			int amount = (int) Math.floor(percentage*1.3D);
-			for(int i = 0; i < amount; i++)
+			if(PlayerRevive.particleBeacon)
 			{
-				player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX-1, player.posY, player.posZ, 0, 0, 0);
+				for(int i = 0; i < 4; i++)
+				{
+					double size = Math.random();
+					double random = Math.random()*Math.PI;
+					player.world.spawnParticle(EnumParticleTypes.SUSPENDED_DEPTH, player.posX-1 + Math.sin(random) * size, player.posY + (Math.random() - 0.5) * 50, player.posZ + Math.cos(random) * size, 0, 0, 0);
+				}
+			}
+			else
+			{
+				double percentage = 1D-(revive.getTimeLeft()/(double)PlayerRevive.playerReviveSurviveTime);
+				int amount = (int) Math.floor(percentage*1.3D);
+				for(int i = 0; i < amount; i++)
+				{
+					player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX-1, player.posY, player.posZ, 0, 0, 0);
+				}
 			}
 			
 			player.renderOffsetX = 0;

@@ -22,3 +22,6 @@ playerrevive.config.player_health_after=Health after
 playerrevive.config.player_food_after=Food after
 playerrevive.config.ban_player_after_death=Ban After Death
 playerrevive.config.exhaustion=Exhaustion
+playerrevive.config.disableSounds=Disable death and revive sound
+playerrevive.config.disableBleedingMessage=Disable bleeding message
+playerrevive.config.particleBeacon=Particle Beacon

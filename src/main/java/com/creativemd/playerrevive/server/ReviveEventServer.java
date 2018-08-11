@@ -28,6 +28,7 @@ import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
+import net.minecraftforge.event.entity.player.PlayerDropsEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -200,6 +201,12 @@ public class ReviveEventServer {
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
+	public void playerDied(PlayerDropsEvent event)
+	{
+		
+	}
+	
+	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerDied(LivingDeathEvent event)
 	{
 		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
@@ -214,8 +221,10 @@ public class ReviveEventServer {
 				player.dismountRidingEntity();
 			
 			event.setCanceled(true);
+			
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
+			
 			if(!PlayerRevive.disableBleedingMessage)
 				player.getServer().getPlayerList().sendMessage(new TextComponentString(String.format(I18n.translateToLocal("playerrevive.chat.bleeding"), player.getDisplayNameString())));
 		}

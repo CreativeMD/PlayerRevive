@@ -65,6 +65,7 @@ public class PlayerRevive {
 	
 	public static boolean disableSounds = false;
 	public static boolean disableBleedingMessage = false;
+	public static boolean particleBeacon = false;
 	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
@@ -128,6 +129,7 @@ public class PlayerRevive {
 		
 		disableSounds = config.getBoolean("disableSounds", "Sound", false, "Disable revive and dead sound");
 		disableBleedingMessage = config.getBoolean("disableBleedingMessage", "General", false, "");
+		particleBeacon = config.getBoolean("particleBeacon", "General", false, "Will spawn particles above the player hinted at his location.");
 		config.save();
 	}
 	

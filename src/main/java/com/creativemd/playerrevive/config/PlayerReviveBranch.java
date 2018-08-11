@@ -30,6 +30,10 @@ public class PlayerReviveBranch extends ConfigBranch {
 		registerElement("banPlayerAfterDeath", new BooleanSegment(I18n.translateToLocal("playerrevive.config.ban_player_after_death"), false));
 		
 		registerElement("exhaustion", new FloatSegment(I18n.translateToLocal("playerrevive.config.exhaustion"), 0.5F, 0, 10000));
+		
+		registerElement("disableSounds", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableSounds"), false));
+		registerElement("disableBleedingMessage", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableBleedingMessage"), false));
+		registerElement("particleBeacon", new BooleanSegment(I18n.translateToLocal("playerrevive.config.particleBeacon"), false));
 	}
 
 	@Override
@@ -47,6 +51,10 @@ public class PlayerReviveBranch extends ConfigBranch {
 		
 		PlayerRevive.banPlayerAfterDeath = (Boolean) getValue("banPlayerAfterDeath");
 		PlayerRevive.exhaustion = (Float) getValue("exhaustion");
+		
+		PlayerRevive.disableSounds = (Boolean) getValue("disableSounds");
+		PlayerRevive.disableBleedingMessage = (Boolean) getValue("disableBleedingMessage");
+		PlayerRevive.particleBeacon = (Boolean) getValue("particleBeacon");
 	}
 
 	@Override
