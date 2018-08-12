@@ -107,25 +107,19 @@ public class ReviveEventServer {
 					
 					if(revive.isRevived() || revive.isDead())
 					{
-						PlayerReviveServer.stopBleeding(player);						
-						
-						if(player != null)
+						if(revive.isRevived())
+							PlayerReviveServer.revive(player);	
+						else
 						{
-							player.capabilities.disableDamage = player.capabilities.isCreativeMode;
+							PlayerReviveServer.kill(player);
+							player.setHealth(0.0F);
+							player.onDeath(revive.getSource());	
+						}
 							
-							if(revive.isDead())
-							{
-								player.setHealth(0.0F);
-								player.onDeath(DamageBledToDeath.bledToDeath);
-
-								if(!PlayerRevive.disableSounds)
-									player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);						
-							}//else
-								//player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
-							
-							for (int i = 0; i < revive.getRevivingPlayers().size(); i++) {
-								revive.getRevivingPlayers().get(i).closeScreen();
-							}
+						player.capabilities.disableDamage = player.capabilities.isCreativeMode;
+						
+						for (int i = 0; i < revive.getRevivingPlayers().size(); i++) {
+							revive.getRevivingPlayers().get(i).closeScreen();
 						}
 						
 						if(revive.isDead() && PlayerRevive.banPlayerAfterDeath)
@@ -151,11 +145,9 @@ public class ReviveEventServer {
 		IRevival revive = PlayerReviveServer.getRevival(event.player);
 		if(!revive.isHealty())
 		{
-			PlayerReviveServer.stopBleeding(event.player);
+			PlayerReviveServer.kill(event.player);
 			event.player.setHealth(0.0F);
-			event.player.onDeath(DamageBledToDeath.bledToDeath);
-			if(!PlayerRevive.disableSounds)
-				event.player.world.playSound(null, event.player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);		
+			event.player.onDeath(DamageBledToDeath.bledToDeath);	
 		}
 		if(!event.player.world.isRemote)
 			PlayerReviveServer.removePlayerAsHelper(event.player);
@@ -195,7 +187,8 @@ public class ReviveEventServer {
 		if(event.getEntityLiving() instanceof EntityPlayer)
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
-			if(PlayerReviveServer.isPlayerBleeding(player) && event.getSource() != DamageBledToDeath.bledToDeath)
+			IRevival revive = PlayerReviveServer.getRevival(player);
+			if(!revive.isHealty() && (event.getSource() != DamageBledToDeath.bledToDeath || revive.isDead()))
 				event.setCanceled(true);
 		}
 	}
@@ -214,7 +207,10 @@ public class ReviveEventServer {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			IRevival revive = PlayerReviveServer.getRevival(player);
 			
-			PlayerReviveServer.startBleeding(player);
+			if(revive.isDead())
+				return ;
+			
+			PlayerReviveServer.startBleeding(player, event.getSource());
 			player.capabilities.disableDamage = true;
 			
 			if(player.isRiding())

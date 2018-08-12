@@ -46,9 +46,7 @@ public class SubContainerRevive extends SubContainer{
 		{
 			IRevival revive = PlayerReviveServer.getRevival(player);
 			if(!revive.isHealty())
-			{
 				revive.kill();
-			}
 		}
 	}
 	

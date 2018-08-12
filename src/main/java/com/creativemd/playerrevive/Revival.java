@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.creativemd.playerrevive.api.DamageBledToDeath;
 import com.creativemd.playerrevive.api.IRevival;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.DamageSource;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.INBTSerializable;
@@ -56,11 +58,12 @@ public class Revival implements IRevival {
 	}
 
 	@Override
-	public void startBleeding()
+	public void startBleeding(DamageSource source)
 	{
 		this.healty = false;
 		this.progress = 0;
 		timeLeft = PlayerRevive.playerReviveSurviveTime;
+		lastSource = source;
 	}
 
 	@Override
@@ -119,5 +122,13 @@ public class Revival implements IRevival {
 	public void deserializeNBT(NBTTagCompound nbt) {
 		readFromNBT(nbt);
 	}
-
+	
+	public DamageSource lastSource;
+	
+	@Override
+	public DamageSource getSource() {
+		if(lastSource != null)
+			return lastSource;
+		return DamageBledToDeath.bledToDeath;
+	}
 }

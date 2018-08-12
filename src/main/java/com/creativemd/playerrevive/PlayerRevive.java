@@ -97,9 +97,7 @@ public class PlayerRevive {
 					player = (EntityPlayer) sender;
 				
 				if(player != null)
-				{
-					PlayerReviveServer.stopBleeding(player);
-				}
+					PlayerReviveServer.revive(player);
 			}
 			
 			@Override

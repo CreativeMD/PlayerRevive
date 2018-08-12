@@ -15,6 +15,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -36,17 +37,25 @@ public class PlayerReviveServer {
 		PacketHandler.sendPacketToPlayer(packet, (EntityPlayerMP) player);
 	}
 	
-	public static void startBleeding(EntityPlayer player)
+	public static void startBleeding(EntityPlayer player, DamageSource source)
 	{
-		getRevival(player).startBleeding();
+		getRevival(player).startBleeding(source);
 		sendUpdatePacket(player);
 	}
 	
-	public static void stopBleeding(EntityPlayer player)
+	public static void revive(EntityPlayer player)
 	{
 		getRevival(player).stopBleeding();
 		if(!PlayerRevive.disableSounds)
 			player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);	
+		sendUpdatePacket(player);
+	}
+	
+	public static void kill(EntityPlayer player)
+	{
+		getRevival(player).stopBleeding();
+		if(!PlayerRevive.disableSounds)
+			player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);	
 		sendUpdatePacket(player);
 	}
 	
