@@ -13,9 +13,9 @@ public interface IRevival extends INBTSerializable<NBTTagCompound> {
 
     boolean isHealty();
 
-    void stopBleeding();
+    void stopBleeding(EntityPlayer player);
 
-    void startBleeding(DamageSource source);
+    void startBleeding(EntityPlayer player, DamageSource source);
 
     float getProgress();
 
@@ -25,9 +25,9 @@ public interface IRevival extends INBTSerializable<NBTTagCompound> {
 
     int getTimeLeft();
 
-    void kill();
+    void kill(EntityPlayer player);
     
-    DamageSource getSource();
+    DamageSource getSource(EntityPlayer player);
 
     List<EntityPlayer> getRevivingPlayers();
 }

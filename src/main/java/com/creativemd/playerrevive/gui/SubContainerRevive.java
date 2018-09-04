@@ -43,11 +43,7 @@ public class SubContainerRevive extends SubContainer{
 	@Override
 	public void onPacketReceive(NBTTagCompound nbt) {
 		if(nbt.getBoolean("giveup") && !isHelping)
-		{
-			IRevival revive = PlayerReviveServer.getRevival(player);
-			if(!revive.isHealty())
-				revive.kill();
-		}
+			PlayerReviveServer.kill(player);
 	}
 	
 	@Override

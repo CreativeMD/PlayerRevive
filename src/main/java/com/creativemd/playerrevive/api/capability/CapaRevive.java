@@ -30,10 +30,10 @@ public class CapaRevive {
         }
 
         @Override
-        public void stopBleeding() {}
+        public void stopBleeding(EntityPlayer player) {}
 
         @Override
-        public void startBleeding(DamageSource source) {}
+        public void startBleeding(EntityPlayer player, DamageSource source) {}
 
         @Override
         public float getProgress() {
@@ -56,7 +56,7 @@ public class CapaRevive {
         }
 
         @Override
-        public void kill() {}
+        public void kill(EntityPlayer player) {}
 
         @Override
         public List<EntityPlayer> getRevivingPlayers() {
@@ -72,7 +72,7 @@ public class CapaRevive {
         public void deserializeNBT(NBTTagCompound nbt) {}
 
 		@Override
-		public DamageSource getSource() {
+		public DamageSource getSource(EntityPlayer player) {
 			return null;
 		}
     }

@@ -21,6 +21,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.UserListBansEntry;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.text.TextComponentString;
@@ -105,35 +106,10 @@ public class ReviveEventServer {
 					player.setHealth(PlayerRevive.playerHealthAfter);
 					player.capabilities.disableDamage = true;
 					
-					if(revive.isRevived() || revive.isDead())
-					{
-						if(revive.isRevived())
-							PlayerReviveServer.revive(player);	
-						else
-						{
-							PlayerReviveServer.kill(player);
-							player.setHealth(0.0F);
-							player.onDeath(revive.getSource());	
-						}
-							
-						player.capabilities.disableDamage = player.capabilities.isCreativeMode;
-						
-						for (int i = 0; i < revive.getRevivingPlayers().size(); i++) {
-							revive.getRevivingPlayers().get(i).closeScreen();
-						}
-						
-						if(revive.isDead() && PlayerRevive.banPlayerAfterDeath)
-						{
-							GameProfile profile = null;
-							profile = player.getGameProfile();
-							getMinecraftServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
-							try {
-								 getMinecraftServer().getPlayerList().getBannedPlayers().writeChanges();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-						}
-					}
+					if(revive.isRevived())
+						PlayerReviveServer.revive(player);	
+					else if(revive.isDead())
+						PlayerReviveServer.kill(player);
 				}
 			}
 		}		
@@ -144,11 +120,7 @@ public class ReviveEventServer {
 	{
 		IRevival revive = PlayerReviveServer.getRevival(event.player);
 		if(!revive.isHealty())
-		{
 			PlayerReviveServer.kill(event.player);
-			event.player.setHealth(0.0F);
-			event.player.onDeath(DamageBledToDeath.bledToDeath);	
-		}
 		if(!event.player.world.isRemote)
 			PlayerReviveServer.removePlayerAsHelper(event.player);
 	}
@@ -188,21 +160,15 @@ public class ReviveEventServer {
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			IRevival revive = PlayerReviveServer.getRevival(player);
-			if(!revive.isHealty() && (event.getSource() != DamageBledToDeath.bledToDeath || revive.isDead()))
+			if(!revive.isHealty() && ((event.getSource() != DamageBledToDeath.bledToDeath && !event.getSource().damageType.equals("gorgon")) || revive.isDead()))
 				event.setCanceled(true);
 		}
 	}
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
-	public void playerDied(PlayerDropsEvent event)
-	{
-		
-	}
-	
-	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerDied(LivingDeathEvent event)
 	{
-		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath)
+		if(event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath && !event.getSource().damageType.equals("gorgon"))
 		{
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			IRevival revive = PlayerReviveServer.getRevival(player);

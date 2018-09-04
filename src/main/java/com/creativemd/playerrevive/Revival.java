@@ -3,6 +3,7 @@ package com.creativemd.playerrevive;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.UUID;
 
 import com.creativemd.playerrevive.api.DamageBledToDeath;
 import com.creativemd.playerrevive.api.IRevival;
@@ -15,6 +16,8 @@ import net.minecraftforge.common.capabilities.CapabilityInject;
 import net.minecraftforge.common.util.INBTSerializable;
 
 public class Revival implements IRevival {
+	
+	private static HashMap<String, DamageSource> damageSources = new HashMap<>();
 	
 	private boolean healty = true;
 	
@@ -52,18 +55,19 @@ public class Revival implements IRevival {
 	}
 
 	@Override
-	public void stopBleeding()
+	public void stopBleeding(EntityPlayer player)
 	{
 		this.healty = true;
+		damageSources.remove(player.getCachedUniqueIdString());
 	}
 
 	@Override
-	public void startBleeding(DamageSource source)
+	public void startBleeding(EntityPlayer player, DamageSource source)
 	{
 		this.healty = false;
 		this.progress = 0;
 		timeLeft = PlayerRevive.playerReviveSurviveTime;
-		lastSource = source;
+		damageSources.put(player.getCachedUniqueIdString(), source);
 	}
 
 	@Override
@@ -91,10 +95,11 @@ public class Revival implements IRevival {
 	}
 
 	@Override
-	public void kill()
+	public void kill(EntityPlayer player)
 	{
 		timeLeft = 0;
 		progress = 0;
+		damageSources.remove(player.getCachedUniqueIdString());
 	}
 	
 	public void writeToNBT(NBTTagCompound nbt)
@@ -123,12 +128,8 @@ public class Revival implements IRevival {
 		readFromNBT(nbt);
 	}
 	
-	public DamageSource lastSource;
-	
 	@Override
-	public DamageSource getSource() {
-		if(lastSource != null)
-			return lastSource;
-		return DamageBledToDeath.bledToDeath;
+	public DamageSource getSource(EntityPlayer player) {
+		return damageSources.getOrDefault(player.getCachedUniqueIdString(), DamageBledToDeath.bledToDeath);
 	}
 }
