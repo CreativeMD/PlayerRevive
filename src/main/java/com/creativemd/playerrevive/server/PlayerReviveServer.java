@@ -58,7 +58,7 @@ public class PlayerReviveServer {
 	public static void revive(EntityPlayer player)
 	{
 		IRevival revive = getRevival(player);
-		revive.stopBleeding(player);
+		revive.stopBleeding();
 		resetPlayer(player, revive);
 		
 		if(!PlayerRevive.disableSounds)
@@ -70,8 +70,10 @@ public class PlayerReviveServer {
 	public static void kill(EntityPlayer player)
 	{
 		IRevival revive = getRevival(player);
-		DamageSource source = revive.getSource(player);
-		PlayerReviveServer.kill(player);
+		DamageSource source = revive.getSource();
+		CombatTrackerClone trackerClone = revive.getTrackerClone();
+		trackerClone.overwriteTracker(player.getCombatTracker());
+		revive.kill();
 		player.setHealth(0.0F);
 		player.onDeath(source);
 		resetPlayer(player, revive);

@@ -88,11 +88,11 @@ public class ReviveEventServer {
 	public void tick(ServerTickEvent event)
 	{
 		if(event.phase == Phase.END && isReviveActive())
-		{
-			ArrayList<UUID> removeFromList = new ArrayList<>();
-			
+		{			
 			for (Iterator<EntityPlayerMP> iterator = getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
 				EntityPlayerMP player = iterator.next();
+				if(player.isDead)
+					continue;
 				IRevival revive = PlayerReviveServer.getRevival(player);
 				
 				if(!revive.isHealty())

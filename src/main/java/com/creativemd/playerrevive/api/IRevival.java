@@ -7,13 +7,15 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
 
+import com.creativemd.playerrevive.server.CombatTrackerClone;
+
 public interface IRevival extends INBTSerializable<NBTTagCompound> {
 
     void tick();
 
     boolean isHealty();
 
-    void stopBleeding(EntityPlayer player);
+    void stopBleeding();
 
     void startBleeding(EntityPlayer player, DamageSource source);
 
@@ -25,9 +27,11 @@ public interface IRevival extends INBTSerializable<NBTTagCompound> {
 
     int getTimeLeft();
 
-    void kill(EntityPlayer player);
+    void kill();
     
-    DamageSource getSource(EntityPlayer player);
+    DamageSource getSource();
+    
+    CombatTrackerClone getTrackerClone();
 
     List<EntityPlayer> getRevivingPlayers();
 }

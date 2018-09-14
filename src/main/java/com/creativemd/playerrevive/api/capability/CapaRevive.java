@@ -1,6 +1,8 @@
 package com.creativemd.playerrevive.api.capability;
 
 import com.creativemd.playerrevive.api.IRevival;
+import com.creativemd.playerrevive.server.CombatTrackerClone;
+
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
@@ -30,7 +32,7 @@ public class CapaRevive {
         }
 
         @Override
-        public void stopBleeding(EntityPlayer player) {}
+        public void stopBleeding() {}
 
         @Override
         public void startBleeding(EntityPlayer player, DamageSource source) {}
@@ -56,7 +58,7 @@ public class CapaRevive {
         }
 
         @Override
-        public void kill(EntityPlayer player) {}
+        public void kill() {}
 
         @Override
         public List<EntityPlayer> getRevivingPlayers() {
@@ -72,7 +74,12 @@ public class CapaRevive {
         public void deserializeNBT(NBTTagCompound nbt) {}
 
 		@Override
-		public DamageSource getSource(EntityPlayer player) {
+		public DamageSource getSource() {
+			return null;
+		}
+		
+		@Override
+		public CombatTrackerClone getTrackerClone() {
 			return null;
 		}
     }
