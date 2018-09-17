@@ -88,7 +88,7 @@ public class Revival implements IRevival {
 	
 	@Override
 	public void kill() {
-		timeLeft = PlayerRevive.playerReviveSurviveTime;
+		timeLeft = 0;
 		progress = 0;
 		healty = true;
 		lastSource = null;
