@@ -1,7 +1,7 @@
 package com.creativemd.playerrevive.api.capability;
 
+import com.creativemd.playerrevive.api.CombatTrackerClone;
 import com.creativemd.playerrevive.api.IRevival;
-import com.creativemd.playerrevive.server.CombatTrackerClone;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

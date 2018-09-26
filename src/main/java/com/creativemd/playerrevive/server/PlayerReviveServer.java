@@ -8,6 +8,7 @@ import java.util.UUID;
 import com.creativemd.creativecore.common.packet.PacketHandler;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.Revival;
+import com.creativemd.playerrevive.api.CombatTrackerClone;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.api.capability.CapaRevive;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;

@@ -1,4 +1,4 @@
-package com.creativemd.playerrevive.server;
+package com.creativemd.playerrevive.api;
 
 import java.lang.reflect.Field;
 import java.util.Collection;

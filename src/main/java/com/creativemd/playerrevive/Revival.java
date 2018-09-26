@@ -3,9 +3,9 @@ package com.creativemd.playerrevive;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.creativemd.playerrevive.api.CombatTrackerClone;
 import com.creativemd.playerrevive.api.DamageBledToDeath;
 import com.creativemd.playerrevive.api.IRevival;
-import com.creativemd.playerrevive.server.CombatTrackerClone;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;

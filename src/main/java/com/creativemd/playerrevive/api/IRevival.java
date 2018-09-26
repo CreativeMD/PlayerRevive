@@ -7,8 +7,6 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.List;
 
-import com.creativemd.playerrevive.server.CombatTrackerClone;
-
 public interface IRevival extends INBTSerializable<NBTTagCompound> {
 
     void tick();
