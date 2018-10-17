@@ -1,7 +1,5 @@
 package com.creativemd.playerrevive.server;
 
-import java.util.Iterator;
-
 import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.CapaReviveProvider;
 import com.creativemd.playerrevive.PlayerRevive;
@@ -11,7 +9,6 @@ import com.creativemd.playerrevive.api.IRevival;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
@@ -25,7 +22,7 @@ import net.minecraftforge.fml.common.eventhandler.EventPriority;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent.PlayerLoggedOutEvent;
 import net.minecraftforge.fml.common.gameevent.TickEvent.Phase;
-import net.minecraftforge.fml.common.gameevent.TickEvent.ServerTickEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import net.minecraftforge.fml.server.FMLServerHandler;
@@ -69,30 +66,27 @@ public class ReviveEventServer {
 	
 	//private static MinecraftServer server = FMLServerHandler.instance().getServer();
 	
-	@SubscribeEvent
-	public void tick(ServerTickEvent event) {
-		if (event.phase == Phase.END && isReviveActive()) {
-			for (Iterator<EntityPlayerMP> iterator = getMinecraftServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
-				EntityPlayerMP player = iterator.next();
-				if (player.isDead)
-					continue;
-				IRevival revive = PlayerReviveServer.getRevival(player);
+	public void playerTick(PlayerTickEvent event) {
+		if (event.phase == Phase.START && isReviveActive()) {
+			EntityPlayer player = event.player;
+			if (player.isDead)
+				return;
+			IRevival revive = PlayerReviveServer.getRevival(player);
+			
+			if (!revive.isHealty()) {
+				revive.tick();
 				
-				if (!revive.isHealty()) {
-					revive.tick();
-					
-					if (revive.getTimeLeft() % 20 == 0)
-						PlayerReviveServer.sendUpdatePacket(player);
-					
-					player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
-					player.setHealth(PlayerRevive.playerHealthAfter);
-					player.capabilities.disableDamage = true;
-					
-					if (revive.isRevived())
-						PlayerReviveServer.revive(player);
-					else if (revive.isDead())
-						PlayerReviveServer.kill(player);
-				}
+				if (revive.getTimeLeft() % 20 == 0)
+					PlayerReviveServer.sendUpdatePacket(player);
+				
+				player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
+				player.setHealth(PlayerRevive.playerHealthAfter);
+				player.capabilities.disableDamage = true;
+				
+				if (revive.isRevived())
+					PlayerReviveServer.revive(player);
+				else if (revive.isDead())
+					PlayerReviveServer.kill(player);
 			}
 		}
 	}
