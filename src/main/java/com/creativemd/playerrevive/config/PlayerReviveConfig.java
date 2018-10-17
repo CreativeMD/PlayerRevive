@@ -6,8 +6,7 @@ public class PlayerReviveConfig {
 	
 	public static PlayerReviveBranch branch;
 	
-	public static void loadConfig()
-	{
+	public static void loadConfig() {
 		branch = new PlayerReviveBranch();
 		ConfigTab.root.registerElement("PlayerRevive", branch);
 	}

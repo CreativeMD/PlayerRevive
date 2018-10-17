@@ -43,7 +43,7 @@ public class PlayerRevive {
 	
 	@SidedProxy(clientSide = "com.creativemd.playerrevive.client.PlayerReviveClient", serverSide = "com.creativemd.playerrevive.server.PlayerReviveServer")
 	public static PlayerReviveServer proxy;
-
+	
 	public static SoundEvent deathSound = new SoundEvent(new ResourceLocation(PlayerRevive.modid, "death")).setRegistryName(new ResourceLocation(PlayerRevive.modid, "death"));
 	public static SoundEvent revivedSound = new SoundEvent(new ResourceLocation(PlayerRevive.modid, "revived")).setRegistryName(new ResourceLocation(PlayerRevive.modid, "revived"));
 	
@@ -69,12 +69,11 @@ public class PlayerRevive {
 	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
-	    event.getRegistry().registerAll(deathSound, revivedSound);
+		event.getRegistry().registerAll(deathSound, revivedSound);
 	}
 	
 	@EventHandler
-	public void serverStart(FMLServerStartingEvent event)
-	{
+	public void serverStart(FMLServerStartingEvent event) {
 		event.registerServerCommand(new CommandBase() {
 			
 			@Override
@@ -90,27 +89,24 @@ public class PlayerRevive {
 			@Override
 			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 				EntityPlayer player = null;
-				if(args.length > 1)
-				{
+				if (args.length > 1) {
 					player = server.getPlayerList().getPlayerByUsername(args[0]);
-				}else if(sender instanceof EntityPlayer)
+				} else if (sender instanceof EntityPlayer)
 					player = (EntityPlayer) sender;
 				
-				if(player != null)
+				if (player != null)
 					PlayerReviveServer.revive(player);
 			}
 			
 			@Override
-			public boolean isUsernameIndex(String[] args, int index)
-		    {
-		        return index == 1;
-		    }
+			public boolean isUsernameIndex(String[] args, int index) {
+				return index == 1;
+			}
 		});
 	}
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event)
-	{
+	public void preInit(FMLPreInitializationEvent event) {
 		MinecraftForge.EVENT_BUS.register(this);
 		config = new Configuration(event.getSuggestedConfigurationFile());
 		config.load();
@@ -132,8 +128,7 @@ public class PlayerRevive {
 	}
 	
 	@EventHandler
-	public void init(FMLInitializationEvent event)
-	{
+	public void init(FMLInitializationEvent event) {
 		//GameRegistry.register(deathSound);
 		//GameRegistry.register(revivedSound);
 		
@@ -164,7 +159,7 @@ public class PlayerRevive {
 			@Override
 			public SubContainer getContainer(EntityPlayer player, NBTTagCompound nbt) {
 				IRevival revive = null;
-				if(player.world.isRemote)
+				if (player.world.isRemote)
 					revive = PlayerReviveServer.getRevival(player.world.getPlayerEntityByUUID(UUID.fromString(nbt.getString("uuid"))));
 				else
 					revive = PlayerReviveServer.getRevival(player.getServer().getPlayerList().getPlayerByUUID(UUID.fromString(nbt.getString("uuid"))));
@@ -177,8 +172,7 @@ public class PlayerRevive {
 		
 		proxy.loadSide();
 		
-		if(Loader.isModLoaded("igcm"))
-		{
+		if (Loader.isModLoaded("igcm")) {
 			PlayerReviveConfig.loadConfig();
 		}
 	}

@@ -10,24 +10,16 @@ import com.creativemd.creativecore.gui.controls.gui.GuiProgressBar;
 import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
 import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.playerrevive.PlayerRevive;
-import com.creativemd.playerrevive.Revival;
-
 import com.creativemd.playerrevive.api.IRevival;
-import com.creativemd.playerrevive.client.PlayerReviveClient;
 import com.creativemd.playerrevive.client.ReviveEventClient;
 import com.n247s.api.eventapi.eventsystem.CustomEventSubscribe;
 
-import net.java.games.input.Keyboard;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.ChatLine;
 import net.minecraft.client.gui.GuiMainMenu;
-import net.minecraft.client.gui.GuiTextField;
 import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.util.math.Vec3i;
 import net.minecraft.util.text.translation.I18n;
-import net.minecraftforge.event.world.NoteBlockEvent.Play;
 
 public class SubGuiRevive extends SubGui {
 	
@@ -46,8 +38,7 @@ public class SubGuiRevive extends SubGui {
 		controls.add(bar);
 		label = new GuiLabel(I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())), 50, 20);
 		controls.add(label);
-		if(!((SubContainerRevive) container).isHelping)
-		{
+		if (!((SubContainerRevive) container).isHelping) {
 			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.give_up"), 80, 80) {
 				
 				@Override
@@ -58,7 +49,7 @@ public class SubGuiRevive extends SubGui {
 			});
 			
 			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.disconnect"), 70, 100) {
-			
+				
 				@Override
 				public void onClicked(int x, int y, int button) {
 					
@@ -76,8 +67,7 @@ public class SubGuiRevive extends SubGui {
 				public void onClicked(int x, int y, int button) {
 					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 					
-					if(!chat.text.equals(""))
-					{
+					if (!chat.text.equals("")) {
 						gui.sendChatMessage(chat.text);
 						
 						chat.setSelectionPos(0);
@@ -92,32 +82,27 @@ public class SubGuiRevive extends SubGui {
 		}
 	}
 	
-	public void onDialogClosed(String text, String[] buttons, String clicked)
-    {
-		if(clicked.equals("Yes"))
-		{
-			if(text.equals(I18n.translateToLocal("playerrevive.gui.popup.give_up")))
-			{
+	public void onDialogClosed(String text, String[] buttons, String clicked) {
+		if (clicked.equals("Yes")) {
+			if (text.equals(I18n.translateToLocal("playerrevive.gui.popup.give_up"))) {
 				NBTTagCompound nbt = new NBTTagCompound();
-	    		nbt.setBoolean("giveup", true);
-	    		sendPacketToServer(nbt);
-			}else{
+				nbt.setBoolean("giveup", true);
+				sendPacketToServer(nbt);
+			} else {
 				Minecraft mc = Minecraft.getMinecraft();
-				mc.world.sendQuittingDisconnectingPacket();				
-	            mc.loadWorld((WorldClient)null);
-	            mc.displayGuiScreen(new GuiMainMenu());
+				mc.world.sendQuittingDisconnectingPacket();
+				mc.loadWorld((WorldClient) null);
+				mc.displayGuiScreen(new GuiMainMenu());
 			}
 		}
-    }
+	}
 	
 	@Override
 	public boolean onKeyPressed(char character, int key) {
-		if(!((SubContainerRevive) container).isHelping && key == org.lwjgl.input.Keyboard.KEY_RETURN)
-		{
+		if (!((SubContainerRevive) container).isHelping && key == org.lwjgl.input.Keyboard.KEY_RETURN) {
 			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 			
-			if(!chat.text.equals(""))
-			{
+			if (!chat.text.equals("")) {
 				gui.sendChatMessage(chat.text);
 				
 				chat.setSelectionPos(0);
@@ -130,33 +115,30 @@ public class SubGuiRevive extends SubGui {
 		return super.onKeyPressed(character, key);
 	}
 	
-	public String formatTime(int timeLeft)
-	{
-		int lengthOfMinute = 20*60;
-		int lengthOfHour = lengthOfMinute*60;
+	public String formatTime(int timeLeft) {
+		int lengthOfMinute = 20 * 60;
+		int lengthOfHour = lengthOfMinute * 60;
 		
-		int hours = timeLeft/lengthOfHour;
-		timeLeft -= hours*lengthOfHour;
+		int hours = timeLeft / lengthOfHour;
+		timeLeft -= hours * lengthOfHour;
 		
-		int minutes = timeLeft/lengthOfMinute;
-		timeLeft -= minutes*lengthOfMinute;
+		int minutes = timeLeft / lengthOfMinute;
+		timeLeft -= minutes * lengthOfMinute;
 		
-		int seconds = timeLeft/20;
+		int seconds = timeLeft / 20;
 		
 		// return String.format("%02d", hours) + ":" + String.format("%02d", minutes) + ":" + String.format("%02d", seconds);
 		return String.format("%02d:%02d:%02d", hours, minutes, seconds);
 	}
 	
 	@CustomEventSubscribe
-	public void controlChanged(GuiControlChangedEvent event)
-	{
-		if(event.source.is("volume"))
-		{
+	public void controlChanged(GuiControlChangedEvent event) {
+		if (event.source.is("volume")) {
 			PlayerRevive.volumeModifier = ((GuiAnalogeSlider) event.source).value;
 			PlayerRevive.config.load();
 			PlayerRevive.config.get("Sound", "volume", 1.0F).set(PlayerRevive.volumeModifier);
 			PlayerRevive.config.save();
-			if(ReviveEventClient.sound != null)
+			if (ReviveEventClient.sound != null)
 				ReviveEventClient.sound.volume = PlayerRevive.volumeModifier;
 		}
 	}
@@ -164,23 +146,20 @@ public class SubGuiRevive extends SubGui {
 	@Override
 	public void onTick() {
 		double timer = 10000000D;
-
+		
 		IRevival revive = ((SubContainerRevive) container).revive;
-		if(revive != null && revive.getTimeLeft() < 400)
-		{
+		if (revive != null && revive.getTimeLeft() < 400) {
 			timer = 1000000D;
 			
 		}
-		double value = Math.cos(Math.toRadians(System.nanoTime()/timer))*0.5+0.5;
+		double value = Math.cos(Math.toRadians(System.nanoTime() / timer)) * 0.5 + 0.5;
 		label.color = ColorUtils.VecToInt(new Vec3d(1, value, value));
 	}
 	
 	@Override
-	public void receiveContainerPacket(NBTTagCompound nbt)
-	{
+	public void receiveContainerPacket(NBTTagCompound nbt) {
 		IRevival revive = ((SubContainerRevive) container).revive;
-		if(revive != null)
-		{
+		if (revive != null) {
 			revive.deserializeNBT(nbt);
 			bar.pos = revive.getProgress();
 			
@@ -189,15 +168,13 @@ public class SubGuiRevive extends SubGui {
 	}
 	
 	@Override
-	public void closeGui()
-    {
-    	if(((SubContainerRevive) container).isHelping)
-    		super.closeGui();
-    }
+	public void closeGui() {
+		if (((SubContainerRevive) container).isHelping)
+			super.closeGui();
+	}
 	
 	@Override
-	public boolean hasGrayBackground()
-	{
+	public boolean hasGrayBackground() {
 		return false;
 	}
 	

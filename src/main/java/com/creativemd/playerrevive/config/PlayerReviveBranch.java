@@ -7,18 +7,17 @@ import com.creativemd.igcm.api.segments.IntegerSegment;
 import com.creativemd.playerrevive.PlayerRevive;
 
 import net.minecraft.init.Items;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.text.translation.I18n;
 import net.minecraftforge.fml.relauncher.Side;
 
 public class PlayerReviveBranch extends ConfigBranch {
-
+	
 	public PlayerReviveBranch() {
 		super(I18n.translateToLocal("playerrevive.config.branch_name"), new ItemStack(Items.TOTEM_OF_UNDYING));
 	}
-
+	
 	@Override
 	public void createChildren() {
 		registerElement("playerReviveTime", new IntegerSegment(I18n.translateToLocal("playerrevive.config.player_revive_time"), 100, 1, Integer.MAX_VALUE));
@@ -35,12 +34,12 @@ public class PlayerReviveBranch extends ConfigBranch {
 		registerElement("disableBleedingMessage", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableBleedingMessage"), false));
 		registerElement("particleBeacon", new BooleanSegment(I18n.translateToLocal("playerrevive.config.particleBeacon"), false));
 	}
-
+	
 	@Override
 	public boolean requiresSynchronization() {
 		return true;
 	}
-
+	
 	@Override
 	public void onRecieveFrom(Side side) {
 		PlayerRevive.playerReviveTime = (Integer) getValue("playerReviveTime");
@@ -56,17 +55,15 @@ public class PlayerReviveBranch extends ConfigBranch {
 		PlayerRevive.disableBleedingMessage = (Boolean) getValue("disableBleedingMessage");
 		PlayerRevive.particleBeacon = (Boolean) getValue("particleBeacon");
 	}
-
+	
 	@Override
 	public void loadExtra(NBTTagCompound nbt) {
 		
 	}
-
+	
 	@Override
 	public void saveExtra(NBTTagCompound nbt) {
 		
 	}
-	
-	
 	
 }
