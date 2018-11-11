@@ -66,6 +66,7 @@ public class ReviveEventServer {
 	
 	//private static MinecraftServer server = FMLServerHandler.instance().getServer();
 	
+	@SubscribeEvent
 	public void playerTick(PlayerTickEvent event) {
 		if (event.phase == Phase.START && isReviveActive()) {
 			EntityPlayer player = event.player;
