@@ -68,7 +68,7 @@ public class ReviveEventServer {
 	
 	@SubscribeEvent
 	public void playerTick(PlayerTickEvent event) {
-		if (event.phase == Phase.START && isReviveActive()) {
+		if (event.phase == Phase.START && event.side == Side.SERVER && isReviveActive()) {
 			EntityPlayer player = event.player;
 			if (player.isDead)
 				return;
