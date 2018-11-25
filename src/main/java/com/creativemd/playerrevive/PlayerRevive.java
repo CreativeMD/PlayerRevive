@@ -2,11 +2,11 @@ package com.creativemd.playerrevive;
 
 import java.util.UUID;
 
+import com.creativemd.creativecore.common.gui.container.SubContainer;
+import com.creativemd.creativecore.common.gui.container.SubGui;
+import com.creativemd.creativecore.common.gui.opener.CustomGuiHandler;
+import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
-import com.creativemd.creativecore.gui.container.SubContainer;
-import com.creativemd.creativecore.gui.container.SubGui;
-import com.creativemd.creativecore.gui.opener.CustomGuiHandler;
-import com.creativemd.creativecore.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.api.capability.CapaRevive;
 import com.creativemd.playerrevive.config.PlayerReviveConfig;

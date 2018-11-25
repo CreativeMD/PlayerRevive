@@ -1,6 +1,6 @@
 package com.creativemd.playerrevive.server;
 
-import com.creativemd.creativecore.gui.opener.GuiHandler;
+import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.CapaReviveProvider;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.api.DamageBledToDeath;

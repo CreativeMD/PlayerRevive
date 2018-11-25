@@ -3,9 +3,9 @@ package com.creativemd.playerrevive.client;
 import java.lang.reflect.Field;
 import java.util.Iterator;
 
-import com.creativemd.creativecore.gui.container.SubGui;
-import com.creativemd.creativecore.gui.mc.ContainerSub;
-import com.creativemd.creativecore.gui.opener.GuiHandler;
+import com.creativemd.creativecore.common.gui.container.SubGui;
+import com.creativemd.creativecore.common.gui.mc.ContainerSub;
+import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.gui.SubContainerRevive;

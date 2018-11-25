@@ -1,14 +1,14 @@
 package com.creativemd.playerrevive.gui;
 
+import com.creativemd.creativecore.common.gui.client.style.Style;
+import com.creativemd.creativecore.common.gui.container.SubGui;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiAnalogeSlider;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiButton;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiLabel;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiProgressBar;
+import com.creativemd.creativecore.common.gui.controls.gui.GuiTextfield;
+import com.creativemd.creativecore.common.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.creativecore.common.utils.mc.ColorUtils;
-import com.creativemd.creativecore.gui.client.style.Style;
-import com.creativemd.creativecore.gui.container.SubGui;
-import com.creativemd.creativecore.gui.controls.gui.GuiAnalogeSlider;
-import com.creativemd.creativecore.gui.controls.gui.GuiButton;
-import com.creativemd.creativecore.gui.controls.gui.GuiLabel;
-import com.creativemd.creativecore.gui.controls.gui.GuiProgressBar;
-import com.creativemd.creativecore.gui.controls.gui.GuiTextfield;
-import com.creativemd.creativecore.gui.event.gui.GuiControlChangedEvent;
 import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.client.ReviveEventClient;

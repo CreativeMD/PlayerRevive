@@ -1,6 +1,6 @@
 package com.creativemd.playerrevive.gui;
 
-import com.creativemd.creativecore.gui.container.SubContainer;
+import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 
