@@ -8,6 +8,8 @@ import com.creativemd.playerrevive.PlayerRevive;
 import com.creativemd.playerrevive.api.CombatTrackerClone;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.api.capability.CapaRevive;
+import com.creativemd.playerrevive.api.event.PlayerKilledEvent;
+import com.creativemd.playerrevive.api.event.PlayerRevivedEvent;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.mojang.authlib.GameProfile;
 
@@ -16,6 +18,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.management.UserListBansEntry;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
+import net.minecraftforge.common.MinecraftForge;
 
 public class PlayerReviveServer {
 	
@@ -46,6 +49,7 @@ public class PlayerReviveServer {
 	
 	public static void revive(EntityPlayer player) {
 		IRevival revive = getRevival(player);
+		MinecraftForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
 		revive.stopBleeding();
 		resetPlayer(player, revive);
 		
@@ -57,6 +61,7 @@ public class PlayerReviveServer {
 	
 	public static void kill(EntityPlayer player) {
 		IRevival revive = getRevival(player);
+		MinecraftForge.EVENT_BUS.post(new PlayerKilledEvent(player, revive));
 		DamageSource source = revive.getSource();
 		CombatTrackerClone trackerClone = revive.getTrackerClone();
 		trackerClone.overwriteTracker(player.getCombatTracker());
