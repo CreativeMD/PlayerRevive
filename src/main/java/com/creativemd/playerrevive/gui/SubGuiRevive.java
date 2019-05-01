@@ -39,23 +39,26 @@ public class SubGuiRevive extends SubGui {
 		label = new GuiLabel(I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())), 50, 20);
 		controls.add(label);
 		if (!((SubContainerRevive) container).isHelping) {
-			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.give_up"), 80, 80) {
-				
-				@Override
-				public void onClicked(int x, int y, int button) {
-					
-					openYesNoDialog(I18n.translateToLocal("playerrevive.gui.popup.give_up"));
-				}
-			});
 			
-			controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.disconnect"), 70, 100) {
-				
-				@Override
-				public void onClicked(int x, int y, int button) {
+			if (!PlayerRevive.disableGiveUp)
+				controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.give_up"), 80, 80) {
 					
-					openYesNoDialog(I18n.translateToLocal("playerrevive.gui.popup.disconnect"));
-				}
-			});
+					@Override
+					public void onClicked(int x, int y, int button) {
+						
+						openYesNoDialog(I18n.translateToLocal("playerrevive.gui.popup.give_up"));
+					}
+				});
+			
+			if (!PlayerRevive.disableDisconnect)
+				controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.disconnect"), 70, 100) {
+					
+					@Override
+					public void onClicked(int x, int y, int button) {
+						
+						openYesNoDialog(I18n.translateToLocal("playerrevive.gui.popup.disconnect"));
+					}
+				});
 			
 			GuiTextfield chat = new GuiTextfield("chat", "", 0, 120, 160, 10);
 			chat.maxLength = 256;

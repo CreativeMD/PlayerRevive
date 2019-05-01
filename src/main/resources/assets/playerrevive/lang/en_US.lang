@@ -25,4 +25,6 @@ playerrevive.config.ban_player_after_death=Ban After Death
 playerrevive.config.exhaustion=Exhaustion
 playerrevive.config.disableSounds=Disable death and revive sound
 playerrevive.config.disableBleedingMessage=Disable bleeding message
+playerrevive.config.disableGiveUp=Disable give up button
+playerrevive.config.disableDisconnect=Disable disconnect button
 playerrevive.config.particleBeacon=Particle Beacon

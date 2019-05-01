@@ -33,6 +33,9 @@ public class PlayerReviveBranch extends ConfigBranch {
 		registerElement("disableSounds", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableSounds"), false));
 		registerElement("disableBleedingMessage", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableBleedingMessage"), false));
 		registerElement("particleBeacon", new BooleanSegment(I18n.translateToLocal("playerrevive.config.particleBeacon"), false));
+		
+		registerElement("disableGiveUp", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableGiveUp"), false));
+		registerElement("disableDisconnect", new BooleanSegment(I18n.translateToLocal("playerrevive.config.disableDisconnect"), false));
 	}
 	
 	@Override
@@ -54,6 +57,9 @@ public class PlayerReviveBranch extends ConfigBranch {
 		PlayerRevive.disableSounds = (Boolean) getValue("disableSounds");
 		PlayerRevive.disableBleedingMessage = (Boolean) getValue("disableBleedingMessage");
 		PlayerRevive.particleBeacon = (Boolean) getValue("particleBeacon");
+		
+		PlayerRevive.disableGiveUp = (Boolean) getValue("disableGiveUp");
+		PlayerRevive.disableDisconnect = (Boolean) getValue("disableDisconnect");
 	}
 	
 	@Override
