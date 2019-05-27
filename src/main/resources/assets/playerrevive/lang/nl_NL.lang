@@ -1,5 +1,6 @@
 #chat message
 playerrevive.chat.bleeding=%s is gewond ...
+death.attack.bledToDeath.player"=%s is dood gebloed
 
 #gui-button
 playerrevive.gui.button.give_up=opgeven
@@ -21,3 +22,9 @@ playerrevive.config.player_revive_survive_time=Overlevingsduur
 playerrevive.config.player_health_after=Levens na
 playerrevive.config.player_food_after=Honger na
 playerrevive.config.ban_player_after_death=Verbannen na dood
+playerrevive.config.exhaustion=Uitputting
+playerrevive.config.disableSounds=Schakel dood en hulpverlenings geluiden uit
+playerrevive.config.disableBleedingMessage=schakkel gewond bericht uit
+playerrevive.config.disableGiveUp=Schakel geef op knop uit
+playerrevive.config.disableDisconnect=Schakel verbinding verbreken knop uit
+playerrevive.config.particleBeacon=Deeltjes Baken
