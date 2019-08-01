@@ -63,6 +63,7 @@ public class PlayerRevive {
 	
 	public static float exhaustion = 0.5F;
 	
+	public static boolean disableMusic = false;
 	public static boolean disableSounds = false;
 	public static boolean disableBleedingMessage = false;
 	public static boolean particleBeacon = false;
@@ -124,6 +125,7 @@ public class PlayerRevive {
 		
 		exhaustion = config.getFloat("exhaustion", "General", exhaustion, 0, 10000, "How exhausted helping players are (determines how much food will be drained).");
 		
+		disableMusic = config.getBoolean("disableMusic", "Sound", false, "Disable revive and dead sound");
 		disableSounds = config.getBoolean("disableSounds", "Sound", false, "Disable revive and dead sound");
 		disableBleedingMessage = config.getBoolean("disableBleedingMessage", "General", false, "");
 		particleBeacon = config.getBoolean("particleBeacon", "General", false, "Will spawn particles above the player hinted at his location.");

@@ -81,10 +81,12 @@ public class SubGuiRevive extends SubGui {
 				}
 			}.setStyle(Style.liteStyle));
 			
-			controls.add(new GuiAnalogeSlider("volume", 160, 0, 40, 10, PlayerRevive.volumeModifier, 0, 1).setStyle(Style.liteStyle));
+			if (!PlayerRevive.disableMusic)
+				controls.add(new GuiAnalogeSlider("volume", 160, 0, 40, 10, PlayerRevive.volumeModifier, 0, 1).setStyle(Style.liteStyle));
 		}
 	}
 	
+	@Override
 	public void onDialogClosed(String text, String[] buttons, String clicked) {
 		if (clicked.equals("Yes")) {
 			if (text.equals(I18n.translateToLocal("playerrevive.gui.popup.give_up"))) {

@@ -141,17 +141,22 @@ public class ReviveEventClient {
 			} else {
 				if (revive.getTimeLeft() < 400) {
 					if (!lastHighTension) {
-						mc.getSoundHandler().stopSound(sound);
-						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), PlayerRevive.volumeModifier, 1.0F, false);
-						mc.getSoundHandler().playSound(sound);
+						if (!PlayerRevive.disableMusic) {
+							mc.getSoundHandler().stopSound(sound);
+							sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), PlayerRevive.volumeModifier, 1.0F, false);
+							mc.getSoundHandler().playSound(sound);
+						}
 						lastHighTension = true;
+						
 					}
 				} else {
 					if (!lastShader) {
 						if (sound != null)
 							mc.getSoundHandler().stopSound(sound);
-						sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), PlayerRevive.volumeModifier, 1.0F, true);
-						mc.getSoundHandler().playSound(sound);
+						if (!PlayerRevive.disableMusic) {
+							sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), PlayerRevive.volumeModifier, 1.0F, true);
+							mc.getSoundHandler().playSound(sound);
+						}
 					}
 				}
 				
