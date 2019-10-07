@@ -34,7 +34,7 @@ public class ReviveEventClient {
 	
 	public static Minecraft mc = Minecraft.getMinecraft();
 	
-	public static Field sleeping = ReflectionHelper.findField(EntityPlayer.class, "sleeping", "field_71083_bS");
+	public static Field sleeping = ReflectionHelper.findField(EntityPlayer.class, new String[] { "sleeping", "field_71083_bS" });
 	
 	@SubscribeEvent
 	public void renderPlayer(RenderPlayerEvent.Pre event) {

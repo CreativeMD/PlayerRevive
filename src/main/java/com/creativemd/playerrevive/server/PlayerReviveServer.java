@@ -41,6 +41,7 @@ public class PlayerReviveServer {
 	
 	private static void resetPlayer(EntityPlayer player, IRevival revive) {
 		player.capabilities.disableDamage = player.capabilities.isCreativeMode;
+		player.setEntityInvulnerable(false);
 		
 		for (int i = 0; i < revive.getRevivingPlayers().size(); i++) {
 			revive.getRevivingPlayers().get(i).closeScreen();

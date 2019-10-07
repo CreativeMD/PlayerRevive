@@ -12,13 +12,13 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public class CombatTrackerClone {
 	
-	private static final Field combatEntriesField = ReflectionHelper.findField(CombatTracker.class, "combatEntries", "field_94556_a");
-	private static final Field lastDamageTimeField = ReflectionHelper.findField(CombatTracker.class, "lastDamageTime", "field_94555_c");
-	private static final Field combatStartTimeField = ReflectionHelper.findField(CombatTracker.class, "combatStartTime", "field_152775_d");
-	private static final Field combatEndTimeField = ReflectionHelper.findField(CombatTracker.class, "combatEndTime", "field_152776_e");
-	private static final Field inCombatField = ReflectionHelper.findField(CombatTracker.class, "inCombat", "field_94552_d");
-	private static final Field takingDamageField = ReflectionHelper.findField(CombatTracker.class, "takingDamage", "field_94553_e");
-	private static final Field fallSuffixField = ReflectionHelper.findField(CombatTracker.class, "fallSuffix", "field_94551_f");
+	private static final Field combatEntriesField = ReflectionHelper.findField(CombatTracker.class, new String[] { "combatEntries", "field_94556_a" });
+	private static final Field lastDamageTimeField = ReflectionHelper.findField(CombatTracker.class, new String[] { "lastDamageTime", "field_94555_c" });
+	private static final Field combatStartTimeField = ReflectionHelper.findField(CombatTracker.class, new String[] { "combatStartTime", "field_152775_d" });
+	private static final Field combatEndTimeField = ReflectionHelper.findField(CombatTracker.class, new String[] { "combatEndTime", "field_152776_e" });
+	private static final Field inCombatField = ReflectionHelper.findField(CombatTracker.class, new String[] { "inCombat", "field_94552_d" });
+	private static final Field takingDamageField = ReflectionHelper.findField(CombatTracker.class, new String[] { "takingDamage", "field_94553_e" });
+	private static final Field fallSuffixField = ReflectionHelper.findField(CombatTracker.class, new String[] { "fallSuffix", "field_94551_f" });
 	
 	private final List<CombatEntry> combatEntries = Lists.<CombatEntry>newArrayList();
 	private int lastDamageTime;

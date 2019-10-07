@@ -83,6 +83,7 @@ public class ReviveEventServer {
 				player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
 				player.setHealth(PlayerRevive.playerHealthAfter);
 				player.capabilities.disableDamage = true;
+				player.setEntityInvulnerable(true);
 				
 				if (revive.isRevived())
 					PlayerReviveServer.revive(player);
@@ -149,6 +150,7 @@ public class ReviveEventServer {
 			
 			PlayerReviveServer.startBleeding(player, event.getSource());
 			player.capabilities.disableDamage = true;
+			player.setEntityInvulnerable(true);
 			
 			if (player.isRiding())
 				player.dismountRidingEntity();
