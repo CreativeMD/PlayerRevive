@@ -112,7 +112,7 @@ public class ReviveEventServer {
 	 * PacketHandler.sendPacketToPlayer(new PlayerRevivalPacket(revive), (EntityPlayerMP) event.player);
 	 * } */
 	
-	@SubscribeEvent
+	@SubscribeEvent(priority = EventPriority.HIGH)
 	public void playerInteract(PlayerInteractEvent.EntityInteract event) {
 		if (!PlayerReviveServer.isPlayerBleeding(event.getEntityPlayer()) && event.getTarget() instanceof EntityPlayer && !event.getEntityLiving().world.isRemote) {
 			EntityPlayer player = (EntityPlayer) event.getTarget();
@@ -122,7 +122,7 @@ public class ReviveEventServer {
 				nbt.setString("uuid", EntityPlayer.getUUID(player.getGameProfile()).toString());
 				revive.getRevivingPlayers().add(event.getEntityPlayer());
 				GuiHandler.openGui("plreviver", nbt, event.getEntityPlayer());
-				//System.out.println("OPEN GUI!");
+				event.setCanceled(true);
 			}
 		}
 	}
