@@ -140,7 +140,7 @@ public class PlayerRevive {
 		//GameRegistry.register(deathSound);
 		//GameRegistry.register(revivedSound);
 		
-		CreativeCorePacket.registerPacket(ReviveUpdatePacket.class, "PRUpdate");
+		CreativeCorePacket.registerPacket(ReviveUpdatePacket.class);
 		
 		GuiHandler.registerGuiHandler("plrevive", new CustomGuiHandler() {
 			
