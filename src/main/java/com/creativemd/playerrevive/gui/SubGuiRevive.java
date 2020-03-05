@@ -139,7 +139,7 @@ public class SubGuiRevive extends SubGui {
 	@CustomEventSubscribe
 	public void controlChanged(GuiControlChangedEvent event) {
 		if (event.source.is("volume")) {
-			PlayerRevive.volumeModifier = ((GuiAnalogeSlider) event.source).value;
+			PlayerRevive.volumeModifier = (float) ((GuiAnalogeSlider) event.source).value;
 			PlayerRevive.config.load();
 			PlayerRevive.config.get("Sound", "volume", 1.0F).set(PlayerRevive.volumeModifier);
 			PlayerRevive.config.save();
