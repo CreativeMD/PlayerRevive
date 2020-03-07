@@ -25,7 +25,7 @@ public class Revival implements IRevival {
 	
 	public Revival() {
 		this.progress = 0;
-		timeLeft = PlayerRevive.playerReviveSurviveTime;
+		timeLeft = PlayerRevive.CONFIG.playerReviveSurviveTime;
 	}
 	
 	@Override
@@ -34,7 +34,7 @@ public class Revival implements IRevival {
 		progress += revivingPlayers.size();
 		
 		for (int i = 0; i < revivingPlayers.size(); i++) {
-			revivingPlayers.get(i).addExhaustion(PlayerRevive.exhaustion);
+			revivingPlayers.get(i).addExhaustion(PlayerRevive.CONFIG.exhaustion);
 		}
 	}
 	
@@ -50,7 +50,7 @@ public class Revival implements IRevival {
 	
 	@Override
 	public void stopBleeding() {
-		this.timeLeft = PlayerRevive.playerReviveSurviveTime;
+		this.timeLeft = PlayerRevive.CONFIG.playerReviveSurviveTime;
 		this.progress = 0;
 		this.healty = true;
 		this.lastSource = null;
@@ -61,7 +61,7 @@ public class Revival implements IRevival {
 	public void startBleeding(EntityPlayer player, DamageSource source) {
 		this.healty = false;
 		this.progress = 0;
-		this.timeLeft = PlayerRevive.playerReviveSurviveTime;
+		this.timeLeft = PlayerRevive.CONFIG.playerReviveSurviveTime;
 		this.lastSource = source;
 		this.trackerClone = new CombatTrackerClone(player.getCombatTracker());
 	}
@@ -73,7 +73,7 @@ public class Revival implements IRevival {
 	
 	@Override
 	public boolean isRevived() {
-		return progress >= PlayerRevive.playerReviveTime;
+		return progress >= PlayerRevive.CONFIG.playerReviveTime;
 	}
 	
 	@Override

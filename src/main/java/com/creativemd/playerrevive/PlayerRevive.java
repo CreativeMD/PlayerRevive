@@ -2,6 +2,7 @@ package com.creativemd.playerrevive;
 
 import java.util.UUID;
 
+import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.opener.CustomGuiHandler;
@@ -9,7 +10,6 @@ import com.creativemd.creativecore.common.gui.opener.GuiHandler;
 import com.creativemd.creativecore.common.packet.CreativeCorePacket;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.api.capability.CapaRevive;
-import com.creativemd.playerrevive.config.PlayerReviveConfig;
 import com.creativemd.playerrevive.gui.SubContainerRevive;
 import com.creativemd.playerrevive.gui.SubGuiRevive;
 import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
@@ -25,20 +25,19 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.config.Configuration;
 import net.minecraftforge.event.RegistryEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventHandler;
 import net.minecraftforge.fml.common.SidedProxy;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = PlayerRevive.modid, version = PlayerRevive.version, name = "Player Revive", acceptedMinecraftVersions = "", dependencies = "required-before:creativecore")
+@Mod(modid = PlayerRevive.modid, version = PlayerRevive.version, name = "Player Revive", acceptedMinecraftVersions = "", dependencies = "required-before:creativecore", guiFactory = "com.creativemd.playerrevive.PlayerReviveSettings")
+@EventBusSubscriber
 public class PlayerRevive {
 	
 	@SidedProxy(clientSide = "com.creativemd.playerrevive.client.PlayerReviveClient", serverSide = "com.creativemd.playerrevive.server.PlayerReviveServer")
@@ -50,26 +49,7 @@ public class PlayerRevive {
 	public static final String modid = "playerrevive";
 	public static final String version = "1.0";
 	
-	public static int playerReviveTime = 100;
-	public static int playerReviveSurviveTime = 1200;
-	
-	public static int playerHealthAfter = 2;
-	public static int playerFoodAfter = 6;
-	
-	public static boolean banPlayerAfterDeath = false;
-	
-	public static Configuration config;
-	public static float volumeModifier = 1;
-	
-	public static float exhaustion = 0.5F;
-	
-	public static boolean disableMusic = false;
-	public static boolean disableSounds = false;
-	public static boolean disableBleedingMessage = false;
-	public static boolean particleBeacon = false;
-	
-	public static boolean disableGiveUp;
-	public static boolean disableDisconnect;
+	public static PlayerReviveConfig CONFIG;
 	
 	@SubscribeEvent
 	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
@@ -110,36 +90,7 @@ public class PlayerRevive {
 	}
 	
 	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		MinecraftForge.EVENT_BUS.register(this);
-		config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
-		volumeModifier = config.getFloat("volume", "Sound", 1.0F, 0, 2, "Volume of the music played while bleeding");
-		playerReviveTime = config.getInt("playerReviveTime", "General", playerReviveTime, 1, Integer.MAX_VALUE, "How long it takes to revive someone (in ticks). Will not be synchronized, therefore it's recommended to install IGCM.");
-		playerReviveSurviveTime = config.getInt("playerReviveSurviveTime", "General", playerReviveSurviveTime, 1, Integer.MAX_VALUE, "How long a bleeding player will survive (in ticks). Will not be synchronized, therefore it's recommended to install IGCM.");
-		
-		playerHealthAfter = config.getInt("playerHealthAfter", "General", playerHealthAfter, 1, 20, "How much health a player will have after being revived.");
-		playerFoodAfter = config.getInt("playerFoodAfter", "General", playerFoodAfter, 1, 20, "How much food a player will have after being revived.");
-		
-		banPlayerAfterDeath = config.getBoolean("banPlayerAfterDeath", "General", banPlayerAfterDeath, "If true someone who died will be banned from the server.");
-		
-		exhaustion = config.getFloat("exhaustion", "General", exhaustion, 0, 10000, "How exhausted helping players are (determines how much food will be drained).");
-		
-		disableMusic = config.getBoolean("disableMusic", "Sound", false, "Disable revive and dead sound");
-		disableSounds = config.getBoolean("disableSounds", "Sound", false, "Disable revive and dead sound");
-		disableBleedingMessage = config.getBoolean("disableBleedingMessage", "General", false, "");
-		particleBeacon = config.getBoolean("particleBeacon", "General", false, "Will spawn particles above the player hinted at his location.");
-		
-		disableGiveUp = config.getBoolean("disableGiveUp", "General", false, "Disables give up button");
-		disableDisconnect = config.getBoolean("disableDisconnect", "General", false, "Disables disconnect button");
-		config.save();
-	}
-	
-	@EventHandler
 	public void init(FMLInitializationEvent event) {
-		//GameRegistry.register(deathSound);
-		//GameRegistry.register(revivedSound);
-		
 		CreativeCorePacket.registerPacket(ReviveUpdatePacket.class);
 		
 		GuiHandler.registerGuiHandler("plrevive", new CustomGuiHandler() {
@@ -175,14 +126,11 @@ public class PlayerRevive {
 			}
 		});
 		CapaRevive.register();
+		CreativeConfigRegistry.ROOT.registerValue(modid, CONFIG = new PlayerReviveConfig());
 		
 		MinecraftForge.EVENT_BUS.register(new ReviveEventServer());
 		
 		proxy.loadSide();
-		
-		if (Loader.isModLoaded("igcm")) {
-			PlayerReviveConfig.loadConfig();
-		}
 	}
 	
 }

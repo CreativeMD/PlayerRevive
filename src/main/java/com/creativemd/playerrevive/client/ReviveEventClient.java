@@ -41,14 +41,14 @@ public class ReviveEventClient {
 		EntityPlayer player = event.getEntityPlayer();
 		IRevival revive = PlayerReviveServer.getRevival(player);
 		if (!revive.isHealty()) {
-			if (PlayerRevive.particleBeacon) {
+			if (PlayerRevive.CONFIG.particleBeacon) {
 				for (int i = 0; i < 4; i++) {
 					double size = Math.random();
 					double random = Math.random() * Math.PI;
 					player.world.spawnParticle(EnumParticleTypes.SUSPENDED_DEPTH, player.posX - 1 + Math.sin(random) * size, player.posY + (Math.random() - 0.5) * 50, player.posZ + Math.cos(random) * size, 0, 0, 0);
 				}
 			} else {
-				double percentage = 1D - (revive.getTimeLeft() / (double) PlayerRevive.playerReviveSurviveTime);
+				double percentage = 1D - (revive.getTimeLeft() / (double) PlayerRevive.CONFIG.playerReviveSurviveTime);
 				int amount = (int) Math.floor(percentage * 1.3D);
 				for (int i = 0; i < amount; i++) {
 					player.world.spawnParticle(EnumParticleTypes.SMOKE_LARGE, player.posX - 1, player.posY, player.posZ, 0, 0, 0);
@@ -141,9 +141,9 @@ public class ReviveEventClient {
 			} else {
 				if (revive.getTimeLeft() < 400) {
 					if (!lastHighTension) {
-						if (!PlayerRevive.disableMusic) {
+						if (!PlayerRevive.CONFIG.disableMusic) {
 							mc.getSoundHandler().stopSound(sound);
-							sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), PlayerRevive.volumeModifier, 1.0F, false);
+							sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "hightension"), PlayerRevive.CONFIG.volumeModifier, 1.0F, false);
 							mc.getSoundHandler().playSound(sound);
 						}
 						lastHighTension = true;
@@ -153,8 +153,8 @@ public class ReviveEventClient {
 					if (!lastShader) {
 						if (sound != null)
 							mc.getSoundHandler().stopSound(sound);
-						if (!PlayerRevive.disableMusic) {
-							sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), PlayerRevive.volumeModifier, 1.0F, true);
+						if (!PlayerRevive.CONFIG.disableMusic) {
+							sound = new TensionSound(new ResourceLocation(PlayerRevive.modid, "tension"), PlayerRevive.CONFIG.volumeModifier, 1.0F, true);
 							mc.getSoundHandler().playSound(sound);
 						}
 					}

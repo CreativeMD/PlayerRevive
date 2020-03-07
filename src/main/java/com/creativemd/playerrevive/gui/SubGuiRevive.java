@@ -1,5 +1,6 @@
 package com.creativemd.playerrevive.gui;
 
+import com.creativemd.creativecore.CreativeCore;
 import com.creativemd.creativecore.common.gui.client.style.Style;
 import com.creativemd.creativecore.common.gui.container.SubGui;
 import com.creativemd.creativecore.common.gui.controls.gui.GuiAnalogeSlider;
@@ -20,6 +21,7 @@ import net.minecraft.client.multiplayer.WorldClient;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.util.text.translation.I18n;
+import net.minecraftforge.fml.relauncher.Side;
 
 public class SubGuiRevive extends SubGui {
 	
@@ -34,13 +36,13 @@ public class SubGuiRevive extends SubGui {
 	@Override
 	public void createControls() {
 		IRevival revive = ((SubContainerRevive) container).revive;
-		bar = (GuiProgressBar) new GuiProgressBar("progress", 50, 0, 94, 13, PlayerRevive.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
+		bar = (GuiProgressBar) new GuiProgressBar("progress", 50, 0, 94, 13, PlayerRevive.CONFIG.playerReviveTime, revive.getProgress()).setStyle(defaultStyle);
 		controls.add(bar);
 		label = new GuiLabel(I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())), 50, 20);
 		controls.add(label);
 		if (!((SubContainerRevive) container).isHelping) {
 			
-			if (!PlayerRevive.disableGiveUp)
+			if (!PlayerRevive.CONFIG.disableGiveUp)
 				controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.give_up"), 80, 80) {
 					
 					@Override
@@ -50,7 +52,7 @@ public class SubGuiRevive extends SubGui {
 					}
 				});
 			
-			if (!PlayerRevive.disableDisconnect)
+			if (!PlayerRevive.CONFIG.disableDisconnect)
 				controls.add(new GuiButton(I18n.translateToLocal("playerrevive.gui.button.disconnect"), 70, 100) {
 					
 					@Override
@@ -81,8 +83,8 @@ public class SubGuiRevive extends SubGui {
 				}
 			}.setStyle(Style.liteStyle));
 			
-			if (!PlayerRevive.disableMusic)
-				controls.add(new GuiAnalogeSlider("volume", 160, 0, 40, 10, PlayerRevive.volumeModifier, 0, 1).setStyle(Style.liteStyle));
+			if (!PlayerRevive.CONFIG.disableMusic)
+				controls.add(new GuiAnalogeSlider("volume", 160, 0, 40, 10, PlayerRevive.CONFIG.volumeModifier, 0, 1).setStyle(Style.liteStyle));
 		}
 	}
 	
@@ -139,13 +141,15 @@ public class SubGuiRevive extends SubGui {
 	@CustomEventSubscribe
 	public void controlChanged(GuiControlChangedEvent event) {
 		if (event.source.is("volume")) {
-			PlayerRevive.volumeModifier = (float) ((GuiAnalogeSlider) event.source).value;
-			PlayerRevive.config.load();
-			PlayerRevive.config.get("Sound", "volume", 1.0F).set(PlayerRevive.volumeModifier);
-			PlayerRevive.config.save();
+			PlayerRevive.CONFIG.volumeModifier = (float) ((GuiAnalogeSlider) event.source).value;
 			if (ReviveEventClient.sound != null)
-				ReviveEventClient.sound.volume = PlayerRevive.volumeModifier;
+				ReviveEventClient.sound.volume = PlayerRevive.CONFIG.volumeModifier;
 		}
+	}
+	
+	@Override
+	public void onClosed() {
+		CreativeCore.configHandler.save(PlayerRevive.modid, Side.CLIENT);
 	}
 	
 	@Override

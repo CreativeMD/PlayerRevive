@@ -80,8 +80,8 @@ public class ReviveEventServer {
 				if (revive.getTimeLeft() % 20 == 0)
 					PlayerReviveServer.sendUpdatePacket(player);
 				
-				player.getFoodStats().setFoodLevel(PlayerRevive.playerFoodAfter);
-				player.setHealth(PlayerRevive.playerHealthAfter);
+				player.getFoodStats().setFoodLevel(PlayerRevive.CONFIG.playerFoodAfter);
+				player.setHealth(PlayerRevive.CONFIG.playerHealthAfter);
 				player.capabilities.disableDamage = true;
 				player.setEntityInvulnerable(true);
 				
@@ -160,7 +160,7 @@ public class ReviveEventServer {
 			player.setHealth(0.5F);
 			player.getFoodStats().setFoodLevel(1);
 			
-			if (!PlayerRevive.disableBleedingMessage)
+			if (!PlayerRevive.CONFIG.disableBleedingMessage)
 				player.getServer().getPlayerList().sendMessage(new TextComponentString(String.format(I18n.translateToLocal("playerrevive.chat.bleeding"), player.getDisplayNameString())));
 		}
 	}

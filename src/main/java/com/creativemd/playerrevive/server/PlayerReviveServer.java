@@ -54,7 +54,7 @@ public class PlayerReviveServer {
 		revive.stopBleeding();
 		resetPlayer(player, revive);
 		
-		if (!PlayerRevive.disableSounds)
+		if (!PlayerRevive.CONFIG.disableSounds)
 			player.world.playSound(null, player.getPosition(), PlayerRevive.revivedSound, SoundCategory.PLAYERS, 1, 1);
 		
 		sendUpdatePacket(player);
@@ -71,10 +71,10 @@ public class PlayerReviveServer {
 		player.onDeath(source);
 		resetPlayer(player, revive);
 		
-		if (!PlayerRevive.disableSounds)
+		if (!PlayerRevive.CONFIG.disableSounds)
 			player.world.playSound(null, player.getPosition(), PlayerRevive.deathSound, SoundCategory.PLAYERS, 1, 1);
 		
-		if (PlayerRevive.banPlayerAfterDeath) {
+		if (PlayerRevive.CONFIG.banPlayerAfterDeath) {
 			GameProfile profile = null;
 			profile = player.getGameProfile();
 			player.getServer().getPlayerList().getBannedPlayers().addEntry(new UserListBansEntry(player.getGameProfile()));
