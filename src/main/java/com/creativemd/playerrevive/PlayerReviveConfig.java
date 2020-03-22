@@ -42,4 +42,7 @@ public class PlayerReviveConfig {
 	@CreativeConfig
 	public boolean disableDisconnect;
 	
+	@CreativeConfig
+	public boolean allowCommandsWhileBleeding = false;
+	
 }
