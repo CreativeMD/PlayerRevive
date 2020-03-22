@@ -72,7 +72,7 @@ public class SubGuiRevive extends SubGui {
 				public void onClicked(int x, int y, int button) {
 					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 					
-					if (!chat.text.equals("")) {
+					if (!chat.text.equals("")&&!chat.text.startsWith("/")) {
 						gui.sendChat(chat.text);
 						
 						chat.setSelectionPos(0);
@@ -109,7 +109,7 @@ public class SubGuiRevive extends SubGui {
 		if (!((SubContainerRevive) container).isHelping && key == org.lwjgl.input.Keyboard.KEY_RETURN) {
 			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 			
-			if (!chat.text.equals("")) {
+			if (!chat.text.equals("")&&!chat.text.startsWith("/")) {
 				gui.sendChat(chat.text);
 				
 				chat.setSelectionPos(0);
