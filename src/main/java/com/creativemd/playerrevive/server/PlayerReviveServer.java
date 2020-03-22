@@ -65,7 +65,8 @@ public class PlayerReviveServer {
 		MinecraftForge.EVENT_BUS.post(new PlayerKilledEvent(player, revive));
 		DamageSource source = revive.getSource();
 		CombatTrackerClone trackerClone = revive.getTrackerClone();
-		trackerClone.overwriteTracker(player.getCombatTracker());
+		if (trackerClone != null)
+			trackerClone.overwriteTracker(player.getCombatTracker());
 		revive.kill();
 		player.setHealth(0.0F);
 		player.onDeath(source);
