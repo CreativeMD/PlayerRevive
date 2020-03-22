@@ -73,7 +73,7 @@ public class SubGuiRevive extends SubGui {
 					GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 					
 					if (!chat.text.equals("")&&!chat.text.startsWith("/")) {
-						gui.sendChatMessage(chat.text);
+						gui.sendChat(chat.text);
 						
 						chat.setSelectionPos(0);
 						chat.selEnd = 0;
@@ -110,7 +110,7 @@ public class SubGuiRevive extends SubGui {
 			GuiTextfield chat = (GuiTextfield) SubGuiRevive.this.get("chat");
 			
 			if (!chat.text.equals("")&&!chat.text.startsWith("/")) {
-				gui.sendChatMessage(chat.text);
+				gui.sendChat(chat.text);
 				
 				chat.setSelectionPos(0);
 				chat.selEnd = 0;
