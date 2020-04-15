@@ -52,7 +52,7 @@ public class PlayerRevive {
 	public static PlayerReviveConfig CONFIG;
 	
 	@SubscribeEvent
-	public void registerBlocks(RegistryEvent.Register<SoundEvent> event) {
+	public static void registerSounds(RegistryEvent.Register<SoundEvent> event) {
 		event.getRegistry().registerAll(deathSound, revivedSound);
 	}
 	
