@@ -12,8 +12,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.TextComponentString;
-import net.minecraft.util.text.translation.I18n;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingHurtEvent;
@@ -161,7 +160,7 @@ public class ReviveEventServer {
 			player.getFoodStats().setFoodLevel(1);
 			
 			if (!PlayerRevive.CONFIG.disableBleedingMessage)
-				player.getServer().getPlayerList().sendMessage(new TextComponentString(String.format(I18n.translateToLocal("playerrevive.chat.bleeding"), player.getDisplayNameString())));
+				player.getServer().getPlayerList().sendMessage(new TextComponentTranslation("playerrevive.chat.bleeding", player.getDisplayNameString()));
 		}
 	}
 	
