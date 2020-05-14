@@ -131,7 +131,7 @@ public class ReviveEventServer {
 		if (event.getEntityLiving() instanceof EntityPlayer) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			IRevival revive = PlayerReviveServer.getRevival(player);
-			if (!revive.isHealty() && ((event.getSource() != DamageBledToDeath.bledToDeath && !event.getSource().damageType.equals("gorgon")) || revive.isDead()))
+			if (!revive.isHealty() && ((event.getSource() != DamageBledToDeath.bledToDeath && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().damageType)) || revive.isDead()))
 				event.setCanceled(true);
 		}
 	}

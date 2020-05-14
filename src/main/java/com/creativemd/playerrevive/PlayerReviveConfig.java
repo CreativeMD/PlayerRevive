@@ -1,5 +1,8 @@
 package com.creativemd.playerrevive;
 
+import java.util.Arrays;
+import java.util.List;
+
 import com.creativemd.creativecore.common.config.api.CreativeConfig;
 import com.creativemd.creativecore.common.config.sync.ConfigSynchronization;
 
@@ -44,5 +47,8 @@ public class PlayerReviveConfig {
 	
 	@CreativeConfig
 	public boolean allowCommandsWhileBleeding = false;
+	
+	@CreativeConfig
+	public List<String> bypassDamageSources = Arrays.asList("gorgon", "death.attack.sgcraft:transient", "death.attack.sgcraft:iris");
 	
 }
