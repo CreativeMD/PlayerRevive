@@ -1,6 +1,6 @@
 #chat message
 playerrevive.chat.bleeding=%s is bleeding...
-death.attack.bledToDeath.player"=%s bled out
+death.attack.bledToDeath.player=%s bled out
 
 #gui-button
 playerrevive.gui.button.give_up=give up
