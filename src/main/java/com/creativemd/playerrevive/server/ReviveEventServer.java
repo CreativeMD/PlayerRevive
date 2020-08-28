@@ -138,7 +138,7 @@ public class ReviveEventServer {
 	
 	@SubscribeEvent(priority = EventPriority.HIGHEST)
 	public void playerDied(LivingDeathEvent event) {
-		if (event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath && !event.getSource().damageType.equals("gorgon")) {
+		if (event.getEntityLiving() instanceof EntityPlayer && isReviveActive() && !event.getEntityLiving().world.isRemote && event.getSource() != DamageBledToDeath.bledToDeath && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().damageType)) {
 			EntityPlayer player = (EntityPlayer) event.getEntityLiving();
 			IRevival revive = PlayerReviveServer.getRevival(player);
 			
