@@ -1,5 +1,7 @@
 package com.creativemd.playerrevive;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
@@ -16,6 +18,7 @@ import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
+import javax.annotation.Nullable;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -24,6 +27,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundEvent;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -73,7 +77,7 @@ public class PlayerRevive {
 			@Override
 			public void execute(MinecraftServer server, ICommandSender sender, String[] args) throws CommandException {
 				EntityPlayer player = null;
-				if (args.length > 1) {
+				if (args.length == 1) {
 					player = server.getPlayerList().getPlayerByUsername(args[0]);
 				} else if (sender instanceof EntityPlayer)
 					player = (EntityPlayer) sender;
@@ -85,6 +89,15 @@ public class PlayerRevive {
 			@Override
 			public boolean isUsernameIndex(String[] args, int index) {
 				return index == 1;
+			}
+
+			@Override
+			public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
+					@Nullable BlockPos targetPos) {
+				if (args.length == 1) {
+					return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
+				}
+				return Collections.emptyList();
 			}
 		});
 	}
