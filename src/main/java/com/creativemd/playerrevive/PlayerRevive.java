@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
+import javax.annotation.Nullable;
+
 import com.creativemd.creativecore.common.config.holder.CreativeConfigRegistry;
 import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.creativecore.common.gui.container.SubGui;
@@ -18,7 +20,6 @@ import com.creativemd.playerrevive.packet.ReviveUpdatePacket;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 import com.creativemd.playerrevive.server.ReviveEventServer;
 
-import javax.annotation.Nullable;
 import net.minecraft.command.CommandBase;
 import net.minecraft.command.CommandException;
 import net.minecraft.command.ICommandSender;
@@ -40,7 +41,7 @@ import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-@Mod(modid = PlayerRevive.modid, version = PlayerRevive.version, name = "Player Revive", acceptedMinecraftVersions = "", dependencies = "required-before:creativecore", guiFactory = "com.creativemd.playerrevive.PlayerReviveSettings")
+@Mod(modid = PlayerRevive.modid, version = PlayerRevive.version, name = "Player Revive", acceptedMinecraftVersions = "", dependencies = "required-after:creativecore", guiFactory = "com.creativemd.playerrevive.PlayerReviveSettings")
 @EventBusSubscriber
 public class PlayerRevive {
 	
@@ -90,10 +91,9 @@ public class PlayerRevive {
 			public boolean isUsernameIndex(String[] args, int index) {
 				return index == 1;
 			}
-
+			
 			@Override
-			public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args,
-					@Nullable BlockPos targetPos) {
+			public List<String> getTabCompletions(MinecraftServer server, ICommandSender sender, String[] args, @Nullable BlockPos targetPos) {
 				if (args.length == 1) {
 					return getListOfStringsMatchingLastWord(args, server.getOnlinePlayerNames());
 				}
