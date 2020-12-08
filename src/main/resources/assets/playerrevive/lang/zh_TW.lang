@@ -1,0 +1,16 @@
+#chat message
+playerrevive.chat.bleeding=%s 正在失血...
+death.attack.bledToDeath.player=%s 的血，流盡了。
+
+#gui-button
+playerrevive.gui.button.give_up=放棄
+playerrevive.gui.button.disconnect=回到標題畫面
+playerrevive.gui.button.send=發送
+
+#gui=labels
+playerrevive.gui.label.time_left=剩餘時間：%s
+
+
+#gui-popup
+playerrevive.gui.popup.give_up=真的要放棄嗎？
+playerrevive.gui.popup.disconnect=真的要退出嗎？
