@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.math.BlockPos;
 import net.minecraftforge.client.event.EntityViewRenderEvent.CameraSetup;
 import net.minecraftforge.client.event.RenderPlayerEvent;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
@@ -60,6 +61,7 @@ public class ReviveEventClient {
 			player.renderOffsetZ = 0;
 			
 			try {
+				event.getEntityPlayer().bedLocation = BlockPos.ORIGIN;
 				sleeping.set(event.getEntityPlayer(), true);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
@@ -72,6 +74,7 @@ public class ReviveEventClient {
 		IRevival revive = PlayerReviveServer.getRevival(event.getEntityPlayer());
 		if (!revive.isHealty()) {
 			try {
+				event.getEntityPlayer().bedLocation = null;
 				sleeping.set(event.getEntityPlayer(), false);
 			} catch (IllegalArgumentException | IllegalAccessException e) {
 				e.printStackTrace();
