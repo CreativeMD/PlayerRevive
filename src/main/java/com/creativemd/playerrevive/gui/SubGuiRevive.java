@@ -172,7 +172,7 @@ public class SubGuiRevive extends SubGui {
 			revive.deserializeNBT(nbt);
 			bar.pos = revive.getProgress();
 			
-			label.caption = I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft()));
+			label.setCaption(I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())));
 		}
 	}
 	
