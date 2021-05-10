@@ -1,15 +1,13 @@
 package com.creativemd.playerrevive.gui;
 
-import com.creativemd.creativecore.gui.container.SubContainer;
-import com.creativemd.creativecore.gui.premade.SubContainerTileEntity;
-import com.creativemd.playerrevive.Revival;
+import com.creativemd.creativecore.common.gui.container.SubContainer;
 import com.creativemd.playerrevive.api.IRevival;
 import com.creativemd.playerrevive.server.PlayerReviveServer;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.NBTTagCompound;
 
-public class SubContainerRevive extends SubContainer{
+public class SubContainerRevive extends SubContainer {
 	
 	public IRevival revive;
 	
@@ -20,7 +18,7 @@ public class SubContainerRevive extends SubContainer{
 		this.revive = revive;
 		this.isHelping = isHelping;
 	}
-
+	
 	@Override
 	public void createControls() {
 		
@@ -29,35 +27,26 @@ public class SubContainerRevive extends SubContainer{
 	public int currentTick = 0;
 	
 	@Override
-	public void onTick()
-	{
+	public void onTick() {
 		currentTick++;
-		if(currentTick > 10)
-		{
+		if (currentTick > 10) {
 			NBTTagCompound nbt = revive.serializeNBT();
 			sendNBTToGui(nbt);
 			currentTick = 0;
 		}
 	}
-
+	
 	@Override
 	public void onPacketReceive(NBTTagCompound nbt) {
-		if(nbt.getBoolean("giveup") && !isHelping)
-		{
-			IRevival revive = PlayerReviveServer.getRevival(player);
-			if(!revive.isHealty())
-			{
-				revive.kill();
-			}
-		}
+		if (nbt.getBoolean("giveup") && !isHelping)
+			PlayerReviveServer.kill(player);
 	}
 	
 	@Override
-	public void onClosed()
-	{
+	public void onClosed() {
 		super.onClosed();
-		if(isHelping && !player.getEntityWorld().isRemote)
+		if (isHelping && !player.getEntityWorld().isRemote)
 			PlayerReviveServer.removePlayerAsHelper(player);
 	}
-
+	
 }

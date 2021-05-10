@@ -17,24 +17,22 @@ public class CapaReviveProvider implements ICapabilitySerializable<NBTTagCompoun
 	public boolean hasCapability(Capability<?> capability, EnumFacing facing) {
 		return capability == CapaRevive.reviveCapa;
 	}
-
+	
 	@Override
 	public <T> T getCapability(Capability<T> capability, EnumFacing facing) {
-		if(capability == CapaRevive.reviveCapa)
+		if (capability == CapaRevive.reviveCapa)
 			return (T) revive;
-		return null; 
+		return null;
 	}
-
+	
 	@Override
 	public NBTTagCompound serializeNBT() {
 		return revive.serializeNBT();
 	}
-
+	
 	@Override
 	public void deserializeNBT(NBTTagCompound nbt) {
 		revive.deserializeNBT(nbt);
 	}
 	
-	
-
 }
