@@ -1,10 +1,8 @@
 package team.creative.playerrevive.server;
 
-import com.creativemd.creativecore.common.gui.opener.GuiHandler;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Util;
 import net.minecraft.util.text.ChatType;
@@ -26,6 +24,7 @@ import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.DamageBledToDeath;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.cap.Bleeding;
+import team.creative.playerrevive.packet.HelperPacket;
 
 public class ReviveEventServer {
     
@@ -42,7 +41,7 @@ public class ReviveEventServer {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
             if (revive.isBleeding()) {
-                revive.tick();
+                revive.tick(player);
                 
                 if (revive.timeLeft() % 20 == 0)
                     PlayerReviveServer.sendUpdatePacket(player);
@@ -73,13 +72,13 @@ public class ReviveEventServer {
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteract(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide) {
-            PlayerEntity player = (PlayerEntity) event.getTarget();
-            IBleeding revive = PlayerReviveServer.getBleeding(player);
+            PlayerEntity target = (PlayerEntity) event.getTarget();
+            PlayerEntity helper = event.getPlayer();
+            IBleeding revive = PlayerReviveServer.getBleeding(target);
             if (revive.isBleeding()) {
-                CompoundNBT nbt = new CompoundNBT();
-                nbt.putString("uuid", PlayerEntity.createPlayerUUID(player.getGameProfile()).toString());
-                revive.revivingPlayers().add(event.getPlayer());
-                sendPacketToNotify
+                PlayerReviveServer.removePlayerAsHelper(helper);
+                revive.revivingPlayers().add(helper);
+                PlayerRevive.NETWORK.sendToClient(new HelperPacket(target.getUUID(), true), (ServerPlayerEntity) helper);
                 event.setCanceled(true);
             }
         }
@@ -109,7 +108,8 @@ public class ReviveEventServer {
                 return;
             }
             
-            remove from helper list!!!!!
+            PlayerReviveServer.removePlayerAsHelper(player);
+            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) player);
             
             PlayerReviveServer.startBleeding(player, event.getSource());
             player.abilities.invulnerable = true;

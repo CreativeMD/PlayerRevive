@@ -14,6 +14,7 @@ import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.api.event.PlayerBleedOutEvent;
 import team.creative.playerrevive.api.event.PlayerRevivedEvent;
+import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
 
 public class PlayerReviveServer {
@@ -37,8 +38,8 @@ public class PlayerReviveServer {
         player.abilities.invulnerable = player.isCreative();
         player.setInvulnerable(false);
         
-        for (int i = 0; i < revive.revivingPlayers().size(); i++)
-            sendPacketToNotify
+        for (PlayerEntity helper : revive.revivingPlayers())
+            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) helper);
     }
     
     public static void revive(PlayerEntity player) {

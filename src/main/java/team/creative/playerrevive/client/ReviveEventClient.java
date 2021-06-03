@@ -1,29 +1,25 @@
 package team.creative.playerrevive.client;
 
-import java.lang.reflect.Field;
-import java.util.Iterator;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
-import com.creativemd.creativecore.common.gui.container.SubGui;
-import com.creativemd.creativecore.common.gui.mc.ContainerSub;
-import com.creativemd.creativecore.common.gui.opener.GuiHandler;
-import com.creativemd.playerrevive.api.IRevival;
-import com.creativemd.playerrevive.gui.SubContainerRevive;
-import com.creativemd.playerrevive.gui.SubGuiRevive;
+import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.AxisAlignedBB;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.StringTextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.server.PlayerReviveServer;
@@ -49,6 +45,9 @@ public class ReviveEventClient {
     
     public static TensionSound sound;
     
+    public static UUID helpTarget;
+    public static boolean helpActive = false;
+    
     @SubscribeEvent
     public void tick(RenderTickEvent event) {
         PlayerEntity player = mc.player;
@@ -65,6 +64,30 @@ public class ReviveEventClient {
                 if (sound != null) {
                     mc.getSoundManager().stop(sound);
                     sound = null;
+                }
+            } else if (helpActive) {
+                List<ITextComponent> list = new ArrayList<>();
+                int space = 15;
+                
+                PlayerEntity other = player.level.getPlayerByUUID(helpTarget);
+                if (other != null) {
+                    IBleeding bleeding = PlayerReviveServer.getBleeding(other);
+                    list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                    list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                    int width = 0;
+                    for (int i = 0; i < list.size(); i++) {
+                        String text = list.get(i).getString();
+                        width = Math.max(width, mc.font.width(text) + 10);
+                    }
+                    
+                    RenderSystem.disableBlend();
+                    RenderSystem.enableAlphaTest();
+                    RenderSystem.enableTexture();
+                    for (int i = 0; i < list.size(); i++) {
+                        String text = list.get(i).getString();
+                        mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+                                .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+                    }
                 }
             } else {
                 if (revive.timeLeft() < 400) {
@@ -93,12 +116,28 @@ public class ReviveEventClient {
                     lastShader = true;
                 }
                 
-                render time left
+                List<ITextComponent> list = new ArrayList<>();
+                int space = 15;
+                
+                IBleeding bleeding = PlayerReviveServer.getBleeding(player);
+                list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                int width = 0;
+                for (int i = 0; i < list.size(); i++) {
+                    String text = list.get(i).getString();
+                    width = Math.max(width, mc.font.width(text) + 10);
+                }
+                
+                RenderSystem.disableBlend();
+                RenderSystem.enableAlphaTest();
+                RenderSystem.enableTexture();
+                for (int i = 0; i < list.size(); i++) {
+                    String text = list.get(i).getString();
+                    mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+                            .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+                }
                 
             }
-            
-            helping render
-            label.setCaption(I18n.translateToLocalFormatted("playerrevive.gui.label.time_left", formatTime(revive.getTimeLeft())));
             
         }
     }

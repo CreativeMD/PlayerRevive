@@ -9,7 +9,9 @@ import net.minecraftforge.common.util.INBTSerializable;
 
 public interface IBleeding extends INBTSerializable<CompoundNBT> {
     
-    public void tick();
+    public void tick(PlayerEntity player);
+    
+    public float getProgress();
     
     public boolean isBleeding();
     

@@ -24,6 +24,9 @@ public class PlayerReviveConfig {
     public float progressPerPlayer = 1;
     
     @CreativeConfig
+    public double maxDistance = 3;
+    
+    @CreativeConfig
     public int bleedTime = 1200;
     
     @CreativeConfig

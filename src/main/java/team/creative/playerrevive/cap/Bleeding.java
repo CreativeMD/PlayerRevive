@@ -1,15 +1,18 @@
 package team.creative.playerrevive.cap;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.DamageSource;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.DamageBledToDeath;
 import team.creative.playerrevive.api.IBleeding;
+import team.creative.playerrevive.packet.HelperPacket;
 
 public class Bleeding implements IBleeding {
     
@@ -23,7 +26,14 @@ public class Bleeding implements IBleeding {
     public final List<PlayerEntity> revivingPlayers = new ArrayList<>();
     
     @Override
-    public void tick() {
+    public void tick(PlayerEntity player) {
+        for (Iterator<PlayerEntity> iterator = revivingPlayers.iterator(); iterator.hasNext();) {
+            PlayerEntity helper = iterator.next();
+            if (helper.distanceTo(player) > PlayerRevive.CONFIG.maxDistance) {
+                PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) helper);
+                iterator.remove();
+            }
+        }
         if (revivingPlayers.isEmpty() || !PlayerRevive.CONFIG.haltBleedTime)
             timeLeft--;
         progress += revivingPlayers.size() * PlayerRevive.CONFIG.progressPerPlayer;
@@ -31,6 +41,11 @@ public class Bleeding implements IBleeding {
         if (PlayerRevive.CONFIG.exhaustion > 0)
             for (int i = 0; i < revivingPlayers.size(); i++)
                 revivingPlayers.get(i).causeFoodExhaustion(PlayerRevive.CONFIG.exhaustion);
+    }
+    
+    @Override
+    public float getProgress() {
+        return progress;
     }
     
     @Override
