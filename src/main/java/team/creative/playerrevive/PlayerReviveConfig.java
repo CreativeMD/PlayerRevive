@@ -3,11 +3,13 @@ package team.creative.playerrevive;
 import java.util.Arrays;
 import java.util.List;
 
+import net.minecraft.item.Items;
 import net.minecraft.util.ResourceLocation;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.premade.SoundConfig;
 import team.creative.creativecore.common.config.sync.ConfigSynchronization;
 import team.creative.creativecore.common.util.ingredient.CreativeIngredient;
+import team.creative.creativecore.common.util.ingredient.CreativeIngredientItem;
 
 public class PlayerReviveConfig {
     
@@ -33,7 +35,7 @@ public class PlayerReviveConfig {
     public boolean haltBleedTime = true;
     
     @CreativeConfig
-    public CreativeIngredient reviveItem;
+    public CreativeIngredient reviveItem = new CreativeIngredientItem(Items.PAPER);
     
     @CreativeConfig
     public boolean needReviveItem = false;

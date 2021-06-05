@@ -43,7 +43,7 @@ public class ReviveEventServer {
             if (revive.isBleeding()) {
                 revive.tick(player);
                 
-                if (revive.timeLeft() % 20 == 0)
+                if (revive.downedTime() % 5 == 0)
                     PlayerReviveServer.sendUpdatePacket(player);
                 
                 if (PlayerRevive.CONFIG.affectFood)
@@ -103,10 +103,8 @@ public class ReviveEventServer {
             PlayerEntity player = (PlayerEntity) event.getEntityLiving();
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
-            if (revive.bledOut()) {
-                PlayerReviveServer.kill(player);
+            if (revive.bledOut())
                 return;
-            }
             
             PlayerReviveServer.removePlayerAsHelper(player);
             PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) player);
@@ -131,16 +129,17 @@ public class ReviveEventServer {
     }
     
     @SubscribeEvent
-    public void attachCapability(AttachCapabilitiesEvent<PlayerEntity> event) {
-        event.addCapability(PlayerRevive.BLEEDING_NAME, new ICapabilityProvider() {
-            
-            private LazyOptional<IBleeding> bleed = LazyOptional.of(Bleeding::new);
-            
-            @Override
-            public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
-                return PlayerRevive.BLEEDING.orEmpty(cap, bleed);
-            }
-        });
+    public void attachCapability(AttachCapabilitiesEvent<Entity> event) {
+        if (event.getObject() instanceof PlayerEntity)
+            event.addCapability(PlayerRevive.BLEEDING_NAME, new ICapabilityProvider() {
+                
+                private LazyOptional<IBleeding> bleed = LazyOptional.of(Bleeding::new);
+                
+                @Override
+                public <T> LazyOptional<T> getCapability(Capability<T> cap, Direction side) {
+                    return PlayerRevive.BLEEDING.orEmpty(cap, bleed);
+                }
+            });
     }
     
 }

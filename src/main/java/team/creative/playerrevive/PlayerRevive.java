@@ -30,6 +30,7 @@ import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.cap.Bleeding;
 import team.creative.playerrevive.cap.BleedingStorage;
 import team.creative.playerrevive.client.ReviveEventClient;
+import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
 import team.creative.playerrevive.server.ReviveEventServer;
@@ -57,8 +58,8 @@ public class PlayerRevive {
     public PlayerRevive() {
         DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerSounds);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::serverStarting);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(SoundEvent.class, this::registerSounds);
+        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
     }
     
     @OnlyIn(value = Dist.CLIENT)
@@ -69,6 +70,7 @@ public class PlayerRevive {
     
     private void init(final FMLCommonSetupEvent event) {
         NETWORK.registerType(ReviveUpdatePacket.class);
+        NETWORK.registerType(HelperPacket.class);
         
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG = new PlayerReviveConfig());
         CapabilityManager.INSTANCE.register(IBleeding.class, new BleedingStorage(), Bleeding::new);

@@ -65,28 +65,30 @@ public class ReviveEventClient {
                     mc.getSoundManager().stop(sound);
                     sound = null;
                 }
-            } else if (helpActive) {
-                List<ITextComponent> list = new ArrayList<>();
-                int space = 15;
                 
-                PlayerEntity other = player.level.getPlayerByUUID(helpTarget);
-                if (other != null) {
-                    IBleeding bleeding = PlayerReviveServer.getBleeding(other);
-                    list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                    list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
-                    int width = 0;
-                    for (int i = 0; i < list.size(); i++) {
-                        String text = list.get(i).getString();
-                        width = Math.max(width, mc.font.width(text) + 10);
-                    }
+                if (helpActive) {
+                    List<ITextComponent> list = new ArrayList<>();
+                    int space = 15;
                     
-                    RenderSystem.disableBlend();
-                    RenderSystem.enableAlphaTest();
-                    RenderSystem.enableTexture();
-                    for (int i = 0; i < list.size(); i++) {
-                        String text = list.get(i).getString();
-                        mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
-                                .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+                    PlayerEntity other = player.level.getPlayerByUUID(helpTarget);
+                    if (other != null) {
+                        IBleeding bleeding = PlayerReviveServer.getBleeding(other);
+                        list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                        list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                        int width = 0;
+                        for (int i = 0; i < list.size(); i++) {
+                            String text = list.get(i).getString();
+                            width = Math.max(width, mc.font.width(text) + 10);
+                        }
+                        
+                        RenderSystem.disableBlend();
+                        RenderSystem.enableAlphaTest();
+                        RenderSystem.enableTexture();
+                        for (int i = 0; i < list.size(); i++) {
+                            String text = list.get(i).getString();
+                            mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+                                    .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+                        }
                     }
                 }
             } else {

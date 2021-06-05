@@ -25,6 +25,8 @@ public interface IBleeding extends INBTSerializable<CompoundNBT> {
     
     public int timeLeft();
     
+    public int downedTime();
+    
     public List<PlayerEntity> revivingPlayers();
     
     public DamageSource getSource();

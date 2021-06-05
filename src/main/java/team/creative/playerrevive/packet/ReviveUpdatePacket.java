@@ -8,12 +8,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.network.CreativePacket;
-import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.server.PlayerReviveServer;
 
 public class ReviveUpdatePacket extends CreativePacket {
     
-    public IBleeding bleeding;
     public UUID uuid;
     public CompoundNBT nbt;
     

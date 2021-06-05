@@ -19,11 +19,16 @@ public class Bleeding implements IBleeding {
     private boolean bleeding;
     private float progress;
     private int timeLeft;
+    private int downedTime;
     
     private DamageSource lastSource;
     private CombatTrackerClone trackerClone;
     
     public final List<PlayerEntity> revivingPlayers = new ArrayList<>();
+    
+    public Bleeding() {
+        
+    }
     
     @Override
     public void tick(PlayerEntity player) {
@@ -37,10 +42,16 @@ public class Bleeding implements IBleeding {
         if (revivingPlayers.isEmpty() || !PlayerRevive.CONFIG.haltBleedTime)
             timeLeft--;
         progress += revivingPlayers.size() * PlayerRevive.CONFIG.progressPerPlayer;
+        downedTime++;
         
         if (PlayerRevive.CONFIG.exhaustion > 0)
             for (int i = 0; i < revivingPlayers.size(); i++)
                 revivingPlayers.get(i).causeFoodExhaustion(PlayerRevive.CONFIG.exhaustion);
+    }
+    
+    @Override
+    public int downedTime() {
+        return downedTime;
     }
     
     @Override
@@ -55,7 +66,7 @@ public class Bleeding implements IBleeding {
     
     @Override
     public boolean bledOut() {
-        return timeLeft <= 0;
+        return bleeding && timeLeft <= 0;
     }
     
     @Override
@@ -83,6 +94,7 @@ public class Bleeding implements IBleeding {
     public void knockOut(PlayerEntity player, DamageSource source) {
         this.bleeding = true;
         this.progress = 0;
+        this.downedTime = 0;
         this.timeLeft = PlayerRevive.CONFIG.bleedTime;
         this.lastSource = source;
         this.trackerClone = new CombatTrackerClone(player.getCombatTracker());
@@ -93,6 +105,7 @@ public class Bleeding implements IBleeding {
         this.bleeding = false;
         this.progress = 0;
         this.timeLeft = 0;
+        this.downedTime = 0;
         this.lastSource = null;
         this.trackerClone = null;
     }

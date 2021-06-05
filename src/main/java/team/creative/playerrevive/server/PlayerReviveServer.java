@@ -14,13 +14,14 @@ import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.api.event.PlayerBleedOutEvent;
 import team.creative.playerrevive.api.event.PlayerRevivedEvent;
+import team.creative.playerrevive.cap.Bleeding;
 import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
 
 public class PlayerReviveServer {
     
     public static IBleeding getBleeding(PlayerEntity player) {
-        return player.getCapability(PlayerRevive.BLEEDING, null).orElseThrow(RuntimeException::new);
+        return player.getCapability(PlayerRevive.BLEEDING).orElseGet(Bleeding::new);
     }
     
     public static void sendUpdatePacket(PlayerEntity player) {
@@ -40,6 +41,9 @@ public class PlayerReviveServer {
         
         for (PlayerEntity helper : revive.revivingPlayers())
             PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) helper);
+        revive.revivingPlayers().clear();
+        
+        sendUpdatePacket(player);
     }
     
     public static void revive(PlayerEntity player) {
@@ -60,7 +64,6 @@ public class PlayerReviveServer {
         CombatTrackerClone trackerClone = revive.getTrackerClone();
         if (trackerClone != null)
             trackerClone.overwriteTracker(player.getCombatTracker());
-        revive.bledOut();
         player.setHealth(0.0F);
         player.die(source);
         resetPlayer(player, revive);
