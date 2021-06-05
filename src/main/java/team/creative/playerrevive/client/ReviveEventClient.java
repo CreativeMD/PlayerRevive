@@ -117,6 +117,7 @@ public class ReviveEventClient {
                 }
             } else {
                 try {
+                    player.setPose(Pose.SWIMMING);
                     handsBusy.setBoolean(player, true);
                     usingItemHand.set(player, Hand.MAIN_HAND);
                     startedUsingItem.setBoolean(player, true);
