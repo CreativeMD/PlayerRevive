@@ -1,5 +1,6 @@
 package team.creative.playerrevive.client;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -8,18 +9,24 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
 import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
+import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.server.PlayerReviveServer;
@@ -28,6 +35,9 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class ReviveEventClient {
     
     public static Minecraft mc = Minecraft.getInstance();
+    private static final Field startedUsingItem = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184842_cm");
+    private static final Field usingItemHand = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184843_cn");
+    private static final Field handsBusy = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184844_co");
     
     @SubscribeEvent
     public void playerTick(PlayerTickEvent event) {
@@ -36,6 +46,7 @@ public class ReviveEventClient {
         IBleeding revive = PlayerReviveServer.getBleeding(event.player);
         if (revive.isBleeding() && event.player != mc.player) {
             event.player.setPose(Pose.SWIMMING);
+            
             //event.player.setForcedPose(Pose.SWIMMING);
         }
     }
@@ -49,9 +60,19 @@ public class ReviveEventClient {
     public static boolean helpActive = false;
     
     @SubscribeEvent
+    public void click(ClickInputEvent event) {
+        PlayerEntity player = mc.player;
+        if (player != null) {
+            IBleeding revive = PlayerReviveServer.getBleeding(player);
+            if (revive.isBleeding())
+                event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
     public void tick(RenderTickEvent event) {
         PlayerEntity player = mc.player;
-        if (event.phase == Phase.END && player != null) {
+        if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
             if (!revive.isBleeding()) {
@@ -81,6 +102,7 @@ public class ReviveEventClient {
                             width = Math.max(width, mc.font.width(text) + 10);
                         }
                         
+                        RenderSystem.disableDepthTest();
                         RenderSystem.disableBlend();
                         RenderSystem.enableAlphaTest();
                         RenderSystem.enableTexture();
@@ -89,9 +111,19 @@ public class ReviveEventClient {
                             mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
                                     .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
                         }
+                        
+                        RenderSystem.enableDepthTest();
                     }
                 }
             } else {
+                try {
+                    handsBusy.setBoolean(player, true);
+                    usingItemHand.set(player, Hand.MAIN_HAND);
+                    startedUsingItem.setBoolean(player, true);
+                    player.forceAddEffect(new EffectInstance(Effects.JUMP, 0, -10));
+                    player.hurtTime = 0;
+                } catch (IllegalArgumentException | IllegalAccessException e) {}
+                
                 if (revive.timeLeft() < 400) {
                     if (!lastHighTension) {
                         if (!PlayerRevive.CONFIG.disableMusic) {
@@ -130,6 +162,7 @@ public class ReviveEventClient {
                     width = Math.max(width, mc.font.width(text) + 10);
                 }
                 
+                RenderSystem.disableDepthTest();
                 RenderSystem.disableBlend();
                 RenderSystem.enableAlphaTest();
                 RenderSystem.enableTexture();
@@ -138,6 +171,7 @@ public class ReviveEventClient {
                     mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
                             .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
                 }
+                RenderSystem.enableDepthTest();
                 
             }
             
