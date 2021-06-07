@@ -14,7 +14,6 @@ import net.minecraft.entity.Pose;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
-import net.minecraft.util.Hand;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
@@ -35,8 +34,6 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class ReviveEventClient {
     
     public static Minecraft mc = Minecraft.getInstance();
-    private static final Field startedUsingItem = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184842_cm");
-    private static final Field usingItemHand = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184843_cn");
     private static final Field handsBusy = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184844_co");
     
     @SubscribeEvent
@@ -46,8 +43,6 @@ public class ReviveEventClient {
         IBleeding revive = PlayerReviveServer.getBleeding(event.player);
         if (revive.isBleeding() && event.player != mc.player) {
             event.player.setPose(Pose.SWIMMING);
-            
-            //event.player.setForcedPose(Pose.SWIMMING);
         }
     }
     
@@ -58,6 +53,8 @@ public class ReviveEventClient {
     
     public static UUID helpTarget;
     public static boolean helpActive = false;
+    
+    private boolean addedEffect = false;
     
     @SubscribeEvent
     public void click(ClickInputEvent event) {
@@ -80,6 +77,14 @@ public class ReviveEventClient {
                 if (lastShader) {
                     mc.gameRenderer.checkEntityPostEffect(mc.getCameraEntity());
                     lastShader = false;
+                }
+                
+                if (addedEffect) {
+                    player.removeEffect(Effects.JUMP);
+                    try {
+                        handsBusy.setBoolean(player, false);
+                    } catch (IllegalArgumentException | IllegalAccessException e) {}
+                    addedEffect = false;
                 }
                 
                 if (sound != null) {
@@ -119,10 +124,10 @@ public class ReviveEventClient {
                 try {
                     player.setPose(Pose.SWIMMING);
                     handsBusy.setBoolean(player, true);
-                    usingItemHand.set(player, Hand.MAIN_HAND);
-                    startedUsingItem.setBoolean(player, true);
-                    player.forceAddEffect(new EffectInstance(Effects.JUMP, 0, -10));
+                    player.addEffect(new EffectInstance(Effects.JUMP, 0, -10));
+                    
                     player.hurtTime = 0;
+                    addedEffect = true;
                 } catch (IllegalArgumentException | IllegalAccessException e) {}
                 
                 if (revive.timeLeft() < 400) {

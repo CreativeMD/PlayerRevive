@@ -83,7 +83,8 @@ public class PlayerRevive {
                 .register(Commands.literal("revive").requires(x -> x.hasPermission(2)).then(Commands.argument("players", EntityArgument.players()).executes(x -> {
                     Collection<ServerPlayerEntity> players = EntityArgument.getPlayers(x, "players");
                     for (ServerPlayerEntity player : players)
-                        PlayerReviveServer.revive(player);
+                        if (PlayerReviveServer.getBleeding(player).isBleeding())
+                            PlayerReviveServer.revive(player);
                     return 0;
                 })));
     }
