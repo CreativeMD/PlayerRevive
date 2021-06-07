@@ -65,6 +65,7 @@ public class PlayerReviveServer {
         if (trackerClone != null)
             trackerClone.overwriteTracker(player.getCombatTracker());
         player.setHealth(0.0F);
+        revive.forceBledOut();
         player.die(source);
         resetPlayer(player, revive);
         

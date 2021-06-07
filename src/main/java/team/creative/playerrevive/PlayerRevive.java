@@ -30,6 +30,7 @@ import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.cap.Bleeding;
 import team.creative.playerrevive.cap.BleedingStorage;
 import team.creative.playerrevive.client.ReviveEventClient;
+import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
@@ -71,6 +72,7 @@ public class PlayerRevive {
     private void init(final FMLCommonSetupEvent event) {
         NETWORK.registerType(ReviveUpdatePacket.class);
         NETWORK.registerType(HelperPacket.class);
+        NETWORK.registerType(GiveUpPacket.class);
         
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG = new PlayerReviveConfig());
         CapabilityManager.INSTANCE.register(IBleeding.class, new BleedingStorage(), Bleeding::new);

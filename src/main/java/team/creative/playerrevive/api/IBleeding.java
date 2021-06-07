@@ -17,6 +17,8 @@ public interface IBleeding extends INBTSerializable<CompoundNBT> {
     
     public boolean bledOut();
     
+    public void forceBledOut();
+    
     public void knockOut(PlayerEntity player, DamageSource source);
     
     public boolean revived();

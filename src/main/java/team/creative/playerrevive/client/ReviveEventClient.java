@@ -21,6 +21,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
+import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
@@ -28,6 +29,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
+import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
 
 @OnlyIn(value = Dist.CLIENT)
@@ -55,6 +57,7 @@ public class ReviveEventClient {
     public static boolean helpActive = false;
     
     private boolean addedEffect = false;
+    private int giveUpTimer = 0;
     
     @SubscribeEvent
     public void click(ClickInputEvent event) {
@@ -63,6 +66,28 @@ public class ReviveEventClient {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (revive.isBleeding())
                 event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public void clientTick(ClientTickEvent event) {
+        if (event.phase == Phase.END) {
+            PlayerEntity player = mc.player;
+            if (player != null) {
+                IBleeding revive = PlayerReviveServer.getBleeding(player);
+                
+                if (revive.isBleeding()) {
+                    if (mc.options.keyAttack.isDown()) {
+                        if (giveUpTimer > 80) {
+                            PlayerRevive.NETWORK.sendToServer(new GiveUpPacket());
+                            giveUpTimer = 0;
+                        } else
+                            giveUpTimer++;
+                    } else
+                        giveUpTimer = 0;
+                } else
+                    giveUpTimer = 0;
+            }
         }
     }
     
@@ -93,31 +118,13 @@ public class ReviveEventClient {
                 }
                 
                 if (helpActive) {
-                    List<ITextComponent> list = new ArrayList<>();
-                    int space = 15;
-                    
                     PlayerEntity other = player.level.getPlayerByUUID(helpTarget);
                     if (other != null) {
+                        List<ITextComponent> list = new ArrayList<>();
                         IBleeding bleeding = PlayerReviveServer.getBleeding(other);
                         list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
                         list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
-                        int width = 0;
-                        for (int i = 0; i < list.size(); i++) {
-                            String text = list.get(i).getString();
-                            width = Math.max(width, mc.font.width(text) + 10);
-                        }
-                        
-                        RenderSystem.disableDepthTest();
-                        RenderSystem.disableBlend();
-                        RenderSystem.enableAlphaTest();
-                        RenderSystem.enableTexture();
-                        for (int i = 0; i < list.size(); i++) {
-                            String text = list.get(i).getString();
-                            mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
-                                    .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
-                        }
-                        
-                        RenderSystem.enableDepthTest();
+                        render(list);
                     }
                 }
             } else {
@@ -155,33 +162,35 @@ public class ReviveEventClient {
                     mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blur.json"));
                     lastShader = true;
                 }
-                
                 List<ITextComponent> list = new ArrayList<>();
-                int space = 15;
-                
                 IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                 list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
                 list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
-                int width = 0;
-                for (int i = 0; i < list.size(); i++) {
-                    String text = list.get(i).getString();
-                    width = Math.max(width, mc.font.width(text) + 10);
-                }
-                
-                RenderSystem.disableDepthTest();
-                RenderSystem.disableBlend();
-                RenderSystem.enableAlphaTest();
-                RenderSystem.enableTexture();
-                for (int i = 0; i < list.size(); i++) {
-                    String text = list.get(i).getString();
-                    mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
-                            .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
-                }
-                RenderSystem.enableDepthTest();
-                
+                list.add(new TranslationTextComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), (80 - giveUpTimer) / 20));
+                render(list);
             }
             
         }
+    }
+    
+    public static void render(List<ITextComponent> list) {
+        int space = 15;
+        int width = 0;
+        for (int i = 0; i < list.size(); i++) {
+            String text = list.get(i).getString();
+            width = Math.max(width, mc.font.width(text) + 10);
+        }
+        
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
+        RenderSystem.enableAlphaTest();
+        RenderSystem.enableTexture();
+        for (int i = 0; i < list.size(); i++) {
+            String text = list.get(i).getString();
+            mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+                    .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+        }
+        RenderSystem.enableDepthTest();
     }
     
     public String formatTime(int timeLeft) {

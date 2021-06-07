@@ -50,6 +50,12 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
+    public void forceBledOut() {
+        bleeding = true;
+        timeLeft = 0;
+    }
+    
+    @Override
     public int downedTime() {
         return downedTime;
     }
