@@ -39,6 +39,7 @@ public class Bleeding implements IBleeding {
                 iterator.remove();
             }
         }
+        //player.setPose(Pose.SWIMMING);
         if (revivingPlayers.isEmpty() || !PlayerRevive.CONFIG.haltBleedTime)
             timeLeft--;
         progress += revivingPlayers.size() * PlayerRevive.CONFIG.progressPerPlayer;
