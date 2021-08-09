@@ -158,7 +158,7 @@ public class ReviveEventClient {
                     }
                 }
                 
-                if (!lastShader) {
+                if (!lastShader || mc.gameRenderer.currentEffect() == null) {
                     mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blur.json"));
                     lastShader = true;
                 }
