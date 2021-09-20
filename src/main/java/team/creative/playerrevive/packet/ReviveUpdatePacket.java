@@ -3,9 +3,10 @@ package team.creative.playerrevive.packet;
 import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.network.CreativePacket;
@@ -15,9 +16,9 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class ReviveUpdatePacket extends CreativePacket {
     
     public UUID uuid;
-    public CompoundNBT nbt;
+    public CompoundTag nbt;
     
-    public ReviveUpdatePacket(PlayerEntity player) {
+    public ReviveUpdatePacket(Player player) {
         this.nbt = PlayerReviveServer.getBleeding(player).serializeNBT();
         this.uuid = player.getUUID();
     }
@@ -28,8 +29,8 @@ public class ReviveUpdatePacket extends CreativePacket {
     
     @Override
     @OnlyIn(value = Dist.CLIENT)
-    public void executeClient(PlayerEntity player) {
-        PlayerEntity member = Minecraft.getInstance().level.getPlayerByUUID(uuid);
+    public void executeClient(Player player) {
+        Player member = Minecraft.getInstance().level.getPlayerByUUID(uuid);
         if (member != null) {
             IBleeding bleeding = PlayerReviveServer.getBleeding(member);
             bleeding.deserializeNBT(nbt);
@@ -39,7 +40,7 @@ public class ReviveUpdatePacket extends CreativePacket {
     }
     
     @Override
-    public void executeServer(PlayerEntity player) {
+    public void executeServer(ServerPlayer player) {
         
     }
     

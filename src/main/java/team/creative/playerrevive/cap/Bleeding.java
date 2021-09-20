@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.DamageBledToDeath;
@@ -24,18 +24,18 @@ public class Bleeding implements IBleeding {
     private DamageSource lastSource;
     private CombatTrackerClone trackerClone;
     
-    public final List<PlayerEntity> revivingPlayers = new ArrayList<>();
+    public final List<Player> revivingPlayers = new ArrayList<>();
     
     public Bleeding() {
         
     }
     
     @Override
-    public void tick(PlayerEntity player) {
-        for (Iterator<PlayerEntity> iterator = revivingPlayers.iterator(); iterator.hasNext();) {
-            PlayerEntity helper = iterator.next();
+    public void tick(Player player) {
+        for (Iterator<Player> iterator = revivingPlayers.iterator(); iterator.hasNext();) {
+            Player helper = iterator.next();
             if (helper.distanceTo(player) > PlayerRevive.CONFIG.maxDistance) {
-                PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) helper);
+                PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
                 iterator.remove();
             }
         }
@@ -77,8 +77,8 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
-    public CompoundNBT serializeNBT() {
-        CompoundNBT nbt = new CompoundNBT();
+    public CompoundTag serializeNBT() {
+        CompoundTag nbt = new CompoundTag();
         nbt.putInt("timeLeft", timeLeft);
         nbt.putFloat("progress", progress);
         nbt.putBoolean("bleeding", bleeding);
@@ -86,7 +86,7 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
-    public void deserializeNBT(CompoundNBT nbt) {
+    public void deserializeNBT(CompoundTag nbt) {
         timeLeft = nbt.getInt("timeLeft");
         progress = nbt.getFloat("progress");
         bleeding = nbt.getBoolean("bleeding");
@@ -98,7 +98,7 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
-    public void knockOut(PlayerEntity player, DamageSource source) {
+    public void knockOut(Player player, DamageSource source) {
         this.bleeding = true;
         this.progress = 0;
         this.downedTime = 0;
@@ -123,7 +123,7 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
-    public List<PlayerEntity> revivingPlayers() {
+    public List<Player> revivingPlayers() {
         return revivingPlayers;
     }
     

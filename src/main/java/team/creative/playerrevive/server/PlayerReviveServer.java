@@ -3,11 +3,11 @@ package team.creative.playerrevive.server;
 import java.io.IOException;
 import java.util.Iterator;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.server.management.ProfileBanEntry;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.SoundCategory;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.UserBanListEntry;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
@@ -20,44 +20,44 @@ import team.creative.playerrevive.packet.ReviveUpdatePacket;
 
 public class PlayerReviveServer {
     
-    public static IBleeding getBleeding(PlayerEntity player) {
+    public static IBleeding getBleeding(Player player) {
         return player.getCapability(PlayerRevive.BLEEDING).orElseGet(Bleeding::new);
     }
     
-    public static void sendUpdatePacket(PlayerEntity player) {
+    public static void sendUpdatePacket(Player player) {
         ReviveUpdatePacket packet = new ReviveUpdatePacket(player);
         PlayerRevive.NETWORK.sendToClientTracking(packet, player);
-        PlayerRevive.NETWORK.sendToClient(packet, (ServerPlayerEntity) player);
+        PlayerRevive.NETWORK.sendToClient(packet, (ServerPlayer) player);
     }
     
-    public static void startBleeding(PlayerEntity player, DamageSource source) {
+    public static void startBleeding(Player player, DamageSource source) {
         getBleeding(player).knockOut(player, source);
         sendUpdatePacket(player);
     }
     
-    private static void resetPlayer(PlayerEntity player, IBleeding revive) {
-        player.abilities.invulnerable = player.isCreative();
+    private static void resetPlayer(Player player, IBleeding revive) {
+        player.getAbilities().invulnerable = player.isCreative();
         player.setInvulnerable(false);
         
-        for (PlayerEntity helper : revive.revivingPlayers())
-            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) helper);
+        for (Player helper : revive.revivingPlayers())
+            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
         revive.revivingPlayers().clear();
         
         sendUpdatePacket(player);
     }
     
-    public static void revive(PlayerEntity player) {
+    public static void revive(Player player) {
         IBleeding revive = getBleeding(player);
         MinecraftForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
         revive.revive();
         resetPlayer(player, revive);
         
-        PlayerRevive.CONFIG.sounds.revived.play(player, SoundCategory.PLAYERS);
+        PlayerRevive.CONFIG.sounds.revived.play(player, SoundSource.PLAYERS);
         
         sendUpdatePacket(player);
     }
     
-    public static void kill(PlayerEntity player) {
+    public static void kill(Player player) {
         IBleeding revive = getBleeding(player);
         MinecraftForge.EVENT_BUS.post(new PlayerBleedOutEvent(player, revive));
         DamageSource source = revive.getSource();
@@ -69,11 +69,11 @@ public class PlayerReviveServer {
         player.die(source);
         resetPlayer(player, revive);
         
-        PlayerRevive.CONFIG.sounds.death.play(player, SoundCategory.PLAYERS);
+        PlayerRevive.CONFIG.sounds.death.play(player, SoundSource.PLAYERS);
         
         if (PlayerRevive.CONFIG.banPlayerAfterDeath) {
             try {
-                player.getServer().getPlayerList().getBans().add(new ProfileBanEntry(player.getGameProfile()));
+                player.getServer().getPlayerList().getBans().add(new UserBanListEntry(player.getGameProfile()));
                 player.getServer().getPlayerList().getBans().save();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -83,9 +83,9 @@ public class PlayerReviveServer {
         sendUpdatePacket(player);
     }
     
-    public static void removePlayerAsHelper(PlayerEntity player) {
-        for (Iterator<ServerPlayerEntity> iterator = player.getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
-            ServerPlayerEntity member = iterator.next();
+    public static void removePlayerAsHelper(Player player) {
+        for (Iterator<ServerPlayer> iterator = player.getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+            ServerPlayer member = iterator.next();
             IBleeding revive = getBleeding(member);
             revive.revivingPlayers().remove(player);
         }

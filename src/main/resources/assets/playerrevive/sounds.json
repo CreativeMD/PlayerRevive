@@ -1,6 +1,6 @@
 {
   "death": {"category": "master","sounds": [{"name": "playerrevive:death"}]},
   "revived": {"category": "master","sounds": [{"name": "playerrevive:revived"}]},
-  "tension": {"category": "master","sounds": [{"name": "playerrevive:zander noriega - perpetual tension","stream": true}]},
+  "tension": {"category": "master","sounds": [{"name": "playerrevive:zander_noriega_-_perpetual_tension","stream": true}]},
   "hightension": {"category": "master","sounds": [{"name": "playerrevive:dream raid full","stream": true}]}
 }

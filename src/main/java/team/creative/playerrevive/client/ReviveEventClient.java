@@ -5,19 +5,19 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.player.ClientPlayerEntity;
-import net.minecraft.entity.Pose;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
@@ -26,7 +26,7 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.packet.GiveUpPacket;
@@ -36,7 +36,7 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class ReviveEventClient {
     
     public static Minecraft mc = Minecraft.getInstance();
-    private static final Field handsBusy = ObfuscationReflectionHelper.findField(ClientPlayerEntity.class, "field_184844_co");
+    private static final Field handsBusy = ObfuscationReflectionHelper.findField(LocalPlayer.class, "f_108611_");
     
     @SubscribeEvent
     public void playerTick(PlayerTickEvent event) {
@@ -61,7 +61,7 @@ public class ReviveEventClient {
     
     @SubscribeEvent
     public void click(ClickInputEvent event) {
-        PlayerEntity player = mc.player;
+        Player player = mc.player;
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (revive.isBleeding())
@@ -72,7 +72,7 @@ public class ReviveEventClient {
     @SubscribeEvent
     public void clientTick(ClientTickEvent event) {
         if (event.phase == Phase.END) {
-            PlayerEntity player = mc.player;
+            Player player = mc.player;
             if (player != null) {
                 IBleeding revive = PlayerReviveServer.getBleeding(player);
                 
@@ -93,7 +93,7 @@ public class ReviveEventClient {
     
     @SubscribeEvent
     public void tick(RenderTickEvent event) {
-        PlayerEntity player = mc.player;
+        Player player = mc.player;
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
@@ -105,7 +105,7 @@ public class ReviveEventClient {
                 }
                 
                 if (addedEffect) {
-                    player.removeEffect(Effects.JUMP);
+                    player.removeEffect(MobEffects.JUMP);
                     try {
                         handsBusy.setBoolean(player, false);
                     } catch (IllegalArgumentException | IllegalAccessException e) {}
@@ -118,12 +118,12 @@ public class ReviveEventClient {
                 }
                 
                 if (helpActive) {
-                    PlayerEntity other = player.level.getPlayerByUUID(helpTarget);
+                    Player other = player.level.getPlayerByUUID(helpTarget);
                     if (other != null) {
-                        List<ITextComponent> list = new ArrayList<>();
+                        List<Component> list = new ArrayList<>();
                         IBleeding bleeding = PlayerReviveServer.getBleeding(other);
-                        list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                        list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                        list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                        list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
                         render(list);
                     }
                 }
@@ -131,7 +131,7 @@ public class ReviveEventClient {
                 try {
                     player.setPose(Pose.SWIMMING);
                     handsBusy.setBoolean(player, true);
-                    player.addEffect(new EffectInstance(Effects.JUMP, 0, -10));
+                    player.addEffect(new MobEffectInstance(MobEffects.JUMP, 0, -10));
                     
                     player.hurtTime = 0;
                     addedEffect = true;
@@ -159,21 +159,22 @@ public class ReviveEventClient {
                 }
                 
                 if (!lastShader) {
-                    mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blur.json"));
+                    mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blobs2.json"));
+                    //mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blur.json"));
                     lastShader = true;
                 }
-                List<ITextComponent> list = new ArrayList<>();
+                List<Component> list = new ArrayList<>();
                 IBleeding bleeding = PlayerReviveServer.getBleeding(player);
-                list.add(new TranslationTextComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                list.add(new StringTextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
-                list.add(new TranslationTextComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), (80 - giveUpTimer) / 20));
+                list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), (80 - giveUpTimer) / 20));
                 render(list);
             }
             
         }
     }
     
-    public static void render(List<ITextComponent> list) {
+    public static void render(List<Component> list) {
         int space = 15;
         int width = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -183,11 +184,10 @@ public class ReviveEventClient {
         
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
-        RenderSystem.enableAlphaTest();
         RenderSystem.enableTexture();
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
-            mc.font.drawShadow(new MatrixStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+            mc.font.drawShadow(new PoseStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
                     .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
         }
         RenderSystem.enableDepthTest();

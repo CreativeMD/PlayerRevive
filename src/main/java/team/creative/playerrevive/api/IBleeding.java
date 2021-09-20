@@ -2,14 +2,14 @@ package team.creative.playerrevive.api;
 
 import java.util.List;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.DamageSource;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
 
-public interface IBleeding extends INBTSerializable<CompoundNBT> {
+public interface IBleeding extends INBTSerializable<CompoundTag> {
     
-    public void tick(PlayerEntity player);
+    public void tick(Player player);
     
     public float getProgress();
     
@@ -19,7 +19,7 @@ public interface IBleeding extends INBTSerializable<CompoundNBT> {
     
     public void forceBledOut();
     
-    public void knockOut(PlayerEntity player, DamageSource source);
+    public void knockOut(Player player, DamageSource source);
     
     public boolean revived();
     
@@ -29,7 +29,7 @@ public interface IBleeding extends INBTSerializable<CompoundNBT> {
     
     public int downedTime();
     
-    public List<PlayerEntity> revivingPlayers();
+    public List<Player> revivingPlayers();
     
     public DamageSource getSource();
     

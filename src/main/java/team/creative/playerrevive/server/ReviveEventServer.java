@@ -1,12 +1,12 @@
 package team.creative.playerrevive.server;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Util;
-import net.minecraft.util.text.ChatType;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.Util;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -35,7 +35,7 @@ public class ReviveEventServer {
     @SubscribeEvent
     public void playerTick(PlayerTickEvent event) {
         if (event.phase == Phase.START && event.side == LogicalSide.SERVER && isReviveActive(event.player)) {
-            PlayerEntity player = event.player;
+            Player player = event.player;
             if (!player.isAlive())
                 return;
             IBleeding revive = PlayerReviveServer.getBleeding(player);
@@ -49,7 +49,7 @@ public class ReviveEventServer {
                 if (PlayerRevive.CONFIG.affectFood)
                     player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.foodAfterRevive);
                 player.setHealth(PlayerRevive.CONFIG.healthAfterRevive);
-                player.abilities.invulnerable = true;
+                player.getAbilities().invulnerable = true;
                 player.setInvulnerable(true);
                 
                 if (revive.revived())
@@ -71,14 +71,14 @@ public class ReviveEventServer {
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteract(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof PlayerEntity && !event.getEntityLiving().level.isClientSide) {
-            PlayerEntity target = (PlayerEntity) event.getTarget();
-            PlayerEntity helper = event.getPlayer();
+        if (event.getTarget() instanceof Player && !event.getEntityLiving().level.isClientSide) {
+            Player target = (Player) event.getTarget();
+            Player helper = event.getPlayer();
             IBleeding revive = PlayerReviveServer.getBleeding(target);
             if (revive.isBleeding()) {
                 PlayerReviveServer.removePlayerAsHelper(helper);
                 revive.revivingPlayers().add(helper);
-                PlayerRevive.NETWORK.sendToClient(new HelperPacket(target.getUUID(), true), (ServerPlayerEntity) helper);
+                PlayerRevive.NETWORK.sendToClient(new HelperPacket(target.getUUID(), true), (ServerPlayer) helper);
                 event.setCanceled(true);
             }
         }
@@ -86,8 +86,8 @@ public class ReviveEventServer {
     
     @SubscribeEvent
     public void playerDamage(LivingHurtEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity) {
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+        if (event.getEntityLiving() instanceof Player) {
+            Player player = (Player) event.getEntityLiving();
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (revive
                     .isBleeding() && ((event.getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) || revive
@@ -98,19 +98,19 @@ public class ReviveEventServer {
     
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerDied(LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof PlayerEntity && isReviveActive(event.getEntityLiving()) && !event.getEntityLiving().level.isClientSide && event
+        if (event.getEntityLiving() instanceof Player && isReviveActive(event.getEntityLiving()) && !event.getEntityLiving().level.isClientSide && event
                 .getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) {
-            PlayerEntity player = (PlayerEntity) event.getEntityLiving();
+            Player player = (Player) event.getEntityLiving();
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
             if (revive.bledOut())
                 return;
             
             PlayerReviveServer.removePlayerAsHelper(player);
-            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayerEntity) player);
+            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) player);
             
             PlayerReviveServer.startBleeding(player, event.getSource());
-            player.abilities.invulnerable = true;
+            player.getAbilities().invulnerable = true;
             player.setInvulnerable(true);
             
             if (player.isPassenger())
@@ -124,13 +124,13 @@ public class ReviveEventServer {
             
             if (!PlayerRevive.CONFIG.disableBleedingMessage)
                 player.getServer().getPlayerList()
-                        .broadcastMessage(new TranslationTextComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
+                        .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
         }
     }
     
     @SubscribeEvent
     public void attachCapability(AttachCapabilitiesEvent<Entity> event) {
-        if (event.getObject() instanceof PlayerEntity)
+        if (event.getObject() instanceof Player)
             event.addCapability(PlayerRevive.BLEEDING_NAME, new ICapabilityProvider() {
                 
                 private LazyOptional<IBleeding> bleed = LazyOptional.of(Bleeding::new);

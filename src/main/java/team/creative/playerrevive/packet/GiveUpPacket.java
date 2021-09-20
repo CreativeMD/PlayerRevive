@@ -1,6 +1,7 @@
 package team.creative.playerrevive.packet;
 
-import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import team.creative.creativecore.common.network.CreativePacket;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.server.PlayerReviveServer;
@@ -8,12 +9,12 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class GiveUpPacket extends CreativePacket {
     
     @Override
-    public void executeClient(PlayerEntity player) {
+    public void executeClient(Player player) {
         
     }
     
     @Override
-    public void executeServer(PlayerEntity player) {
+    public void executeServer(ServerPlayer player) {
         IBleeding bleeding = PlayerReviveServer.getBleeding(player);
         if (bleeding.isBleeding())
             PlayerReviveServer.kill(player);

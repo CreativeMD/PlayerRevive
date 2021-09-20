@@ -6,19 +6,19 @@ import java.util.List;
 
 import com.google.common.collect.Lists;
 
-import net.minecraft.util.CombatEntry;
-import net.minecraft.util.CombatTracker;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.world.damagesource.CombatEntry;
+import net.minecraft.world.damagesource.CombatTracker;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 public class CombatTrackerClone {
     
-    private static final Field combatEntriesField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_94556_a");
-    private static final Field lastDamageTimeField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_94555_c");
-    private static final Field combatStartTimeField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_152775_d");
-    private static final Field combatEndTimeField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_152776_e");
-    private static final Field inCombatField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_94552_d");
-    private static final Field takingDamageField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_94553_e");
-    private static final Field nextLocationField = ObfuscationReflectionHelper.findField(CombatTracker.class, "field_94551_f");
+    private static final Field combatEntriesField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19276_");
+    private static final Field lastDamageTimeField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19278_");
+    private static final Field combatStartTimeField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19279_");
+    private static final Field combatEndTimeField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19280_");
+    private static final Field inCombatField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19281_");
+    private static final Field takingDamageField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19282_");
+    private static final Field nextLocationField = ObfuscationReflectionHelper.findField(CombatTracker.class, "f_19283_");
     
     private final List<CombatEntry> combatEntries = Lists.<CombatEntry>newArrayList();
     private int lastDamageTime;
