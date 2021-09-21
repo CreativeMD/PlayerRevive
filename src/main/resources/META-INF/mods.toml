@@ -12,9 +12,9 @@ license="GNU General Public License v3.0"
 	authors=["CreativeMD"]
 	description='''Help your friends in need and revive them'''
 	
-[[dependencies.itemphysic]]
+[[dependencies.playerrevive]]
 	modId="creativecore"
 	mandatory=true
 	ordering="NONE"
 	side="BOTH"
-	versionRange="[2.4.0,)"
+	versionRange="[2.3.0,)"
