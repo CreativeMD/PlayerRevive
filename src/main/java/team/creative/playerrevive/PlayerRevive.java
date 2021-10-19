@@ -14,7 +14,8 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityInject;
+import net.minecraftforge.common.capabilities.CapabilityManager;
+import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.fml.DistExecutor;
@@ -47,8 +48,7 @@ public class PlayerRevive {
     public static final SoundEvent DEATH_SOUND = new SoundEvent(new ResourceLocation(MODID, "death")).setRegistryName(new ResourceLocation(MODID, "death"));
     public static final SoundEvent REVIVED_SOUND = new SoundEvent(new ResourceLocation(MODID, "revived")).setRegistryName(new ResourceLocation(MODID, "revived"));
     
-    @CapabilityInject(IBleeding.class)
-    public static Capability<IBleeding> BLEEDING = null;
+    public static final Capability<IBleeding> BLEEDING = CapabilityManager.get(new CapabilityToken<>() {});
     
     public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
         event.getRegistry().registerAll(DEATH_SOUND, REVIVED_SOUND);
