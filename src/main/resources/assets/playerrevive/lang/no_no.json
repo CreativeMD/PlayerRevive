@@ -1,0 +1,7 @@
+{
+	"playerrevive.chat.bleeding": "%s blør...",
+	"death.attack.bledToDeath.player": "%s blødde ut",
+	"playerrevive.gui.button.send": "Send",
+	"playerrevive.gui.label.time_left": "Gjennstående tid: %s",
+	"playerrevive.gui.hold": "Hold '%s' i %s sekunder"
+}
