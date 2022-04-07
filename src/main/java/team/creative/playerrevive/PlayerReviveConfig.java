@@ -18,7 +18,11 @@ public class PlayerReviveConfig {
     
     @CreativeConfig(type = ConfigSynchronization.CLIENT)
     @CreativeConfig.DecimalRange(min = 0, max = 2)
-    public float musicVolume = 1;
+    public float bleedingMusicVolume = 0;
+    
+    @CreativeConfig(type = ConfigSynchronization.CLIENT)
+    @CreativeConfig.DecimalRange(min = 0, max = 2)
+    public float countdownMusicVolume = 0;
     
     @CreativeConfig
     public float requiredReviveProgress = 100;
