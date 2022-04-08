@@ -19,9 +19,7 @@ public class HelperPacket extends CreativePacket {
         this.start = start;
     }
     
-    public HelperPacket() {
-        
-    }
+    public HelperPacket() {}
     
     @Override
     public void executeClient(Player player) {
@@ -30,8 +28,6 @@ public class HelperPacket extends CreativePacket {
     }
     
     @Override
-    public void executeServer(ServerPlayer player) {
-        
-    }
+    public void executeServer(ServerPlayer player) {}
     
 }

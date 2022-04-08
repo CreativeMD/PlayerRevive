@@ -50,6 +50,9 @@ public class PlayerReviveServer {
         IBleeding revive = getBleeding(player);
         MinecraftForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
         revive.revive();
+        
+        if (PlayerRevive.CONFIG.revive.hasRevivedMobEffect)
+            player.addEffect(PlayerRevive.CONFIG.revive.revivedMobEffect.create());
         resetPlayer(player, revive);
         
         PlayerRevive.CONFIG.sounds.revived.play(player, SoundSource.PLAYERS);

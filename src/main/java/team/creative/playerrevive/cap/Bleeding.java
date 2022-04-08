@@ -23,31 +23,33 @@ public class Bleeding implements IBleeding {
     
     private DamageSource lastSource;
     private CombatTrackerClone trackerClone;
+    private boolean itemConsumed = false;
     
     public final List<Player> revivingPlayers = new ArrayList<>();
     
-    public Bleeding() {
-        
-    }
+    public Bleeding() {}
     
     @Override
     public void tick(Player player) {
         for (Iterator<Player> iterator = revivingPlayers.iterator(); iterator.hasNext();) {
             Player helper = iterator.next();
-            if (helper.distanceTo(player) > PlayerRevive.CONFIG.maxDistance) {
+            if (helper.distanceTo(player) > PlayerRevive.CONFIG.revive.maxDistance) {
                 PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
                 iterator.remove();
             }
         }
         //player.setPose(Pose.SWIMMING);
-        if (revivingPlayers.isEmpty() || !PlayerRevive.CONFIG.haltBleedTime)
+        if (revivingPlayers.isEmpty() || !PlayerRevive.CONFIG.revive.haltBleedTime)
             timeLeft--;
-        progress += revivingPlayers.size() * PlayerRevive.CONFIG.progressPerPlayer;
+        if (revivingPlayers.isEmpty() && PlayerRevive.CONFIG.revive.resetProgress)
+            progress = 0;
+        
+        progress += revivingPlayers.size() * PlayerRevive.CONFIG.revive.progressPerPlayer;
         downedTime++;
         
-        if (PlayerRevive.CONFIG.exhaustion > 0)
+        if (PlayerRevive.CONFIG.revive.exhaustion > 0)
             for (int i = 0; i < revivingPlayers.size(); i++)
-                revivingPlayers.get(i).causeFoodExhaustion(PlayerRevive.CONFIG.exhaustion);
+                revivingPlayers.get(i).causeFoodExhaustion(PlayerRevive.CONFIG.revive.exhaustion);
     }
     
     @Override
@@ -68,7 +70,7 @@ public class Bleeding implements IBleeding {
     
     @Override
     public boolean revived() {
-        return progress >= PlayerRevive.CONFIG.requiredReviveProgress;
+        return progress >= PlayerRevive.CONFIG.revive.requiredReviveProgress;
     }
     
     @Override
@@ -102,7 +104,7 @@ public class Bleeding implements IBleeding {
         this.bleeding = true;
         this.progress = 0;
         this.downedTime = 0;
-        this.timeLeft = PlayerRevive.CONFIG.bleedTime;
+        this.timeLeft = PlayerRevive.CONFIG.bleeding.bleedTime;
         this.lastSource = source;
         this.trackerClone = new CombatTrackerClone(player.getCombatTracker());
     }
@@ -137,6 +139,16 @@ public class Bleeding implements IBleeding {
         if (lastSource != null)
             return lastSource;
         return DamageBledToDeath.BLED_TO_DEATH;
+    }
+    
+    @Override
+    public boolean isItemConsumed() {
+        return itemConsumed;
+    }
+    
+    @Override
+    public void setItemConsumed() {
+        itemConsumed = true;
     }
     
 }

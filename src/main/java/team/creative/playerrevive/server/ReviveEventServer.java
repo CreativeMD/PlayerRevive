@@ -46,11 +46,14 @@ public class ReviveEventServer {
                 if (revive.downedTime() % 5 == 0)
                     PlayerReviveServer.sendUpdatePacket(player);
                 
-                if (PlayerRevive.CONFIG.affectFood)
-                    player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.foodAfterRevive);
-                player.setHealth(PlayerRevive.CONFIG.healthAfterRevive);
+                if (PlayerRevive.CONFIG.bleeding.affectHunger)
+                    player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
+                player.setHealth(PlayerRevive.CONFIG.bleeding.remainingHealth);
                 player.getAbilities().invulnerable = true;
                 player.setInvulnerable(true);
+                
+                if (PlayerRevive.CONFIG.bleeding.hasBleedingMobEffect)
+                    player.addEffect(PlayerRevive.CONFIG.bleeding.bleedingMobEffect.create());
                 
                 if (revive.revived())
                     PlayerReviveServer.revive(player);
@@ -76,10 +79,24 @@ public class ReviveEventServer {
             Player helper = event.getPlayer();
             IBleeding revive = PlayerReviveServer.getBleeding(target);
             if (revive.isBleeding()) {
+                event.setCanceled(true);
+                if (PlayerRevive.CONFIG.revive.needReviveItem) {
+                    if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
+                        if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem())) {
+                            if (!helper.isCreative())
+                                helper.getMainHandItem().shrink(1);
+                            revive.setItemConsumed();
+                        } else {
+                            helper.sendMessage(new TranslatableComponent("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()), Util.NIL_UUID);
+                            return;
+                        }
+                    } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()))
+                        return;
+                }
+                
                 PlayerReviveServer.removePlayerAsHelper(helper);
                 revive.revivingPlayers().add(helper);
                 PlayerRevive.NETWORK.sendToClient(new HelperPacket(target.getUUID(), true), (ServerPlayer) helper);
-                event.setCanceled(true);
             }
         }
     }
@@ -118,13 +135,17 @@ public class ReviveEventServer {
             
             event.setCanceled(true);
             
-            if (PlayerRevive.CONFIG.affectFood)
-                player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.foodAfterRevive);
-            player.setHealth(PlayerRevive.CONFIG.healthAfterRevive);
+            if (PlayerRevive.CONFIG.bleeding.affectHunger)
+                player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
+            player.setHealth(PlayerRevive.CONFIG.bleeding.remainingHealth);
             
-            if (!PlayerRevive.CONFIG.disableBleedingMessage)
-                player.getServer().getPlayerList()
-                        .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
+            if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
+                if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
+                    player.getServer().getPlayerList()
+                            .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, player.getUUID());
+                else
+                    player.getServer().getPlayerList()
+                            .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
         }
     }
     

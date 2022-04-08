@@ -43,9 +43,8 @@ public class ReviveEventClient {
         if (event.phase == Phase.START)
             return;
         IBleeding revive = PlayerReviveServer.getBleeding(event.player);
-        if (revive.isBleeding() && event.player != mc.player) {
+        if (revive.isBleeding() && event.player != mc.player)
             event.player.setPose(Pose.SWIMMING);
-        }
     }
     
     public boolean lastShader = false;
@@ -76,16 +75,16 @@ public class ReviveEventClient {
             if (player != null) {
                 IBleeding revive = PlayerReviveServer.getBleeding(player);
                 
-                if (revive.isBleeding()) {
-                    if (mc.options.keyAttack.isDown()) {
+                if (revive.isBleeding())
+                    if (mc.options.keyAttack.isDown())
                         if (giveUpTimer > 80) {
                             PlayerRevive.NETWORK.sendToServer(new GiveUpPacket());
                             giveUpTimer = 0;
                         } else
                             giveUpTimer++;
-                    } else
+                    else
                         giveUpTimer = 0;
-                } else
+                else
                     giveUpTimer = 0;
             }
         }
@@ -123,7 +122,7 @@ public class ReviveEventClient {
                         List<Component> list = new ArrayList<>();
                         IBleeding bleeding = PlayerReviveServer.getBleeding(other);
                         list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                        list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                        list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
                         render(list);
                     }
                 }
@@ -166,7 +165,7 @@ public class ReviveEventClient {
                 List<Component> list = new ArrayList<>();
                 IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                 list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.requiredReviveProgress));
+                list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
                 list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), (80 - giveUpTimer) / 20));
                 render(list);
             }

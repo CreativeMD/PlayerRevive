@@ -35,4 +35,8 @@ public interface IBleeding extends INBTSerializable<CompoundTag> {
     
     public CombatTrackerClone getTrackerClone();
     
+    public boolean isItemConsumed();
+    
+    public void setItemConsumed();
+    
 }
