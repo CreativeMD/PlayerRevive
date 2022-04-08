@@ -140,11 +140,11 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
-                        player.getServer().getPlayerList()
-                                .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, player.getUUID());
+                        player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
+                                .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, player.getUUID());
                     else
-                        player.getServer().getPlayerList()
-                                .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
+                        player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
+                                .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, Util.NIL_UUID);
             } else if (PlayerRevive.CONFIG.revive.abortOnDamage)
                 PlayerReviveServer.removePlayerAsHelper(player);
         }
