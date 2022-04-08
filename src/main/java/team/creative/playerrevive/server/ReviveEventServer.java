@@ -115,37 +115,38 @@ public class ReviveEventServer {
     
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerDied(LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof Player && isReviveActive(event.getEntityLiving()) && !event.getEntityLiving().level.isClientSide && event
-                .getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) {
-            Player player = (Player) event.getEntityLiving();
-            IBleeding revive = PlayerReviveServer.getBleeding(player);
-            
-            if (revive.bledOut())
-                return;
-            
-            PlayerReviveServer.removePlayerAsHelper(player);
-            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) player);
-            
-            PlayerReviveServer.startBleeding(player, event.getSource());
-            player.getAbilities().invulnerable = true;
-            player.setInvulnerable(true);
-            
-            if (player.isPassenger())
-                player.stopRiding();
-            
-            event.setCanceled(true);
-            
-            if (PlayerRevive.CONFIG.bleeding.affectHunger)
-                player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
-            player.setHealth(PlayerRevive.CONFIG.bleeding.remainingHealth);
-            
-            if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
-                if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
-                    player.getServer().getPlayerList()
-                            .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, player.getUUID());
-                else
-                    player.getServer().getPlayerList()
-                            .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
+        if (event.getEntityLiving() instanceof Player player && isReviveActive(event.getEntityLiving()) && !event.getEntityLiving().level.isClientSide) {
+            if (event.getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) {
+                IBleeding revive = PlayerReviveServer.getBleeding(player);
+                
+                if (revive.bledOut())
+                    return;
+                
+                PlayerReviveServer.removePlayerAsHelper(player);
+                PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) player);
+                
+                PlayerReviveServer.startBleeding(player, event.getSource());
+                player.getAbilities().invulnerable = true;
+                player.setInvulnerable(true);
+                
+                if (player.isPassenger())
+                    player.stopRiding();
+                
+                event.setCanceled(true);
+                
+                if (PlayerRevive.CONFIG.bleeding.affectHunger)
+                    player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
+                player.setHealth(PlayerRevive.CONFIG.bleeding.remainingHealth);
+                
+                if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
+                    if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
+                        player.getServer().getPlayerList()
+                                .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, player.getUUID());
+                    else
+                        player.getServer().getPlayerList()
+                                .broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName()), ChatType.SYSTEM, Util.NIL_UUID);
+            } else if (PlayerRevive.CONFIG.revive.abortOnDamage)
+                PlayerReviveServer.removePlayerAsHelper(player);
         }
     }
     
