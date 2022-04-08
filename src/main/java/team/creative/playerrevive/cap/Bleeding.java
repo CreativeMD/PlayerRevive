@@ -84,6 +84,7 @@ public class Bleeding implements IBleeding {
         nbt.putInt("timeLeft", timeLeft);
         nbt.putFloat("progress", progress);
         nbt.putBoolean("bleeding", bleeding);
+        nbt.putBoolean("consumed", itemConsumed);
         return nbt;
     }
     
@@ -92,6 +93,7 @@ public class Bleeding implements IBleeding {
         timeLeft = nbt.getInt("timeLeft");
         progress = nbt.getFloat("progress");
         bleeding = nbt.getBoolean("bleeding");
+        itemConsumed = nbt.getBoolean("consumed");
     }
     
     @Override
