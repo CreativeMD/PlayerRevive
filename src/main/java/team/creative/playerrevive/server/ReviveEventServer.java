@@ -5,6 +5,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
@@ -54,6 +56,8 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.hasBleedingMobEffect)
                     player.addEffect(PlayerRevive.CONFIG.bleeding.bleedingMobEffect.create());
+                if (PlayerRevive.CONFIG.bleeding.shouldGlow)
+                    player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 1));
                 
                 if (revive.revived())
                     PlayerReviveServer.revive(player);

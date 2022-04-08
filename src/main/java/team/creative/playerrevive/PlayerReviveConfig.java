@@ -52,6 +52,9 @@ public class PlayerReviveConfig {
         public boolean bleedingMessageTrackingOnly = true;
         
         @CreativeConfig
+        public boolean shouldGlow = false;
+        
+        @CreativeConfig
         public boolean hasBleedingMobEffect = true;
         @CreativeConfig
         public MobEffectConfig bleedingMobEffect = new MobEffectConfig(ForgeRegistries.MOB_EFFECTS, new ResourceLocation("minecraft", "slowness"), 2, 1);
