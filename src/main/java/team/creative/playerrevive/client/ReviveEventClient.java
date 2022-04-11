@@ -166,7 +166,7 @@ public class ReviveEventClient {
                 IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                 list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
                 list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), (80 - giveUpTimer) / 20));
+                list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
                 render(list);
             }
             
