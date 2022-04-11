@@ -61,7 +61,7 @@ minecraft {
             taskName "playerrevive_client"
             workingDirectory project.file('run')
             
-            args '--username', 'Dev#'
+            args '--username', 'Dev####'
 
             // Recommended logging data for a userdev environment
             // The markers can be added/remove as needed separated by commas.
