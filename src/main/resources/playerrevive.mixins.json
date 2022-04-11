@@ -1,0 +1,14 @@
+{
+    "required": true,
+    "package": "team.creative.playerrevive.mixin",
+    "compatibilityLevel": "JAVA_17",
+    "refmap": "playerrevive.mixin.refmap.json",
+    "server": [
+    ],
+    "mixins": [
+        "PlayerMixin"
+    ],
+    "client": [
+    ],
+    "minVersion": "0.8"
+}

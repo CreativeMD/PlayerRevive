@@ -57,7 +57,7 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public boolean hasBleedingMobEffect = true;
         @CreativeConfig
-        public MobEffectConfig bleedingMobEffect = new MobEffectConfig(ForgeRegistries.MOB_EFFECTS, new ResourceLocation("minecraft", "slowness"), 2, 1);
+        public MobEffectConfig bleedingMobEffect = new MobEffectConfig(ForgeRegistries.MOB_EFFECTS, new ResourceLocation("minecraft", "slowness"), 2, 10);
         
         @CreativeConfig
         public boolean affectHunger = true;
@@ -66,8 +66,16 @@ public class PlayerReviveConfig {
         public int remainingHunger = 6;
         
         @CreativeConfig
-        @CreativeConfig.IntRange(min = 1, max = 20)
-        public int remainingHealth = 2;
+        public int bleedingHealth = 10;
+        
+        @CreativeConfig
+        public boolean disableMobDamage = true;
+        
+        @CreativeConfig
+        public boolean disablePlayerDamage = false;
+        
+        @CreativeConfig
+        public boolean disableOtherDamage = false;
         
     }
     
@@ -101,6 +109,10 @@ public class PlayerReviveConfig {
         
         @CreativeConfig
         public double maxDistance = 3;
+        
+        @CreativeConfig
+        @CreativeConfig.IntRange(min = 1, max = 20)
+        public int healthAfter = 2;
         
     }
     

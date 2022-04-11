@@ -5,9 +5,11 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ChatType;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
@@ -50,14 +52,11 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.affectHunger)
                     player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
-                player.setHealth(PlayerRevive.CONFIG.bleeding.remainingHealth);
-                player.getAbilities().invulnerable = true;
-                player.setInvulnerable(true);
                 
                 if (PlayerRevive.CONFIG.bleeding.hasBleedingMobEffect)
                     player.addEffect(PlayerRevive.CONFIG.bleeding.bleedingMobEffect.create());
                 if (PlayerRevive.CONFIG.bleeding.shouldGlow)
-                    player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 1));
+                    player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 10));
                 
                 if (revive.revived())
                     PlayerReviveServer.revive(player);
@@ -110,10 +109,24 @@ public class ReviveEventServer {
         if (event.getEntityLiving() instanceof Player) {
             Player player = (Player) event.getEntityLiving();
             IBleeding revive = PlayerReviveServer.getBleeding(player);
-            if (revive
-                    .isBleeding() && ((event.getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) || revive
-                            .bledOut()))
-                event.setCanceled(true);
+            if (revive.isBleeding()) {
+                if (event.getSource() == DamageBledToDeath.BLED_TO_DEATH || PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId))
+                    return;
+                
+                if (revive.bledOut())
+                    event.setCanceled(true);
+                
+                if (event.getSource().getEntity() instanceof Player) {
+                    if (PlayerRevive.CONFIG.bleeding.disablePlayerDamage)
+                        event.setCanceled(true);
+                } else if (event.getSource().getEntity() instanceof LivingEntity) {
+                    if (PlayerRevive.CONFIG.bleeding.disableMobDamage)
+                        event.setCanceled(true);
+                } else if (PlayerRevive.CONFIG.bleeding.disableOtherDamage)
+                    event.setCanceled(true);
+                
+            } else if (PlayerRevive.CONFIG.revive.abortOnDamage)
+                PlayerReviveServer.removePlayerAsHelper(player);
         }
     }
     
@@ -123,15 +136,16 @@ public class ReviveEventServer {
             if (event.getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) {
                 IBleeding revive = PlayerReviveServer.getBleeding(player);
                 
-                if (revive.bledOut())
+                if (revive.bledOut() || revive.isBleeding()) {
+                    if (revive.isBleeding())
+                        PlayerRevive.CONFIG.sounds.death.play(player, SoundSource.PLAYERS);
                     return;
+                }
                 
                 PlayerReviveServer.removePlayerAsHelper(player);
                 PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) player);
                 
                 PlayerReviveServer.startBleeding(player, event.getSource());
-                player.getAbilities().invulnerable = true;
-                player.setInvulnerable(true);
                 
                 if (player.isPassenger())
                     player.stopRiding();
@@ -140,7 +154,7 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.affectHunger)
                     player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
-                player.setHealth(PlayerRevive.CONFIG.bleeding.remainingHealth);
+                player.setHealth(PlayerRevive.CONFIG.bleeding.bleedingHealth);
                 
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
@@ -149,8 +163,7 @@ public class ReviveEventServer {
                     else
                         player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
                                 .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, Util.NIL_UUID);
-            } else if (PlayerRevive.CONFIG.revive.abortOnDamage)
-                PlayerReviveServer.removePlayerAsHelper(player);
+            }
         }
     }
     

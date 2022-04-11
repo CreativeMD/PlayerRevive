@@ -1,0 +1,30 @@
+package team.creative.playerrevive.mixin;
+
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import team.creative.playerrevive.PlayerRevive;
+import team.creative.playerrevive.api.IBleeding;
+import team.creative.playerrevive.server.PlayerReviveServer;
+
+@Mixin(Player.class)
+public abstract class PlayerMixin extends LivingEntity {
+    
+    protected PlayerMixin(EntityType<? extends LivingEntity> p_20966_, Level p_20967_) {
+        super(p_20966_, p_20967_);
+    }
+    
+    @Inject(at = @At(value = "INVOKE", target = "HEAD"), method = "Lnet/minecraft/world/entity/player/Player;canBeSeenAsEnemy()Z")
+    public void isBleeding(CallbackInfoReturnable<Boolean> cir) {
+        IBleeding bleeding = PlayerReviveServer.getBleeding((Player) (Object) this);
+        if (bleeding.isBleeding() && PlayerRevive.CONFIG.bleeding.disableMobDamage)
+            cir.setReturnValue(false);
+    }
+    
+}

@@ -36,9 +36,6 @@ public class PlayerReviveServer {
     }
     
     private static void resetPlayer(Player player, IBleeding revive) {
-        player.getAbilities().invulnerable = player.isCreative();
-        player.setInvulnerable(false);
-        
         for (Player helper : revive.revivingPlayers())
             PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
         revive.revivingPlayers().clear();
@@ -54,6 +51,7 @@ public class PlayerReviveServer {
         if (PlayerRevive.CONFIG.revive.hasRevivedMobEffect)
             player.addEffect(PlayerRevive.CONFIG.revive.revivedMobEffect.create());
         resetPlayer(player, revive);
+        player.setHealth(PlayerRevive.CONFIG.revive.healthAfter);
         
         PlayerRevive.CONFIG.sounds.revived.play(player, SoundSource.PLAYERS);
         
