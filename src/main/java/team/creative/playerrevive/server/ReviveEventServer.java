@@ -1,9 +1,8 @@
 package team.creative.playerrevive.server;
 
-import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.ChatType;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -90,7 +89,7 @@ public class ReviveEventServer {
                                 helper.getMainHandItem().shrink(1);
                             revive.setItemConsumed();
                         } else {
-                            helper.sendMessage(new TranslatableComponent("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()), Util.NIL_UUID);
+                            helper.sendSystemMessage(Component.translatable("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()));
                             return;
                         }
                     } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()))
@@ -158,11 +157,11 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
-                        player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
-                                .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, player.getUUID());
+                        player.getServer().getPlayerList().broadcastSystemMessage(Component
+                                .translatable("playerrevive.chat.bleeding", player.getDisplayName(), player.getCombatTracker().getDeathMessage()), ChatType.SYSTEM);
                     else
-                        player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
-                                .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, Util.NIL_UUID);
+                        player.getServer().getPlayerList().broadcastSystemMessage(Component
+                                .translatable("playerrevive.chat.bleeding", player.getDisplayName(), player.getCombatTracker().getDeathMessage()), ChatType.SYSTEM);
             }
         }
     }

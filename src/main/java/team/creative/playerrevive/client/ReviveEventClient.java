@@ -11,8 +11,6 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -121,8 +119,8 @@ public class ReviveEventClient {
                     if (other != null) {
                         List<Component> list = new ArrayList<>();
                         IBleeding bleeding = PlayerReviveServer.getBleeding(other);
-                        list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                        list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
+                        list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                        list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
                         render(list);
                     }
                 }
@@ -164,9 +162,9 @@ public class ReviveEventClient {
                 }
                 List<Component> list = new ArrayList<>();
                 IBleeding bleeding = PlayerReviveServer.getBleeding(player);
-                list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
+                list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
+                list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
                 render(list);
             }
             
