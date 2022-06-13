@@ -138,6 +138,9 @@ public class ReviveEventServer {
                 if (revive.bledOut() || revive.isBleeding()) {
                     if (revive.isBleeding())
                         PlayerRevive.CONFIG.sounds.death.play(player, SoundSource.PLAYERS);
+                    for (Player helper : revive.revivingPlayers())
+                        PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
+                    revive.revivingPlayers().clear();
                     return;
                 }
                 
