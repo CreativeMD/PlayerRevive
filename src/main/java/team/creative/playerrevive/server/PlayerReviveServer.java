@@ -45,7 +45,6 @@ public class PlayerReviveServer {
     
     public static void revive(Player player) {
         IBleeding revive = getBleeding(player);
-        MinecraftForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
         revive.revive();
         
         if (PlayerRevive.CONFIG.revive.hasRevivedMobEffect)
@@ -54,6 +53,8 @@ public class PlayerReviveServer {
         player.setHealth(PlayerRevive.CONFIG.revive.healthAfter);
         
         PlayerRevive.CONFIG.sounds.revived.play(player, SoundSource.PLAYERS);
+        
+        MinecraftForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
         
         sendUpdatePacket(player);
     }
