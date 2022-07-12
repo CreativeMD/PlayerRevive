@@ -67,18 +67,18 @@ public class ReviveEventServer {
     
     @SubscribeEvent
     public void playerLeave(PlayerLoggedOutEvent event) {
-        IBleeding revive = PlayerReviveServer.getBleeding(event.getPlayer());
+        IBleeding revive = PlayerReviveServer.getBleeding(event.getEntity());
         if (revive.isBleeding())
-            PlayerReviveServer.kill(event.getPlayer());
-        if (!event.getPlayer().level.isClientSide)
-            PlayerReviveServer.removePlayerAsHelper(event.getPlayer());
+            PlayerReviveServer.kill(event.getEntity());
+        if (!event.getEntity().level.isClientSide)
+            PlayerReviveServer.removePlayerAsHelper(event.getEntity());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteract(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof Player && !event.getEntityLiving().level.isClientSide) {
+        if (event.getTarget() instanceof Player && !event.getEntity().level.isClientSide) {
             Player target = (Player) event.getTarget();
-            Player helper = event.getPlayer();
+            Player helper = event.getEntity();
             IBleeding revive = PlayerReviveServer.getBleeding(target);
             if (revive.isBleeding()) {
                 event.setCanceled(true);
@@ -105,8 +105,8 @@ public class ReviveEventServer {
     
     @SubscribeEvent
     public void playerDamage(LivingHurtEvent event) {
-        if (event.getEntityLiving() instanceof Player) {
-            Player player = (Player) event.getEntityLiving();
+        if (event.getEntity() instanceof Player) {
+            Player player = (Player) event.getEntity();
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (revive.isBleeding()) {
                 if (event.getSource() == DamageBledToDeath.BLED_TO_DEATH || PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId))
@@ -131,7 +131,7 @@ public class ReviveEventServer {
     
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerDied(LivingDeathEvent event) {
-        if (event.getEntityLiving() instanceof Player player && isReviveActive(event.getEntityLiving()) && !event.getEntityLiving().level.isClientSide) {
+        if (event.getEntity() instanceof Player player && isReviveActive(event.getEntity()) && !event.getEntity().level.isClientSide) {
             if (event.getSource() != DamageBledToDeath.BLED_TO_DEATH && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().msgId)) {
                 IBleeding revive = PlayerReviveServer.getBleeding(player);
                 
