@@ -1,0 +1,8 @@
+{
+	"playerrevive.chat.bleeding": "%s đang hấp hối. %s",
+	"death.attack.bledToDeath.player": "%s đã nằm xuống",
+	"playerrevive.gui.button.send": "gửi",
+	"playerrevive.gui.label.time_left": "Thời gian còn lại %s",
+	"playerrevive.gui.hold": "Giữ '%s' trong %s giây",
+	"playerrevive.revive.item": "Bạn cần "
+}
