@@ -77,6 +77,9 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public boolean disableOtherDamage = false;
         
+        @CreativeConfig
+        public boolean hasShaderEffect = true;
+        
     }
     
     public static class Revive {

@@ -156,8 +156,8 @@ public class ReviveEventClient {
                 }
                 
                 if (!lastShader) {
-                    mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blobs2.json"));
-                    //mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blur.json"));
+                    if (PlayerRevive.CONFIG.bleeding.hasShaderEffect)
+                        mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blobs2.json"));
                     lastShader = true;
                 }
                 List<Component> list = new ArrayList<>();
