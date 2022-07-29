@@ -70,6 +70,7 @@ public class PlayerReviveServer {
         revive.forceBledOut();
         player.die(source);
         resetPlayer(player, revive);
+        revive.revive(); // Done for compatibility reason for rare scenarios the player will not die
         
         PlayerRevive.CONFIG.sounds.death.play(player, SoundSource.PLAYERS);
         
