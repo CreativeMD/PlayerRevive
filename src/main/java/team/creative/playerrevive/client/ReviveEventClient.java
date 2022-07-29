@@ -114,7 +114,7 @@ public class ReviveEventClient {
                     sound = null;
                 }
                 
-                if (helpActive) {
+                if (helpActive && !mc.options.hideGui && mc.screen == null) {
                     Player other = player.level.getPlayerByUUID(helpTarget);
                     if (other != null) {
                         List<Component> list = new ArrayList<>();
@@ -160,12 +160,15 @@ public class ReviveEventClient {
                         mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blobs2.json"));
                     lastShader = true;
                 }
-                List<Component> list = new ArrayList<>();
-                IBleeding bleeding = PlayerReviveServer.getBleeding(player);
-                list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
-                render(list);
+                
+                if (!mc.options.hideGui && mc.screen == null) {
+                    List<Component> list = new ArrayList<>();
+                    IBleeding bleeding = PlayerReviveServer.getBleeding(player);
+                    list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                    list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
+                    list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
+                    render(list);
+                }
             }
             
         }
