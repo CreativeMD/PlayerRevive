@@ -18,7 +18,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent.MouseButton;
+import net.minecraftforge.client.event.InputEvent.InteractionKeyMappingTriggered;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -57,7 +57,7 @@ public class ReviveEventClient {
     private int giveUpTimer = 0;
     
     @SubscribeEvent
-    public void click(MouseButton event) {
+    public void click(InteractionKeyMappingTriggered event) {
         Player player = mc.player;
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
