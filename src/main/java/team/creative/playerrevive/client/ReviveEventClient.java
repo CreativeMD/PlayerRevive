@@ -1,6 +1,5 @@
 package team.creative.playerrevive.client;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -9,7 +8,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -24,9 +22,9 @@ import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
+import team.creative.playerrevive.mixin.LocalPlayerAccessor;
 import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
 
@@ -34,7 +32,6 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class ReviveEventClient {
     
     public static Minecraft mc = Minecraft.getInstance();
-    private static final Field handsBusy = ObfuscationReflectionHelper.findField(LocalPlayer.class, "f_108611_");
     
     @SubscribeEvent
     public void playerTick(PlayerTickEvent event) {
@@ -103,9 +100,7 @@ public class ReviveEventClient {
                 
                 if (addedEffect) {
                     player.removeEffect(MobEffects.JUMP);
-                    try {
-                        handsBusy.setBoolean(player, false);
-                    } catch (IllegalArgumentException | IllegalAccessException e) {}
+                    ((LocalPlayerAccessor) player).setHandsBusy(false);
                     addedEffect = false;
                 }
                 
@@ -125,14 +120,12 @@ public class ReviveEventClient {
                     }
                 }
             } else {
-                try {
-                    player.setPose(Pose.SWIMMING);
-                    handsBusy.setBoolean(player, true);
-                    player.addEffect(new MobEffectInstance(MobEffects.JUMP, 0, -10));
-                    
-                    player.hurtTime = 0;
-                    addedEffect = true;
-                } catch (IllegalArgumentException | IllegalAccessException e) {}
+                player.setPose(Pose.SWIMMING);
+                ((LocalPlayerAccessor) player).setHandsBusy(true);
+                player.addEffect(new MobEffectInstance(MobEffects.JUMP, 0, -10));
+                
+                player.hurtTime = 0;
+                addedEffect = true;
                 
                 if (revive.timeLeft() < 400) {
                     if (!lastHighTension) {
