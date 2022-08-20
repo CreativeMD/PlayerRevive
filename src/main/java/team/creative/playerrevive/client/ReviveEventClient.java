@@ -9,6 +9,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
@@ -16,7 +18,7 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent.InteractionKeyMappingTriggered;
+import net.minecraftforge.client.event.InputEvent.ClickInputEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -54,7 +56,7 @@ public class ReviveEventClient {
     private int giveUpTimer = 0;
     
     @SubscribeEvent
-    public void click(InteractionKeyMappingTriggered event) {
+    public void click(ClickInputEvent event) {
         Player player = mc.player;
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
@@ -114,8 +116,8 @@ public class ReviveEventClient {
                     if (other != null) {
                         List<Component> list = new ArrayList<>();
                         IBleeding bleeding = PlayerReviveServer.getBleeding(other);
-                        list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                        list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
+                        list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                        list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
                         render(list);
                     }
                 }
@@ -157,9 +159,9 @@ public class ReviveEventClient {
                 if (!mc.options.hideGui && mc.screen == null) {
                     List<Component> list = new ArrayList<>();
                     IBleeding bleeding = PlayerReviveServer.getBleeding(player);
-                    list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                    list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                    list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
+                    list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
+                    list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
+                    list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
                     render(list);
                 }
             }

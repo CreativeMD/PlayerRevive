@@ -1,7 +1,9 @@
 package team.creative.playerrevive.server;
 
+import net.minecraft.Util;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ChatType;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -66,18 +68,18 @@ public class ReviveEventServer {
     
     @SubscribeEvent
     public void playerLeave(PlayerLoggedOutEvent event) {
-        IBleeding revive = PlayerReviveServer.getBleeding(event.getEntity());
+        IBleeding revive = PlayerReviveServer.getBleeding(event.getPlayer());
         if (revive.isBleeding())
-            PlayerReviveServer.kill(event.getEntity());
+            PlayerReviveServer.kill(event.getPlayer());
         if (!event.getEntity().level.isClientSide)
-            PlayerReviveServer.removePlayerAsHelper(event.getEntity());
+            PlayerReviveServer.removePlayerAsHelper(event.getPlayer());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteract(PlayerInteractEvent.EntityInteract event) {
         if (event.getTarget() instanceof Player && !event.getEntity().level.isClientSide) {
             Player target = (Player) event.getTarget();
-            Player helper = event.getEntity();
+            Player helper = event.getPlayer();
             IBleeding revive = PlayerReviveServer.getBleeding(target);
             if (revive.isBleeding()) {
                 event.setCanceled(true);
@@ -88,7 +90,7 @@ public class ReviveEventServer {
                                 helper.getMainHandItem().shrink(1);
                             revive.setItemConsumed();
                         } else {
-                            helper.sendSystemMessage(Component.translatable("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()));
+                            helper.sendMessage(new TranslatableComponent("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()), Util.NIL_UUID);
                             return;
                         }
                     } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()))
@@ -159,11 +161,11 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
-                        player.getServer().getPlayerList().broadcastSystemMessage(Component
-                                .translatable("playerrevive.chat.bleeding", player.getDisplayName(), player.getCombatTracker().getDeathMessage()), false);
+                        player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
+                                .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, player.getUUID());
                     else
-                        player.getServer().getPlayerList().broadcastSystemMessage(Component
-                                .translatable("playerrevive.chat.bleeding", player.getDisplayName(), player.getCombatTracker().getDeathMessage()), false);
+                        player.getServer().getPlayerList().broadcastMessage(new TranslatableComponent("playerrevive.chat.bleeding", player.getDisplayName(), player
+                                .getCombatTracker().getDeathMessage()), ChatType.SYSTEM, player.getUUID());
             }
         }
     }

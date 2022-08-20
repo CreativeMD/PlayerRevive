@@ -3,9 +3,9 @@ package team.creative.playerrevive;
 import java.util.Arrays;
 import java.util.List;
 
-import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.registries.ForgeRegistries;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.creativecore.common.config.premade.SoundConfig;
@@ -57,7 +57,7 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public boolean hasBleedingMobEffect = true;
         @CreativeConfig
-        public MobEffectConfig bleedingMobEffect = new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 10);
+        public MobEffectConfig bleedingMobEffect = new MobEffectConfig(ForgeRegistries.MOB_EFFECTS, new ResourceLocation("minecraft", "slowness"), 2, 10);
         
         @CreativeConfig
         public boolean affectHunger = true;
@@ -101,7 +101,7 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public boolean hasRevivedMobEffect = false;
         @CreativeConfig
-        public MobEffectConfig revivedMobEffect = new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1);
+        public MobEffectConfig revivedMobEffect = new MobEffectConfig(ForgeRegistries.MOB_EFFECTS, new ResourceLocation("minecraft", "slowness"), 2, 1);
         
         @CreativeConfig
         public CreativeIngredient reviveItem = new CreativeIngredientItem(Items.PAPER);

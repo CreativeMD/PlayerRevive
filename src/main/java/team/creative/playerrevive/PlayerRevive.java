@@ -17,14 +17,13 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityManager;
 import net.minecraftforge.common.capabilities.CapabilityToken;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
+import net.minecraftforge.event.RegistryEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries.Keys;
-import net.minecraftforge.registries.RegisterEvent;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.network.CreativeNetwork;
@@ -46,22 +45,19 @@ public class PlayerRevive {
     
     public static final ResourceLocation BLEEDING_NAME = new ResourceLocation(MODID, "bleeding");
     
-    public static final SoundEvent DEATH_SOUND = new SoundEvent(new ResourceLocation(MODID, "death"));
-    public static final SoundEvent REVIVED_SOUND = new SoundEvent(new ResourceLocation(MODID, "revived"));
+    public static final SoundEvent DEATH_SOUND = new SoundEvent(new ResourceLocation(MODID, "death")).setRegistryName(new ResourceLocation(MODID, "death"));
+    public static final SoundEvent REVIVED_SOUND = new SoundEvent(new ResourceLocation(MODID, "revived")).setRegistryName(new ResourceLocation(MODID, "revived"));
     
     public static final Capability<IBleeding> BLEEDING = CapabilityManager.get(new CapabilityToken<>() {});
     
-    public void registerSounds(RegisterEvent event) {
-        event.register(Keys.SOUND_EVENTS, x -> {
-            x.register(new ResourceLocation(MODID, "death"), DEATH_SOUND);
-            x.register(new ResourceLocation(MODID, "revived"), REVIVED_SOUND);
-        });
+    public void registerSounds(RegistryEvent.Register<SoundEvent> event) {
+        event.getRegistry().registerAll(DEATH_SOUND, REVIVED_SOUND);
     }
     
     public PlayerRevive() {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerSounds);
+        FMLJavaModLoadingContext.get().getModEventBus().addGenericListener(SoundEvent.class, this::registerSounds);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCaps);
     }
