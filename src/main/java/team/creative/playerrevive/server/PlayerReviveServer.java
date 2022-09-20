@@ -20,6 +20,18 @@ import team.creative.playerrevive.packet.ReviveUpdatePacket;
 
 public class PlayerReviveServer {
     
+    public static boolean isBleeding(Player player) {
+        return getBleeding(player).isBleeding();
+    }
+    
+    public static int timeLeft(Player player) {
+        return getBleeding(player).timeLeft();
+    }
+    
+    public static int downedTime(Player player) {
+        return getBleeding(player).downedTime();
+    }
+    
     public static IBleeding getBleeding(Player player) {
         return player.getCapability(PlayerRevive.BLEEDING).orElseGet(Bleeding::new);
     }
