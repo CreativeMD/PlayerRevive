@@ -24,6 +24,10 @@ minecraft {
             
             args '--username', 'Dev####'
 			
+			arg '--mixin.config'
+            arg 'creativecore.mixins.json'
+            arg '--mixin.config'
+            arg 'creativecore.forge.mixins.json'
             property 'forge.logging.console.level', 'debug'
 
             mods {
@@ -39,7 +43,11 @@ minecraft {
         server {
             taskName "playerrevive_server"
             workingDirectory project.file('run')
-
+            
+            arg '--mixin.config'
+            arg 'creativecore.mixins.json'
+            arg '--mixin.config'
+            arg 'creativecore.forge.mixins.json'
 			property 'forge.logging.console.level', 'debug'
 
             mods {
