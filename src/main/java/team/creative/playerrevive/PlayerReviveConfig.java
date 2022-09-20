@@ -41,6 +41,9 @@ public class PlayerReviveConfig {
     @CreativeConfig
     public List<String> bypassDamageSources = Arrays.asList("gorgon", "death.attack.sgcraft:transient", "death.attack.sgcraft:iris");
     
+    @CreativeConfig
+    public boolean bleedInSingleplayer = false;
+    
     public static class Bleeding {
         
         @CreativeConfig
