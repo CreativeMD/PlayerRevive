@@ -31,7 +31,7 @@ import team.creative.playerrevive.packet.HelperPacket;
 public class ReviveEventServer {
     
     public static boolean isReviveActive(Entity player) {
-        return player.getServer().isPublished();
+        return PlayerRevive.CONFIG.bleedInSingleplayer || player.getServer().isPublished();
     }
     
     @SubscribeEvent
