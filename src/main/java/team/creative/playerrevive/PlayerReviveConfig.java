@@ -39,7 +39,7 @@ public class PlayerReviveConfig {
     public Sounds sounds = new Sounds();
     
     @CreativeConfig
-    public List<String> bypassDamageSources = Arrays.asList("gorgon", "death.attack.sgcraft:transient", "death.attack.sgcraft:iris");
+    public List<String> bypassDamageSources = Arrays.asList("gorgon", "death.attack.sgcraft:transient", "death.attack.sgcraft:iris", "vampirism_dbno");
     
     @CreativeConfig
     public boolean bleedInSingleplayer = false;
