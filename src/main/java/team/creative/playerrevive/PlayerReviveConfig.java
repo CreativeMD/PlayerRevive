@@ -50,6 +50,9 @@ public class PlayerReviveConfig {
         public int bleedTime = 1200;
         
         @CreativeConfig
+        public boolean triggerForCreative = true;
+        
+        @CreativeConfig
         public boolean bleedingMessage = true;
         @CreativeConfig
         public boolean bleedingMessageTrackingOnly = true;

@@ -33,6 +33,8 @@ import team.creative.playerrevive.packet.HelperPacket;
 public class ReviveEventServer {
     
     public static boolean isReviveActive(Entity player) {
+        if (player instanceof Player p && p.isCreative() && !PlayerRevive.CONFIG.bleeding.triggerForCreative)
+            return false;
         return PlayerRevive.CONFIG.bleedInSingleplayer || player.getServer().isPublished();
     }
     
