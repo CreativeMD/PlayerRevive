@@ -6,6 +6,7 @@
     "server": [
     ],
     "mixins": [
+        "MinecraftAccessor",
         "LocalPlayerAccessor",
         "PlayerMixin"
     ],

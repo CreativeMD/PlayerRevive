@@ -27,6 +27,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.mixin.LocalPlayerAccessor;
+import team.creative.playerrevive.mixin.MinecraftAccessor;
 import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
 
@@ -124,6 +125,7 @@ public class ReviveEventClient {
             } else {
                 player.setPose(Pose.SWIMMING);
                 ((LocalPlayerAccessor) player).setHandsBusy(true);
+                ((MinecraftAccessor) mc).setMissTime(2);
                 player.addEffect(new MobEffectInstance(MobEffects.JUMP, 0, -10));
                 
                 player.hurtTime = 0;
