@@ -75,7 +75,7 @@ public class ReviveEventClient {
                 
                 if (revive.isBleeding())
                     if (mc.options.keyAttack.isDown())
-                        if (giveUpTimer > 80) {
+                        if (giveUpTimer > PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20) {
                             PlayerRevive.NETWORK.sendToServer(new GiveUpPacket());
                             giveUpTimer = 0;
                         } else
@@ -163,7 +163,7 @@ public class ReviveEventClient {
                     IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                     list.add(new TranslatableComponent("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
                     list.add(new TextComponent("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                    list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((80 - giveUpTimer) / 20) + 1));
+                    list.add(new TranslatableComponent("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(), ((PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20 - giveUpTimer) / 20) + 1));
                     render(list);
                 }
             }
