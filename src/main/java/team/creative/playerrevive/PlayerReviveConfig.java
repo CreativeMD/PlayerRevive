@@ -49,6 +49,9 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public int bleedTime = 1200;
         
+        @CreativeConfig(type = ConfigSynchronization.CLIENT)
+        public int giveUpSeconds = 5;
+        
         @CreativeConfig
         public boolean triggerForCreative = true;
         
