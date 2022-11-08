@@ -6,11 +6,11 @@
     "server": [
     ],
     "mixins": [
-        "MinecraftAccessor",
-        "LocalPlayerAccessor",
         "PlayerMixin"
     ],
     "client": [
+        "MinecraftAccessor",
+        "LocalPlayerAccessor"
     ],
     "minVersion": "0.8"
 }
