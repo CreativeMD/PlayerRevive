@@ -4,4 +4,5 @@
 	"playerrevive.gui.button.send": "send",
 	"playerrevive.gui.label.time_left": "Tempo restante %s",
 	"playerrevive.gui.hold": "Segure o '%s' por %s segundos para desistir"
+	"playerrevive.revive.item": "Voce requere "
 }
