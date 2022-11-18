@@ -64,9 +64,7 @@ public class PlayerReviveConfig {
         public boolean shouldGlow = false;
         
         @CreativeConfig
-        public boolean hasBleedingMobEffect = true;
-        @CreativeConfig
-        public MobEffectConfig bleedingMobEffect = new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 10);
+        public List<MobEffectConfig> bleedingEffects = Arrays.asList(new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 10));
         
         @CreativeConfig
         public boolean affectHunger = true;
@@ -108,9 +106,7 @@ public class PlayerReviveConfig {
         public boolean resetProgress = false;
         
         @CreativeConfig
-        public boolean hasRevivedMobEffect = false;
-        @CreativeConfig
-        public MobEffectConfig revivedMobEffect = new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1);
+        public List<MobEffectConfig> revivedEffects = Arrays.asList(new MobEffectConfig(Registry.MOB_EFFECT, new ResourceLocation("minecraft", "slowness"), 2, 1));
         
         @CreativeConfig
         public CreativeIngredient reviveItem = new CreativeIngredientItem(Items.PAPER);

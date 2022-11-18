@@ -9,6 +9,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.MinecraftForge;
+import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
@@ -59,8 +60,9 @@ public class PlayerReviveServer {
         IBleeding revive = getBleeding(player);
         revive.revive();
         
-        if (PlayerRevive.CONFIG.revive.hasRevivedMobEffect)
-            player.addEffect(PlayerRevive.CONFIG.revive.revivedMobEffect.create());
+        for (MobEffectConfig effect : PlayerRevive.CONFIG.revive.revivedEffects)
+            player.addEffect(effect.create());
+        
         resetPlayer(player, revive);
         player.setHealth(PlayerRevive.CONFIG.revive.healthAfter);
         

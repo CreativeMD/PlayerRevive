@@ -22,6 +22,7 @@ import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.LogicalSide;
+import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.DamageBledToDeath;
 import team.creative.playerrevive.api.IBleeding;
@@ -53,8 +54,9 @@ public class ReviveEventServer {
                 if (PlayerRevive.CONFIG.bleeding.affectHunger)
                     player.getFoodData().setFoodLevel(PlayerRevive.CONFIG.bleeding.remainingHunger);
                 
-                if (PlayerRevive.CONFIG.bleeding.hasBleedingMobEffect)
-                    player.addEffect(PlayerRevive.CONFIG.bleeding.bleedingMobEffect.create());
+                for (MobEffectConfig effect : PlayerRevive.CONFIG.bleeding.bleedingEffects)
+                    player.addEffect(effect.create());
+                
                 if (PlayerRevive.CONFIG.bleeding.shouldGlow)
                     player.addEffect(new MobEffectInstance(MobEffects.GLOWING, 10));
                 
