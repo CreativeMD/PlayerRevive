@@ -46,8 +46,8 @@ public class PlayerRevive {
     
     public static final ResourceLocation BLEEDING_NAME = new ResourceLocation(MODID, "bleeding");
     
-    public static final SoundEvent DEATH_SOUND = new SoundEvent(new ResourceLocation(MODID, "death"));
-    public static final SoundEvent REVIVED_SOUND = new SoundEvent(new ResourceLocation(MODID, "revived"));
+    public static final SoundEvent DEATH_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "death"));
+    public static final SoundEvent REVIVED_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "revived"));
     
     public static final Capability<IBleeding> BLEEDING = CapabilityManager.get(new CapabilityToken<>() {});
     
