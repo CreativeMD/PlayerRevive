@@ -23,7 +23,7 @@ public abstract class PlayerMixin extends LivingEntity {
     @Inject(at = @At("HEAD"), method = "Lnet/minecraft/world/entity/player/Player;canBeSeenAsEnemy()Z", cancellable = true)
     public void isBleeding(CallbackInfoReturnable<Boolean> cir) {
         IBleeding bleeding = PlayerReviveServer.getBleeding((Player) (Object) this);
-        if (bleeding.isBleeding() && PlayerRevive.CONFIG.bleeding.disableMobDamage)
+        if (bleeding.isBleeding() && (bleeding.downedTime() <= PlayerRevive.CONFIG.bleeding.initialDamageCooldown || PlayerRevive.CONFIG.bleeding.disableMobDamage))
             cir.setReturnValue(false);
     }
     

@@ -118,6 +118,9 @@ public class ReviveEventServer {
                 if (revive.bledOut())
                     event.setCanceled(true);
                 
+                if (revive.downedTime() <= PlayerRevive.CONFIG.bleeding.initialDamageCooldown)
+                    event.setCanceled(true);
+                
                 if (event.getSource().getEntity() instanceof Player) {
                     if (PlayerRevive.CONFIG.bleeding.disablePlayerDamage)
                         event.setCanceled(true);

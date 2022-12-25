@@ -73,6 +73,9 @@ public class PlayerReviveConfig {
         public int remainingHunger = 6;
         
         @CreativeConfig
+        public int initialDamageCooldown = 10;
+        
+        @CreativeConfig
         public int bleedingHealth = 10;
         
         @CreativeConfig
