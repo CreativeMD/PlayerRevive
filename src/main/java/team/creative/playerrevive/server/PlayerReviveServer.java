@@ -45,6 +45,7 @@ public class PlayerReviveServer {
     
     public static void startBleeding(Player player, DamageSource source) {
         getBleeding(player).knockOut(player, source);
+        player.getPersistentData().putBoolean("playerrevive:bleeding", true);
         sendUpdatePacket(player);
     }
     
@@ -53,6 +54,7 @@ public class PlayerReviveServer {
             PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
         revive.revivingPlayers().clear();
         
+        player.getPersistentData().remove("playerrevive:bleeding");
         sendUpdatePacket(player);
     }
     
