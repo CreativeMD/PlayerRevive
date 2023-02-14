@@ -8,6 +8,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -34,6 +35,40 @@ public class ReviveEventClient {
     
     public static Minecraft mc = Minecraft.getInstance();
     
+    public static TensionSound sound;
+    
+    public static UUID helpTarget;
+    public static boolean helpActive = false;
+    
+    public static void render(List<Component> list) {
+        int space = 15;
+        int width = 0;
+        for (int i = 0; i < list.size(); i++) {
+            String text = list.get(i).getString();
+            width = Math.max(width, mc.font.width(text) + 10);
+        }
+        
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.disableDepthTest();
+        RenderSystem.disableBlend();
+        RenderSystem.enableTexture();
+        PoseStack pose = new PoseStack();
+        for (int i = 0; i < list.size(); i++) {
+            String text = list.get(i).getString();
+            mc.font.drawShadow(pose, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+                    .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+        }
+        RenderSystem.enableDepthTest();
+    }
+    
+    public boolean lastShader = false;
+    public boolean lastHighTension = false;
+    
+    private boolean addedEffect = false;
+    private int giveUpTimer = 0;
+    
     @SubscribeEvent
     public void playerTick(PlayerTickEvent event) {
         if (event.phase == Phase.START)
@@ -42,17 +77,6 @@ public class ReviveEventClient {
         if (revive.isBleeding() && event.player != mc.player)
             event.player.setPose(Pose.SWIMMING);
     }
-    
-    public boolean lastShader = false;
-    public boolean lastHighTension = false;
-    
-    public static TensionSound sound;
-    
-    public static UUID helpTarget;
-    public static boolean helpActive = false;
-    
-    private boolean addedEffect = false;
-    private int giveUpTimer = 0;
     
     @SubscribeEvent
     public void click(InteractionKeyMappingTriggered event) {
@@ -168,25 +192,6 @@ public class ReviveEventClient {
             }
             
         }
-    }
-    
-    public static void render(List<Component> list) {
-        int space = 15;
-        int width = 0;
-        for (int i = 0; i < list.size(); i++) {
-            String text = list.get(i).getString();
-            width = Math.max(width, mc.font.width(text) + 10);
-        }
-        
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
-        for (int i = 0; i < list.size(); i++) {
-            String text = list.get(i).getString();
-            mc.font.drawShadow(new PoseStack(), text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
-                    .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
-        }
-        RenderSystem.enableDepthTest();
     }
     
     public String formatTime(int timeLeft) {
