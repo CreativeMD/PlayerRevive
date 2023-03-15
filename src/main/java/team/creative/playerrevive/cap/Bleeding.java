@@ -4,13 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
-import team.creative.playerrevive.api.DamageBledToDeath;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.packet.HelperPacket;
 
@@ -137,10 +138,10 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
-    public DamageSource getSource() {
+    public DamageSource getSource(RegistryAccess access) {
         if (lastSource != null)
             return lastSource;
-        return DamageBledToDeath.BLED_TO_DEATH;
+        return new DamageSource(access.registryOrThrow(Registries.DAMAGE_TYPE).getHolderOrThrow(PlayerRevive.BLED_TO_DEATH));
     }
     
     @Override

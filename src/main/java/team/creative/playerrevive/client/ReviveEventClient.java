@@ -18,10 +18,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent.InteractionKeyMappingTriggered;
+import net.minecraftforge.client.event.RenderGuiOverlayEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
-import net.minecraftforge.event.TickEvent.RenderTickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
@@ -53,7 +53,6 @@ public class ReviveEventClient {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
-        RenderSystem.enableTexture();
         PoseStack pose = new PoseStack();
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
@@ -111,7 +110,7 @@ public class ReviveEventClient {
     }
     
     @SubscribeEvent
-    public void tick(RenderTickEvent event) {
+    public void tick(RenderGuiOverlayEvent.Post event) {
         Player player = mc.player;
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);

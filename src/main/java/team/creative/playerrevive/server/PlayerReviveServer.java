@@ -78,7 +78,7 @@ public class PlayerReviveServer {
     public static void kill(Player player) {
         IBleeding revive = getBleeding(player);
         MinecraftForge.EVENT_BUS.post(new PlayerBleedOutEvent(player, revive));
-        DamageSource source = revive.getSource();
+        DamageSource source = revive.getSource(player.level.registryAccess());
         CombatTrackerClone trackerClone = revive.getTrackerClone();
         if (trackerClone != null)
             trackerClone.overwriteTracker(player.getCombatTracker());

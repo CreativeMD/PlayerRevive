@@ -7,9 +7,12 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
@@ -45,13 +48,14 @@ public class PlayerRevive {
     public static final CreativeNetwork NETWORK = new CreativeNetwork("1.0", LOGGER, new ResourceLocation(PlayerRevive.MODID, "main"));
     
     public static final ResourceLocation BLEEDING_NAME = new ResourceLocation(MODID, "bleeding");
+    public static final ResourceKey<DamageType> BLED_TO_DEATH = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "bled_to_death"));
     
     public static final SoundEvent DEATH_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "death"));
     public static final SoundEvent REVIVED_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "revived"));
     
     public static final Capability<IBleeding> BLEEDING = CapabilityManager.get(new CapabilityToken<>() {});
     
-    public void registerSounds(RegisterEvent event) {
+    public void register(RegisterEvent event) {
         event.register(Keys.SOUND_EVENTS, x -> {
             x.register(new ResourceLocation(MODID, "death"), DEATH_SOUND);
             x.register(new ResourceLocation(MODID, "revived"), REVIVED_SOUND);
@@ -61,7 +65,7 @@ public class PlayerRevive {
     public PlayerRevive() {
         DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerSounds);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::register);
         MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCaps);
     }
