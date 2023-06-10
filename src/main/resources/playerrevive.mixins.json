@@ -6,7 +6,8 @@
     "server": [
     ],
     "mixins": [
-        "PlayerMixin"
+        "PlayerMixin",
+        "CombatTrackerAccessor"
     ],
     "client": [
         "MinecraftAccessor",

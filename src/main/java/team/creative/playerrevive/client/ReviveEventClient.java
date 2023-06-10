@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.UUID;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -40,7 +40,7 @@ public class ReviveEventClient {
     public static UUID helpTarget;
     public static boolean helpActive = false;
     
-    public static void render(List<Component> list) {
+    public static void render(GuiGraphics graphics, List<Component> list) {
         int space = 15;
         int width = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -53,10 +53,9 @@ public class ReviveEventClient {
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.disableDepthTest();
         RenderSystem.disableBlend();
-        PoseStack pose = new PoseStack();
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
-            mc.font.drawShadow(pose, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
+            graphics.drawString(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
                     .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
         }
         RenderSystem.enableDepthTest();
@@ -134,13 +133,13 @@ public class ReviveEventClient {
                 }
                 
                 if (helpActive && !mc.options.hideGui && mc.screen == null) {
-                    Player other = player.level.getPlayerByUUID(helpTarget);
+                    Player other = player.level().getPlayerByUUID(helpTarget);
                     if (other != null) {
                         List<Component> list = new ArrayList<>();
                         IBleeding bleeding = PlayerReviveServer.getBleeding(other);
                         list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
                         list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                        render(list);
+                        render(event.getGuiGraphics(), list);
                     }
                 }
             } else {
@@ -186,7 +185,7 @@ public class ReviveEventClient {
                     list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
                     list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey()
                             .getDisplayName(), ((PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20 - giveUpTimer) / 20) + 1));
-                    render(list);
+                    render(event.getGuiGraphics(), list);
                 }
             }
             
