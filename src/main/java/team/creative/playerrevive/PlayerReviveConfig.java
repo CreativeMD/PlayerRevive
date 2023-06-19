@@ -90,6 +90,12 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public boolean hasShaderEffect = true;
         
+        @CreativeConfig
+        public boolean changePermissionLevel = false;
+        
+        @CreativeConfig
+        public int permissionLevel = 0;
+        
     }
     
     public static class Revive {
