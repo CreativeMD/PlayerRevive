@@ -45,7 +45,7 @@ public class PlayerRevive {
     public static final Logger LOGGER = LogManager.getLogger(PlayerRevive.MODID);
     public static final String MODID = "playerrevive";
     public static PlayerReviveConfig CONFIG;
-    public static final CreativeNetwork NETWORK = new CreativeNetwork("1.0", LOGGER, new ResourceLocation(PlayerRevive.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, new ResourceLocation(PlayerRevive.MODID, "main"));
     
     public static final ResourceLocation BLEEDING_NAME = new ResourceLocation(MODID, "bleeding");
     public static final ResourceKey<DamageType> BLED_TO_DEATH = ResourceKey.create(Registries.DAMAGE_TYPE, new ResourceLocation(MODID, "bled_to_death"));
@@ -90,8 +90,8 @@ public class PlayerRevive {
     }
     
     private void serverStarting(final ServerStartingEvent event) {
-        event.getServer().getCommands().getDispatcher()
-                .register(Commands.literal("revive").requires(x -> x.hasPermission(2)).then(Commands.argument("players", EntityArgument.players()).executes(x -> {
+        event.getServer().getCommands().getDispatcher().register(Commands.literal("revive").requires(x -> x.hasPermission(2)).then(Commands.argument("players", EntityArgument
+                .players()).executes(x -> {
                     Collection<ServerPlayer> players = EntityArgument.getPlayers(x, "players");
                     for (ServerPlayer player : players)
                         if (PlayerReviveServer.getBleeding(player).isBleeding())
