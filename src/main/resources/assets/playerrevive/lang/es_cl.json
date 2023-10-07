@@ -1,0 +1,8 @@
+{
+	"playerrevive.chat.bleeding": "%s se está desangrando. %s",
+	"death.attack.bledToDeath.player": "%s se desangró",
+	"playerrevive.gui.button.send": "enviar",
+	"playerrevive.gui.label.time_left": "Te desangrarás en %s",
+	"playerrevive.gui.hold": "Mantén '%s' por %s segundos para rendirte",
+	"playerrevive.revive.item": "Necesitas"
+}
