@@ -17,7 +17,7 @@ public class GiveUpPacket extends CreativePacket {
     public void executeServer(ServerPlayer player) {
         IBleeding bleeding = PlayerReviveServer.getBleeding(player);
         if (bleeding.isBleeding())
-            PlayerReviveServer.kill(player);
+            PlayerReviveServer.isBleeding(player);
     }
     
 }
