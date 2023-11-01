@@ -72,7 +72,7 @@ public class ReviveEventServer {
     public void playerLeave(PlayerLoggedOutEvent event) {
         IBleeding revive = PlayerReviveServer.getBleeding(event.getPlayer());
         if (revive.isBleeding())
-            PlayerReviveServer.kill(event.getPlayer());
+            PlayerReviveServer.getBleeding(event.getPlayer());
         if (!event.getEntity().level.isClientSide)
             PlayerReviveServer.removePlayerAsHelper(event.getPlayer());
     }
