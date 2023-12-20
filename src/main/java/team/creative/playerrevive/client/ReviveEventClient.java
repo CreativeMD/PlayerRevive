@@ -55,8 +55,8 @@ public class ReviveEventClient {
         RenderSystem.disableBlend();
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
-            graphics.drawString(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow()
-                    .getGuiScaledHeight() / 2 + ((list.size() / 2) * space - space * (i + 1)), 16579836);
+            graphics.drawString(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow().getGuiScaledHeight() / 2 + ((list
+                    .size() / 2) * space - space * (i + 1)), 16579836);
         }
         RenderSystem.enableDepthTest();
     }
@@ -176,6 +176,9 @@ public class ReviveEventClient {
                     if (PlayerRevive.CONFIG.bleeding.hasShaderEffect)
                         mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blobs2.json"));
                     lastShader = true;
+                } else if (PlayerRevive.CONFIG.bleeding.hasShaderEffect && (mc.gameRenderer.currentEffect() == null || !mc.gameRenderer.currentEffect().getName().equals(
+                    "minecraft:shaders/post/blobs2.json"))) {
+                    mc.gameRenderer.loadEffect(new ResourceLocation("shaders/post/blobs2.json"));
                 }
                 
                 if (!mc.options.hideGui && mc.screen == null) {
@@ -183,8 +186,8 @@ public class ReviveEventClient {
                     IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                     list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
                     list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                    list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey()
-                            .getDisplayName(), ((PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20 - giveUpTimer) / 20) + 1));
+                    list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(),
+                        ((PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20 - giveUpTimer) / 20) + 1));
                     render(event.getGuiGraphics(), list);
                 }
             }
