@@ -8,14 +8,13 @@ import net.minecraft.server.players.UserBanListEntry;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.common.MinecraftForge;
+import net.neoforged.neoforge.common.NeoForge;
 import team.creative.creativecore.common.config.premade.MobEffectConfig;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.api.event.PlayerBleedOutEvent;
 import team.creative.playerrevive.api.event.PlayerRevivedEvent;
-import team.creative.playerrevive.cap.Bleeding;
 import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
 
@@ -34,7 +33,7 @@ public class PlayerReviveServer {
     }
     
     public static IBleeding getBleeding(Player player) {
-        return player.getCapability(PlayerRevive.BLEEDING).orElseGet(Bleeding::new);
+        return player.getCapability(PlayerRevive.BLEEDING);
     }
     
     public static void sendUpdatePacket(Player player) {
@@ -70,14 +69,14 @@ public class PlayerReviveServer {
         
         PlayerRevive.CONFIG.sounds.revived.play(player, SoundSource.PLAYERS);
         
-        MinecraftForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
+        NeoForge.EVENT_BUS.post(new PlayerRevivedEvent(player, revive));
         
         sendUpdatePacket(player);
     }
     
     public static void kill(Player player) {
         IBleeding revive = getBleeding(player);
-        MinecraftForge.EVENT_BUS.post(new PlayerBleedOutEvent(player, revive));
+        NeoForge.EVENT_BUS.post(new PlayerBleedOutEvent(player, revive));
         DamageSource source = revive.getSource(player.level().registryAccess());
         CombatTrackerClone trackerClone = revive.getTrackerClone();
         if (trackerClone != null)

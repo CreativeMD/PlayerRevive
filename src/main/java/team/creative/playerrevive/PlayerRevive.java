@@ -13,25 +13,24 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.CapabilityManager;
-import net.minecraftforge.common.capabilities.CapabilityToken;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.event.server.ServerStartingEvent;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.ForgeRegistries.Keys;
-import net.minecraftforge.registries.RegisterEvent;
+import net.minecraft.world.entity.EntityType;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.neoforge.capabilities.EntityCapability;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
 import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.network.CreativeNetwork;
 import team.creative.playerrevive.api.IBleeding;
+import team.creative.playerrevive.cap.Bleeding;
 import team.creative.playerrevive.client.ReviveEventClient;
 import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.packet.HelperPacket;
@@ -53,27 +52,27 @@ public class PlayerRevive {
     public static final SoundEvent DEATH_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "death"));
     public static final SoundEvent REVIVED_SOUND = SoundEvent.createVariableRangeEvent(new ResourceLocation(MODID, "revived"));
     
-    public static final Capability<IBleeding> BLEEDING = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final EntityCapability<IBleeding, Void> BLEEDING = EntityCapability.createVoid(BLEEDING_NAME, IBleeding.class);
     
     public void register(RegisterEvent event) {
-        event.register(Keys.SOUND_EVENTS, x -> {
+        event.register(Registries.SOUND_EVENT, x -> {
             x.register(new ResourceLocation(MODID, "death"), DEATH_SOUND);
             x.register(new ResourceLocation(MODID, "revived"), REVIVED_SOUND);
         });
     }
     
-    public PlayerRevive() {
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> FMLJavaModLoadingContext.get().getModEventBus().addListener(this::client));
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::init);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::register);
-        MinecraftForge.EVENT_BUS.addListener(this::serverStarting);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::registerCaps);
+    public PlayerRevive(IEventBus bus) {
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> bus.addListener(this::client));
+        bus.addListener(this::init);
+        bus.addListener(this::register);
+        NeoForge.EVENT_BUS.addListener(this::serverStarting);
+        bus.addListener(this::registerCaps);
     }
     
     @OnlyIn(value = Dist.CLIENT)
     private void client(final FMLClientSetupEvent event) {
         CreativeCoreClient.registerClientConfig(MODID);
-        MinecraftForge.EVENT_BUS.register(new ReviveEventClient());
+        NeoForge.EVENT_BUS.register(new ReviveEventClient());
     }
     
     private void init(final FMLCommonSetupEvent event) {
@@ -82,11 +81,11 @@ public class PlayerRevive {
         NETWORK.registerType(GiveUpPacket.class, GiveUpPacket::new);
         
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG = new PlayerReviveConfig());
-        MinecraftForge.EVENT_BUS.register(new ReviveEventServer());
+        NeoForge.EVENT_BUS.register(new ReviveEventServer());
     }
     
     private void registerCaps(RegisterCapabilitiesEvent event) {
-        event.register(IBleeding.class);
+        event.registerEntity(BLEEDING, EntityType.PLAYER, (x, y) -> new Bleeding());
     }
     
     private void serverStarting(final ServerStartingEvent event) {
