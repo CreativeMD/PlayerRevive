@@ -120,6 +120,7 @@ public class Bleeding implements IBleeding {
         this.downedTime = 0;
         this.lastSource = null;
         this.trackerClone = null;
+        this.itemConsumed = false;
     }
     
     @Override

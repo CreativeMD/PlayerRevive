@@ -81,12 +81,15 @@ public class ReviveEventServer {
                 event.setCanceled(true);
                 if (PlayerRevive.CONFIG.revive.needReviveItem) {
                     if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
-                        if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem())) {
-                            if (!helper.isCreative())
+                        if (PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem())) {
+                            if (!helper.isCreative()) {
                                 helper.getMainHandItem().shrink(1);
+                                helper.getInventory().setChanged();
+                            }
                             revive.setItemConsumed();
                         } else {
-                            helper.sendSystemMessage(Component.translatable("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()));
+                            if (!helper.level().isClientSide)
+                                helper.sendSystemMessage(Component.translatable("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()));
                             return;
                         }
                     } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()))
