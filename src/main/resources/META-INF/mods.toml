@@ -6,7 +6,7 @@ license="LGPL-3.0-only"
 [[mods]]
     modId="playerrevive"
     logoFile="playerrevive.png"
-    version="2.0.20"
+    version="2.0.21"
     displayName="PlayerRevive"
     displayURL="https://modrinth.com/mod/playerrevive"
     authors="CreativeMD"
