@@ -1,2 +1,7 @@
+2.0.21
+Fixed not consuming item
+Fixed sending missing item message twice
+Fixed only having to consume revive item once for each player
+
 2.0.20
 Fixed being able to get rid of blur effect by switching perspective (F5)
