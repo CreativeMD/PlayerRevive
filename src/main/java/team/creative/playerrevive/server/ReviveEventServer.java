@@ -87,12 +87,15 @@ public class ReviveEventServer {
                 event.setCanceled(true);
                 if (PlayerRevive.CONFIG.revive.needReviveItem) {
                     if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
-                        if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem())) {
-                            if (!helper.isCreative())
+                        if (PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem())) {
+                            if (!helper.isCreative()) {
                                 helper.getMainHandItem().shrink(1);
+                                helper.getInventory().setChanged();
+                            }
                             revive.setItemConsumed();
                         } else {
-                            helper.sendSystemMessage(Component.translatable("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()));
+                            if (!helper.level().isClientSide)
+                                helper.sendSystemMessage(Component.translatable("playerrevive.revive.item").append(PlayerRevive.CONFIG.revive.reviveItem.description()));
                             return;
                         }
                     } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()))
@@ -112,8 +115,8 @@ public class ReviveEventServer {
             Player player = (Player) event.getEntity();
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (revive.isBleeding()) {
-                if (event.getSource().type() == player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
-                        .getOrThrow(PlayerRevive.BLED_TO_DEATH) || PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().getMsgId()))
+                if (event.getSource().type() == player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getOrThrow(
+                    PlayerRevive.BLED_TO_DEATH) || PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().getMsgId()))
                     return;
                 
                 if (revive.bledOut())
@@ -139,8 +142,8 @@ public class ReviveEventServer {
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerDied(LivingDeathEvent event) {
         if (event.getEntity() instanceof Player player && isReviveActive(event.getEntity()) && !event.getEntity().level().isClientSide) {
-            if (event.getSource().type() != player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE)
-                    .getOrThrow(PlayerRevive.BLED_TO_DEATH) && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().getMsgId())) {
+            if (event.getSource().type() != player.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getOrThrow(
+                PlayerRevive.BLED_TO_DEATH) && !PlayerRevive.CONFIG.bypassDamageSources.contains(event.getSource().getMsgId())) {
                 IBleeding revive = PlayerReviveServer.getBleeding(player);
                 
                 if (revive.bledOut() || revive.isBleeding()) {
@@ -168,11 +171,11 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly)
-                        player.getServer().getPlayerList().broadcastSystemMessage(Component
-                                .translatable("playerrevive.chat.bleeding", player.getDisplayName(), player.getCombatTracker().getDeathMessage()), false);
+                        player.getServer().getPlayerList().broadcastSystemMessage(Component.translatable("playerrevive.chat.bleeding", player.getDisplayName(), player
+                                .getCombatTracker().getDeathMessage()), false);
                     else
-                        player.getServer().getPlayerList().broadcastSystemMessage(Component
-                                .translatable("playerrevive.chat.bleeding", player.getDisplayName(), player.getCombatTracker().getDeathMessage()), false);
+                        player.getServer().getPlayerList().broadcastSystemMessage(Component.translatable("playerrevive.chat.bleeding", player.getDisplayName(), player
+                                .getCombatTracker().getDeathMessage()), false);
             }
         }
     }
