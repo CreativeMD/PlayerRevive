@@ -72,7 +72,7 @@ public class ReviveEventClient {
         if (event.phase == Phase.START)
             return;
         IBleeding revive = PlayerReviveServer.getBleeding(event.player);
-        if (revive.isBleeding() && event.player != mc.player)
+        if (revive.isBleeding())
             event.player.setPose(Pose.SWIMMING);
     }
     

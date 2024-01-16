@@ -9,6 +9,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
@@ -32,6 +33,8 @@ public class Bleeding implements IBleeding {
     
     @Override
     public void tick(Player player) {
+        if (player.getPose() != Pose.SWIMMING)
+            player.setForcedPose(Pose.SWIMMING);
         for (Iterator<Player> iterator = revivingPlayers.iterator(); iterator.hasNext();) {
             Player helper = iterator.next();
             if (helper.distanceTo(player) > PlayerRevive.CONFIG.revive.maxDistance) {
