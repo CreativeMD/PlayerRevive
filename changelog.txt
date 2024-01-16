@@ -1,3 +1,7 @@
+2.0.22
+Fixed glitching pose when bleeding
+Adapted CreativeCore changes of adding hideParticle option to mob config
+
 2.0.21
 Fixed not consuming item
 Fixed sending missing item message twice
