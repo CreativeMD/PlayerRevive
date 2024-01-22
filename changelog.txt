@@ -1,3 +1,6 @@
+2.0.23
+Added config option can be pushed
+
 2.0.22
 Fixed glitching pose when bleeding
 Adapted CreativeCore changes of adding hideParticle option to mob config
