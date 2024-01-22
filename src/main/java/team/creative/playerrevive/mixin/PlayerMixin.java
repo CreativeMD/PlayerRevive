@@ -27,4 +27,14 @@ public abstract class PlayerMixin extends LivingEntity {
             cir.setReturnValue(false);
     }
     
+    @Override
+    public boolean isPushable() {
+        if (super.isPushable()) {
+            if (PlayerReviveServer.getBleeding((Player) (Object) this).isBleeding() && !PlayerRevive.CONFIG.bleeding.canBePushed)
+                return false;
+            return true;
+        }
+        return false;
+    }
+    
 }

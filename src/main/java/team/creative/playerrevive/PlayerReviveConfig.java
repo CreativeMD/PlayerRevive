@@ -96,6 +96,9 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public int permissionLevel = 0;
         
+        @CreativeConfig
+        public boolean canBePushed = true;
+        
     }
     
     public static class Revive {
