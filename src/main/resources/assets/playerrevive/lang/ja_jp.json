@@ -1,0 +1,8 @@
+{
+	"playerrevive.chat.bleeding": "%sは血を流している. %s",
+	"death.attack.bledToDeath.player": "%sは血を流した",
+	"playerrevive.gui.button.send": "送信",
+	"playerrevive.gui.label.time_left": "残り時間 %s",
+	"playerrevive.gui.hold": "ギブアップもしくは復活するには'%s'をあと%s秒間押し続けてください",
+	"playerrevive.revive.item": "必要なものは "
+}
