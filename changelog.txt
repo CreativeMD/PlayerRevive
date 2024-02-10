@@ -1,3 +1,6 @@
+2.0.24
+Fixed swimming pose being forced on server even after player has been revived or killed
+
 2.0.23
 Added config option can be pushed
 
