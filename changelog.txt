@@ -1,3 +1,7 @@
+2.0.30
+Added disableInventoryAccess, disableChatAccess and disableServerCommands (all are disabled by default)
+Add Traditional Chinese `zh_tw.json` (by yichifauzi)
+
 2.0.29
 Improved translations and cleaned up their files (Greg-21)
 
