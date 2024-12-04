@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
@@ -32,6 +33,15 @@ public class ReviveEventServer {
         if (player instanceof Player p && p.isCreative() && !PlayerRevive.CONFIG.bleeding.triggerForCreative)
             return false;
         return PlayerRevive.CONFIG.bleedInSingleplayer || player.getServer().isPublished();
+    }
+    
+    @SubscribeEvent
+    public void executeCommand(CommandEvent event) {
+        var source = event.getParseResults().getContext().getSource();
+        if (PlayerRevive.CONFIG.bleeding.disableServerCommands && source.isPlayer() && PlayerReviveServer.getBleeding(source.getPlayer()).isBleeding()) {
+            source.getPlayer().sendSystemMessage(Component.translatable("playerrevive.chat.no_commands"));
+            event.setCanceled(true);
+        }
     }
     
     @SubscribeEvent
