@@ -17,6 +17,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.CommandEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -38,6 +39,15 @@ public class ReviveEventServer {
         if (player instanceof Player p && p.isCreative() && !PlayerRevive.CONFIG.bleeding.triggerForCreative)
             return false;
         return PlayerRevive.CONFIG.bleedInSingleplayer || player.getServer().isPublished();
+    }
+    
+    @SubscribeEvent
+    public void executeCommand(CommandEvent event) {
+        var source = event.getParseResults().getContext().getSource();
+        if (PlayerRevive.CONFIG.bleeding.disableServerCommands && source.isPlayer() && PlayerReviveServer.getBleeding(source.getPlayer()).isBleeding()) {
+            source.getPlayer().sendSystemMessage(Component.translatable("playerrevive.chat.no_commands"));
+            event.setCanceled(true);
+        }
     }
     
     @SubscribeEvent
@@ -185,7 +195,8 @@ public class ReviveEventServer {
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly) {
                         if (player.level().getChunkSource() instanceof ServerChunkCache chunkCache)
-                            chunkCache.broadcastAndSend(player, new ClientboundSystemChatPacket(Component.translatable("playerrevive.chat.bleeding", player.getDisplayName()), false));
+                            chunkCache.broadcastAndSend(player, new ClientboundSystemChatPacket(Component.translatable("playerrevive.chat.bleeding", player
+                                    .getDisplayName()), false));
                     } else
                         player.getServer().getPlayerList().broadcastSystemMessage(Component.translatable("playerrevive.chat.bleeding", player.getDisplayName()), false);
             }

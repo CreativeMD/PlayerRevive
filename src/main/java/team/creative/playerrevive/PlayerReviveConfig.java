@@ -100,6 +100,15 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public boolean canBePushed = true;
         
+        @CreativeConfig
+        public boolean disableInventoryAccess = false;
+        
+        @CreativeConfig
+        public boolean disableChatAccess = false;
+        
+        @CreativeConfig
+        public boolean disableServerCommands = false;
+        
     }
     
     public static class Revive {

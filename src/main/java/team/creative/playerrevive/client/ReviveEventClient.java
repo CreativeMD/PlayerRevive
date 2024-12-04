@@ -8,6 +8,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -19,6 +21,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.InputEvent.InteractionKeyMappingTriggered;
 import net.minecraftforge.client.event.RenderGuiOverlayEvent;
+import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent.ClientTickEvent;
 import net.minecraftforge.event.TickEvent.Phase;
 import net.minecraftforge.event.TickEvent.PlayerTickEvent;
@@ -83,6 +86,20 @@ public class ReviveEventClient {
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (revive.isBleeding())
+                event.setCanceled(true);
+        }
+    }
+    
+    @SubscribeEvent
+    public void screenOpen(ScreenEvent.Opening event) {
+        Player player = mc.player;
+        if (player != null) {
+            IBleeding revive = PlayerReviveServer.getBleeding(player);
+            if (!revive.isBleeding())
+                return;
+            if (PlayerRevive.CONFIG.bleeding.disableInventoryAccess && event.getNewScreen() instanceof InventoryScreen)
+                event.setCanceled(true);
+            else if (PlayerRevive.CONFIG.bleeding.disableChatAccess && event.getNewScreen() instanceof ChatScreen)
                 event.setCanceled(true);
         }
     }
