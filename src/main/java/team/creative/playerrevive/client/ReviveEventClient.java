@@ -9,6 +9,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
+import net.minecraft.client.gui.screens.DeathScreen;
+import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
@@ -70,6 +72,7 @@ public class ReviveEventClient {
     
     private boolean addedEffect = false;
     private int giveUpTimer = 0;
+    private boolean inPauseScreen = false;
     
     @SubscribeEvent
     public void playerTick(PlayerTickEvent.Post event) {
@@ -95,10 +98,19 @@ public class ReviveEventClient {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             if (!revive.isBleeding())
                 return;
+            if (event.getCurrentScreen() == null)
+                inPauseScreen = false;
             if (PlayerRevive.CONFIG.bleeding.disableInventoryAccess && event.getNewScreen() instanceof InventoryScreen)
                 event.setCanceled(true);
             else if (PlayerRevive.CONFIG.bleeding.disableChatAccess && event.getNewScreen() instanceof ChatScreen)
                 event.setCanceled(true);
+            else if (PlayerRevive.CONFIG.bleeding.disableAllGUIAccess && !(event.getNewScreen() instanceof DeathScreen)) {
+                if (event.getNewScreen() instanceof PauseScreen)
+                    inPauseScreen = true;
+                if (!inPauseScreen)
+                    event.setCanceled(true);
+            } else
+                inPauseScreen = true;
         }
     }
     
