@@ -1,3 +1,6 @@
+2.0.31
+Added disableAllGUIAccess option (disabled by default)
+
 2.0.30
 Added disableInventoryAccess, disableChatAccess and disableServerCommands (all are disabled by default)
 Add Traditional Chinese `zh_tw.json` (by yichifauzi)
