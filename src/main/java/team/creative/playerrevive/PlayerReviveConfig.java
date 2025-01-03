@@ -101,6 +101,9 @@ public class PlayerReviveConfig {
         public boolean canBePushed = true;
         
         @CreativeConfig
+        public boolean disableAllGUIAccess = false;
+        
+        @CreativeConfig
         public boolean disableInventoryAccess = false;
         
         @CreativeConfig
