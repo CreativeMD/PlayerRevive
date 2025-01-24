@@ -1,3 +1,8 @@
+2.0.32
+tr_tr.json Turkish Localization
+Added disableAllGUIAccess option (disabled by default)
+Fixed disconnect from game when bleeding by switching from invalid blobs2 to blur shader
+
 2.0.31
 Fixed crash when launching the game
 
