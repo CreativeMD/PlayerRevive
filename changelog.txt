@@ -1,3 +1,6 @@
+2.0.32
+Added tr_tr.json Turkish Localization (thanks to RuyaSavascisi)
+
 2.0.31
 Added disableAllGUIAccess option (disabled by default)
 
