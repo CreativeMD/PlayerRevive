@@ -36,7 +36,7 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 @OnlyIn(value = Dist.CLIENT)
 public class ReviveEventClient {
     
-    private static final ResourceLocation BLUR_SHADER = ResourceLocation.tryBuild(PlayerRevive.MODID, "shaders/post/blobs2.json");
+    private static final ResourceLocation BLUR_SHADER = ResourceLocation.withDefaultNamespace("blur");
     public static Minecraft mc = Minecraft.getInstance();
     
     public static TensionSound sound;
