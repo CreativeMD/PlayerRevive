@@ -1,3 +1,6 @@
+2.0.34
+Changed bleedingMessageTrackingOnly comment (suggested by @Eric-01)
+
 2.0.33
 Added bleedingMessageTrackingOnly comment
 
