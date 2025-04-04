@@ -1,3 +1,6 @@
+2.0.36
+Added entity selector option to detect via commands whether a player is bleeding or not. [bleeding=true] will select all bleeding players, if set to false all none bleeding entities
+
 2.0.35
 Adapted to CreativeCore 2.13.0
 
