@@ -8,12 +8,15 @@ import org.apache.logging.log4j.Logger;
 
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
+import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
@@ -86,6 +89,18 @@ public class PlayerRevive {
         
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG = new PlayerReviveConfig());
         NeoForge.EVENT_BUS.register(new ReviveEventServer());
+        
+        EntitySelectorOptions.register("bleeding", x -> {
+            boolean value = x.getReader().readBoolean();
+            x.addPredicate(entity -> {
+                var entityValue = false;
+                if (entity instanceof Player p) {
+                    var bleeding = PlayerReviveServer.getBleeding(p);
+                    entityValue = bleeding.isBleeding();
+                }
+                return entityValue == value;
+            });
+        }, x -> true, Component.translatable("argument.entity.options.bleeding.description"));
     }
     
     private void serverStarting(final RegisterCommandsEvent event) {

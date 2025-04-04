@@ -4,5 +4,6 @@
     "playerrevive.gui.hold": "Wait for help or hold '%s' for %s seconds to give up",
     "playerrevive.revive.item": "You need %s",
     "playerrevive.chat.no_commands": "No commands allowed when bleeding",
-    "config.playerrevive.bleeding.bleedingMessageTrackingOnly.comment": "Only the players within the render distance of injured people receive the bleeding messages."
+    "config.playerrevive.bleeding.bleedingMessageTrackingOnly.comment": "Only the players within the render distance of injured people receive the bleeding messages.",
+    "argument.entity.options.bleeding.description": "Filters by whether an entity is bleeding or not"
 }
