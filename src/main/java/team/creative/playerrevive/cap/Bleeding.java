@@ -97,10 +97,10 @@ public class Bleeding implements IBleeding {
     
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        timeLeft = nbt.getInt("timeLeft");
-        progress = nbt.getFloat("progress");
-        bleeding = nbt.getBoolean("bleeding");
-        itemConsumed = nbt.getBoolean("consumed");
+        timeLeft = nbt.getIntOr("timeLeft", 0);
+        progress = nbt.getFloatOr("progress", 0);
+        bleeding = nbt.getBooleanOr("bleeding", false);
+        itemConsumed = nbt.getBooleanOr("consumed", false);
     }
     
     @Override

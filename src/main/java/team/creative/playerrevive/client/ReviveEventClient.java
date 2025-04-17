@@ -12,11 +12,8 @@ import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
-import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.effect.MobEffectInstance;
-import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
@@ -38,13 +35,17 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 @OnlyIn(value = Dist.CLIENT)
 public class ReviveEventClient {
     
-    private static final ResourceLocation BLUR_SHADER = ResourceLocation.withDefaultNamespace("blur");
     public static Minecraft mc = Minecraft.getInstance();
-    
-    public static TensionSound sound;
     
     public static UUID helpTarget;
     public static boolean helpActive = false;
+    public boolean lastHighTension = false;
+    
+    private static TensionSound sound;
+    
+    private boolean addedEffect = false;
+    private int giveUpTimer = 0;
+    private boolean inPauseScreen = false;
     
     public static void render(GuiGraphics graphics, List<Component> list) {
         int space = 15;
@@ -54,25 +55,13 @@ public class ReviveEventClient {
             width = Math.max(width, mc.font.width(text) + 10);
         }
         
-        RenderSystem.setShader(CoreShaders.POSITION_TEX);
-        RenderSystem.defaultBlendFunc();
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableDepthTest();
-        RenderSystem.disableBlend();
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
             graphics.drawString(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow().getGuiScaledHeight() / 2 + ((list
                     .size() / 2) * space - space * (i + 1)), 16579836);
         }
-        RenderSystem.enableDepthTest();
     }
-    
-    public boolean lastShader = false;
-    public boolean lastHighTension = false;
-    
-    private boolean addedEffect = false;
-    private int giveUpTimer = 0;
-    private boolean inPauseScreen = false;
     
     @SubscribeEvent
     public void playerTick(PlayerTickEvent.Post event) {
@@ -143,13 +132,8 @@ public class ReviveEventClient {
             
             if (!revive.isBleeding()) {
                 lastHighTension = false;
-                if (lastShader) {
-                    mc.gameRenderer.checkEntityPostEffect(mc.getCameraEntity());
-                    lastShader = false;
-                }
                 
                 if (addedEffect) {
-                    player.removeEffect(MobEffects.JUMP);
                     ((LocalPlayerAccessor) player).setHandsBusy(false);
                     addedEffect = false;
                 }
@@ -173,15 +157,14 @@ public class ReviveEventClient {
                 player.setPose(Pose.SWIMMING);
                 ((LocalPlayerAccessor) player).setHandsBusy(true);
                 ((MinecraftAccessor) mc).setMissTime(2);
-                player.addEffect(new MobEffectInstance(MobEffects.JUMP, 0, -10));
                 
                 player.hurtTime = 0;
-                addedEffect = true;
                 
                 if (revive.timeLeft() < 400) {
                     if (!lastHighTension) {
                         if (!PlayerRevive.CONFIG.disableMusic) {
-                            mc.getSoundManager().stop(sound);
+                            if (sound != null)
+                                mc.getSoundManager().stop(sound);
                             sound = new TensionSound(ResourceLocation.tryBuild(PlayerRevive.MODID, "hightension"), PlayerRevive.CONFIG.countdownMusicVolume, 1.0F, false);
                             mc.getSoundManager().play(sound);
                         }
@@ -189,9 +172,11 @@ public class ReviveEventClient {
                         
                     }
                 } else {
-                    if (!lastShader) {
-                        if (sound != null)
+                    if (!addedEffect) {
+                        if (sound != null) {
                             mc.getSoundManager().stop(sound);
+                            sound = null;
+                        }
                         if (!PlayerRevive.CONFIG.disableMusic) {
                             sound = new TensionSound(ResourceLocation.tryBuild(PlayerRevive.MODID, "tension"), PlayerRevive.CONFIG.bleedingMusicVolume, 1.0F, true);
                             mc.getSoundManager().play(sound);
@@ -199,14 +184,10 @@ public class ReviveEventClient {
                     }
                 }
                 
-                if (!lastShader) {
-                    if (PlayerRevive.CONFIG.bleeding.hasShaderEffect)
-                        mc.gameRenderer.setPostEffect(BLUR_SHADER);
-                    lastShader = true;
-                } else if (PlayerRevive.CONFIG.bleeding.hasShaderEffect && (mc.gameRenderer.currentPostEffect() == null || !mc.gameRenderer.currentPostEffect().equals(
-                    BLUR_SHADER))) {
-                    mc.gameRenderer.setPostEffect(BLUR_SHADER);
-                }
+                addedEffect = true;
+                
+                if (PlayerRevive.CONFIG.bleeding.hasShaderEffect)
+                    mc.gameRenderer.processBlurEffect();
                 
                 if (!mc.options.hideGui && mc.screen == null) {
                     List<Component> list = new ArrayList<>();

@@ -28,6 +28,14 @@ public abstract class PlayerMixin extends LivingEntity {
     }
     
     @Override
+    protected float getJumpPower(float power) {
+        IBleeding bleeding = PlayerReviveServer.getBleeding((Player) (Object) this);
+        if (bleeding.isBleeding())
+            return 0;
+        return super.getJumpPower(power);
+    }
+    
+    @Override
     public boolean isPushable() {
         if (super.isPushable()) {
             if (PlayerReviveServer.getBleeding((Player) (Object) this).isBleeding() && !PlayerRevive.CONFIG.bleeding.canBePushed)
