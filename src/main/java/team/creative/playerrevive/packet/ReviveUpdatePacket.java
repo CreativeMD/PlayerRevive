@@ -5,8 +5,11 @@ import java.util.UUID;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.network.CreativePacket;
@@ -19,7 +22,9 @@ public class ReviveUpdatePacket extends CreativePacket {
     public CompoundTag nbt;
     
     public ReviveUpdatePacket(Player player) {
-        this.nbt = PlayerReviveServer.getBleeding(player).serializeNBT(player.registryAccess());
+        var output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, player.registryAccess());
+        PlayerReviveServer.getBleeding(player).serialize(output);
+        this.nbt = output.buildResult();
         this.uuid = player.getUUID();
     }
     
@@ -33,7 +38,7 @@ public class ReviveUpdatePacket extends CreativePacket {
         Player member = Minecraft.getInstance().level.getPlayerByUUID(uuid);
         if (member != null) {
             IBleeding bleeding = PlayerReviveServer.getBleeding(member);
-            bleeding.deserializeNBT(player.registryAccess(), nbt);
+            bleeding.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, player.registryAccess(), nbt));
             if (!bleeding.isBleeding())
                 member.setPose(Pose.STANDING);
         }

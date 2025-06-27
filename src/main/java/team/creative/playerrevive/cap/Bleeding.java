@@ -4,16 +4,14 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.jetbrains.annotations.UnknownNullability;
-
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
@@ -86,21 +84,19 @@ public class Bleeding implements IBleeding {
     }
     
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putInt("timeLeft", timeLeft);
-        nbt.putFloat("progress", progress);
-        nbt.putBoolean("bleeding", bleeding);
-        nbt.putBoolean("consumed", itemConsumed);
-        return nbt;
+    public void serialize(ValueOutput output) {
+        output.putInt("timeLeft", timeLeft);
+        output.putFloat("progress", progress);
+        output.putBoolean("bleeding", bleeding);
+        output.putBoolean("consumed", itemConsumed);
     }
     
     @Override
-    public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        timeLeft = nbt.getIntOr("timeLeft", 0);
-        progress = nbt.getFloatOr("progress", 0);
-        bleeding = nbt.getBooleanOr("bleeding", false);
-        itemConsumed = nbt.getBooleanOr("consumed", false);
+    public void deserialize(ValueInput input) {
+        timeLeft = input.getIntOr("timeLeft", 0);
+        progress = input.getFloatOr("progress", 0);
+        bleeding = input.getBooleanOr("bleeding", false);
+        itemConsumed = input.getBooleanOr("consumed", false);
     }
     
     @Override

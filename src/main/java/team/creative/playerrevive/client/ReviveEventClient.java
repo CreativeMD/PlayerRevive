@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.ChatScreen;
@@ -55,11 +53,10 @@ public class ReviveEventClient {
             width = Math.max(width, mc.font.width(text) + 10);
         }
         
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
             graphics.drawString(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow().getGuiScaledHeight() / 2 + ((list
-                    .size() / 2) * space - space * (i + 1)), 16579836);
+                    .size() / 2) * space - space * (i + 1)), -2039584);
         }
     }
     

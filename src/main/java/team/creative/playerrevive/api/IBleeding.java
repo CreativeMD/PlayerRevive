@@ -3,12 +3,11 @@ package team.creative.playerrevive.api;
 import java.util.List;
 
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
-public interface IBleeding extends INBTSerializable<CompoundTag> {
+public interface IBleeding extends ValueIOSerializable {
     
     public void tick(Player player);
     
