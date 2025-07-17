@@ -1,0 +1,7 @@
+{
+    "playerrevive.chat.bleeding": "%s重伤倒地，需要救援",
+    "playerrevive.gui.label.time_left": "剩余时间: %s",
+    "playerrevive.gui.hold": "等待救援或按住'%s'键%s放弃",
+    "playerrevive.revive.item": "需要%s以救援",
+    "playerrevive.chat.no_commands": "倒地时无法使用命令"
+}
