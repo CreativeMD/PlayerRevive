@@ -9,9 +9,7 @@ import team.creative.playerrevive.server.PlayerReviveServer;
 public class GiveUpPacket extends CreativePacket {
     
     @Override
-    public void executeClient(Player player) {
-        
-    }
+    public void executeClient(Player player) {}
     
     @Override
     public void executeServer(ServerPlayer player) {

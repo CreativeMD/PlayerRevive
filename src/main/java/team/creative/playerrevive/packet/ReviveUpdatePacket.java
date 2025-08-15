@@ -10,8 +10,6 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import team.creative.creativecore.common.network.CreativePacket;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.server.PlayerReviveServer;
@@ -33,7 +31,6 @@ public class ReviveUpdatePacket extends CreativePacket {
     }
     
     @Override
-    @OnlyIn(value = Dist.CLIENT)
     public void executeClient(Player player) {
         Player member = Minecraft.getInstance().level.getPlayerByUUID(uuid);
         if (member != null) {
@@ -45,8 +42,6 @@ public class ReviveUpdatePacket extends CreativePacket {
     }
     
     @Override
-    public void executeServer(ServerPlayer player) {
-        
-    }
+    public void executeServer(ServerPlayer player) {}
     
 }

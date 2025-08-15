@@ -18,10 +18,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.loading.FMLLoader;
 import net.neoforged.neoforge.attachment.AttachmentType;
@@ -30,11 +28,10 @@ import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.neoforged.neoforge.registries.RegisterEvent;
-import team.creative.creativecore.client.CreativeCoreClient;
 import team.creative.creativecore.common.config.holder.CreativeConfigRegistry;
 import team.creative.creativecore.common.network.CreativeNetwork;
 import team.creative.playerrevive.cap.Bleeding;
-import team.creative.playerrevive.client.ReviveEventClient;
+import team.creative.playerrevive.client.PlayerReviveClient;
 import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
@@ -69,17 +66,11 @@ public class PlayerRevive {
     
     public PlayerRevive(IEventBus bus) {
         if (FMLLoader.getDist() == Dist.CLIENT)
-            bus.addListener(this::client);
+            bus.addListener(PlayerReviveClient::init);
         bus.addListener(this::init);
         bus.addListener(this::register);
         NeoForge.EVENT_BUS.addListener(this::serverStarting);
         ATTACHMENT_TYPES.register(bus);
-    }
-    
-    @OnlyIn(value = Dist.CLIENT)
-    private void client(final FMLClientSetupEvent event) {
-        CreativeCoreClient.registerClientConfig(MODID);
-        NeoForge.EVENT_BUS.register(new ReviveEventClient());
     }
     
     private void init(final FMLCommonSetupEvent event) {
