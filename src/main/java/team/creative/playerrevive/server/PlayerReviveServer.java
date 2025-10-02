@@ -99,8 +99,8 @@ public class PlayerReviveServer {
         
         if (PlayerRevive.CONFIG.banPlayerAfterDeath) {
             try {
-                player.getServer().getPlayerList().getBans().add(new UserBanListEntry(player.getGameProfile()));
-                player.getServer().getPlayerList().getBans().save();
+                player.level().getServer().getPlayerList().getBans().add(new UserBanListEntry(player.nameAndId()));
+                player.level().getServer().getPlayerList().getBans().save();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -110,7 +110,7 @@ public class PlayerReviveServer {
     }
     
     public static void removePlayerAsHelper(Player player) {
-        for (Iterator<ServerPlayer> iterator = player.getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
+        for (Iterator<ServerPlayer> iterator = player.level().getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
             ServerPlayer member = iterator.next();
             IBleeding revive = getBleeding(member);
             revive.revivingPlayers().remove(player);

@@ -65,7 +65,7 @@ public class PlayerRevive {
     }
     
     public PlayerRevive(IEventBus bus) {
-        if (FMLLoader.getDist() == Dist.CLIENT)
+        if (FMLLoader.getCurrent().getDist() == Dist.CLIENT)
             bus.addListener(PlayerReviveClient::init);
         bus.addListener(this::init);
         bus.addListener(this::register);

@@ -32,7 +32,7 @@ public class ReviveEventServer {
     public static boolean isReviveActive(Entity player) {
         if (player instanceof Player p && p.isCreative() && !PlayerRevive.CONFIG.bleeding.triggerForCreative)
             return false;
-        return PlayerRevive.CONFIG.bleedInSingleplayer || player.getServer().isPublished();
+        return PlayerRevive.CONFIG.bleedInSingleplayer || player.level().getServer().isPublished();
     }
     
     @SubscribeEvent
@@ -46,7 +46,7 @@ public class ReviveEventServer {
     
     @SubscribeEvent
     public void playerTick(PlayerTickEvent.Pre event) {
-        if (!event.getEntity().level().isClientSide && isReviveActive(event.getEntity())) {
+        if (!event.getEntity().level().isClientSide() && isReviveActive(event.getEntity())) {
             Player player = event.getEntity();
             if (!player.isAlive())
                 return;
@@ -80,13 +80,13 @@ public class ReviveEventServer {
         IBleeding revive = PlayerReviveServer.getBleeding(event.getEntity());
         if (revive.isBleeding())
             PlayerReviveServer.kill(event.getEntity());
-        if (!event.getEntity().level().isClientSide)
+        if (!event.getEntity().level().isClientSide())
             PlayerReviveServer.removePlayerAsHelper(event.getEntity());
     }
     
     @SubscribeEvent(priority = EventPriority.HIGH)
     public void playerInteract(PlayerInteractEvent.EntityInteract event) {
-        if (event.getTarget() instanceof Player && !event.getEntity().level().isClientSide) {
+        if (event.getTarget() instanceof Player && !event.getEntity().level().isClientSide()) {
             Player target = (Player) event.getTarget();
             Player helper = event.getEntity();
             IBleeding revive = PlayerReviveServer.getBleeding(target);
@@ -101,7 +101,7 @@ public class ReviveEventServer {
                             }
                             revive.setItemConsumed();
                         } else {
-                            if (!helper.level().isClientSide)
+                            if (!helper.level().isClientSide())
                                 helper.displayClientMessage(Component.translatable("playerrevive.revive.item", PlayerRevive.CONFIG.revive.reviveItem.description()), false);
                             return;
                         }
@@ -173,13 +173,13 @@ public class ReviveEventServer {
     
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void playerOverkillTracker(LivingDamageEvent.Pre event) {
-        if (!event.getEntity().level().isClientSide && event.getEntity() instanceof PlayerExtender player && isReviveActive(event.getEntity()))
+        if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof PlayerExtender player && isReviveActive(event.getEntity()))
             player.setOverkill(Math.max(0, event.getContainer().getNewDamage() - event.getEntity().getHealth()));
     }
     
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public void playerDied(LivingDeathEvent event) {
-        if (!event.getEntity().level().isClientSide && event.getEntity() instanceof Player player && isReviveActive(event.getEntity())) {
+        if (!event.getEntity().level().isClientSide() && event.getEntity() instanceof Player player && isReviveActive(event.getEntity())) {
             if (!doesByPass(player, event.getSource()) && !doesByPassDamageAmount(player, event.getSource())) {
                 IBleeding revive = PlayerReviveServer.getBleeding(player);
                 
@@ -210,10 +210,10 @@ public class ReviveEventServer {
                 if (PlayerRevive.CONFIG.bleeding.bleedingMessage)
                     if (PlayerRevive.CONFIG.bleeding.bleedingMessageTrackingOnly) {
                         if (player.level().getChunkSource() instanceof ServerChunkCache chunkCache)
-                            chunkCache.broadcastAndSend(player, new ClientboundSystemChatPacket(Component.translatable("playerrevive.chat.bleeding", player
+                            chunkCache.sendToTrackingPlayersAndSelf(player, new ClientboundSystemChatPacket(Component.translatable("playerrevive.chat.bleeding", player
                                     .getDisplayName()), false));
                     } else
-                        player.getServer().getPlayerList().broadcastSystemMessage(Component.translatable("playerrevive.chat.bleeding", player.getDisplayName()), false);
+                        player.level().getServer().getPlayerList().broadcastSystemMessage(Component.translatable("playerrevive.chat.bleeding", player.getDisplayName()), false);
             }
         }
     }
