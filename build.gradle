@@ -21,7 +21,7 @@ runs {
     }
     
     client {
-        arguments '--username', '"Dev####"'
+        arguments '--username', '"Dev###"'
     }
     
     server {
