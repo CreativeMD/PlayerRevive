@@ -167,6 +167,9 @@ public class PlayerReviveConfig {
         @CreativeConfig.IntRange(min = 1, max = 20)
         public int healthAfter = 2;
         
+        @CreativeConfig
+        public boolean forceLookAt = false;
+        
     }
     
     public static class Sounds {

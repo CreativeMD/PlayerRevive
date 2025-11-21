@@ -15,16 +15,19 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered;
+import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
@@ -132,6 +135,34 @@ public class ReviveEventClient {
                     giveUpTimer = 0;
             else
                 giveUpTimer = 0;
+        }
+    }
+    
+    @SubscribeEvent
+    public void frameEvent(RenderFrameEvent.Pre event) {
+        Player player = mc.player;
+        if (player != null && PlayerRevive.CONFIG.revive.forceLookAt) {
+            IBleeding revive = PlayerReviveServer.getBleeding(player);
+            if (!revive.isBleeding() && helpActive) {
+                Player other = player.level().getPlayerByUUID(helpTarget);
+                if (other != null) {
+                    float partial = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+                    Vec3 vec3 = player.getEyePosition(partial);
+                    Vec3 center = other.getPosition(partial);
+                    double d0 = center.x - vec3.x;
+                    double d1 = center.y - vec3.y;
+                    double d2 = center.z - vec3.z;
+                    double d3 = Math.sqrt(d0 * d0 + d2 * d2);
+                    player.setXRot(Mth.wrapDegrees((float) (-(Mth.atan2(d1, d3) * 180.0F / (float) Math.PI))));
+                    player.setYRot(Mth.wrapDegrees((float) (Mth.atan2(d2, d0) * 180.0F / (float) Math.PI) - 90.0F));
+                    player.setYHeadRot(player.getYRot());
+                    player.xRotO = player.getXRot();
+                    player.yRotO = player.getYRot();
+                    player.yHeadRotO = player.yHeadRot;
+                    player.yBodyRot = player.yHeadRot;
+                    player.yBodyRotO = player.yBodyRot;
+                }
+            }
         }
     }
     
