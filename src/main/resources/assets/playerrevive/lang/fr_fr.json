@@ -1,0 +1,9 @@
+{
+    "playerrevive.chat.bleeding": "%s est en train de se vider de son sang et peut avoir besoin de votre aide",
+    "playerrevive.gui.label.time_left": "Temps restant : %s",
+    "playerrevive.gui.hold": "Attendez de l’aide ou maintenez '%s' pendant %s secondes pour abandonner",
+    "playerrevive.revive.item": "Vous avez besoin de %s",
+    "playerrevive.chat.no_commands": "Aucune commande autorisée pendant l’hémorragie",
+    "config.playerrevive.bleeding.bleedingMessageTrackingOnly.comment": "Seuls les joueurs dans la distance de rendu d’une personne blessée reçoivent les messages d’hémorragie.",
+    "argument.entity.options.bleeding.description": "Filtre selon qu’une entité saigne ou non"
+}
