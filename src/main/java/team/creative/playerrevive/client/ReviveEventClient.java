@@ -11,7 +11,7 @@ import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
@@ -190,7 +190,7 @@ public class ReviveEventClient {
                         if (!PlayerRevive.CONFIG.disableMusic) {
                             if (sound != null)
                                 mc.getSoundManager().stop(sound);
-                            sound = new TensionSound(ResourceLocation.tryBuild(PlayerRevive.MODID, "hightension"), PlayerRevive.CONFIG.countdownMusicVolume, 1.0F, false);
+                            sound = new TensionSound(Identifier.tryBuild(PlayerRevive.MODID, "hightension"), PlayerRevive.CONFIG.countdownMusicVolume, 1.0F, false);
                             mc.getSoundManager().play(sound);
                         }
                         lastHighTension = true;
@@ -203,7 +203,7 @@ public class ReviveEventClient {
                             sound = null;
                         }
                         if (!PlayerRevive.CONFIG.disableMusic) {
-                            sound = new TensionSound(ResourceLocation.tryBuild(PlayerRevive.MODID, "tension"), PlayerRevive.CONFIG.bleedingMusicVolume, 1.0F, true);
+                            sound = new TensionSound(Identifier.tryBuild(PlayerRevive.MODID, "tension"), PlayerRevive.CONFIG.bleedingMusicVolume, 1.0F, true);
                             mc.getSoundManager().play(sound);
                         }
                     }

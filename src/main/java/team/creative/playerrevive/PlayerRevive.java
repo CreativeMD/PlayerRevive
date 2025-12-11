@@ -11,9 +11,10 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.selector.options.EntitySelectorOptions;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.player.Player;
@@ -44,13 +45,13 @@ public class PlayerRevive {
     public static final Logger LOGGER = LogManager.getLogger(PlayerRevive.MODID);
     public static final String MODID = "playerrevive";
     public static PlayerReviveConfig CONFIG;
-    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, ResourceLocation.tryBuild(PlayerRevive.MODID, "main"));
+    public static final CreativeNetwork NETWORK = new CreativeNetwork(1, LOGGER, Identifier.tryBuild(PlayerRevive.MODID, "main"));
     
-    public static final ResourceLocation BLEEDING_NAME = ResourceLocation.tryBuild(MODID, "bleeding");
-    public static final ResourceKey<DamageType> BLED_TO_DEATH = ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.tryBuild(MODID, "bled_to_death"));
+    public static final Identifier BLEEDING_NAME = Identifier.tryBuild(MODID, "bleeding");
+    public static final ResourceKey<DamageType> BLED_TO_DEATH = ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.tryBuild(MODID, "bled_to_death"));
     
-    public static final SoundEvent DEATH_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.tryBuild(MODID, "death"));
-    public static final SoundEvent REVIVED_SOUND = SoundEvent.createVariableRangeEvent(ResourceLocation.tryBuild(MODID, "revived"));
+    public static final SoundEvent DEATH_SOUND = SoundEvent.createVariableRangeEvent(Identifier.tryBuild(MODID, "death"));
+    public static final SoundEvent REVIVED_SOUND = SoundEvent.createVariableRangeEvent(Identifier.tryBuild(MODID, "revived"));
     
     private static final DeferredRegister<AttachmentType<?>> ATTACHMENT_TYPES = DeferredRegister.create(NeoForgeRegistries.Keys.ATTACHMENT_TYPES, MODID);
     
@@ -59,8 +60,8 @@ public class PlayerRevive {
     
     public void register(RegisterEvent event) {
         event.register(Registries.SOUND_EVENT, x -> {
-            x.register(ResourceLocation.tryBuild(MODID, "death"), DEATH_SOUND);
-            x.register(ResourceLocation.tryBuild(MODID, "revived"), REVIVED_SOUND);
+            x.register(Identifier.tryBuild(MODID, "death"), DEATH_SOUND);
+            x.register(Identifier.tryBuild(MODID, "revived"), REVIVED_SOUND);
         });
     }
     
@@ -95,13 +96,14 @@ public class PlayerRevive {
     }
     
     private void serverStarting(final RegisterCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal("revive").requires(x -> x.hasPermission(2)).then(Commands.argument("players", EntityArgument.players()).executes(x -> {
-            Collection<ServerPlayer> players = EntityArgument.getPlayers(x, "players");
-            for (ServerPlayer player : players)
-                if (PlayerReviveServer.getBleeding(player).isBleeding())
-                    PlayerReviveServer.revive(player);
-            return 0;
-        })));
+        event.getDispatcher().register(Commands.literal("revive").requires(x -> x.permissions().hasPermission(Permissions.COMMANDS_GAMEMASTER)).then(Commands.argument("players",
+            EntityArgument.players()).executes(x -> {
+                Collection<ServerPlayer> players = EntityArgument.getPlayers(x, "players");
+                for (ServerPlayer player : players)
+                    if (PlayerReviveServer.getBleeding(player).isBleeding())
+                        PlayerReviveServer.revive(player);
+                return 0;
+            })));
     }
     
 }

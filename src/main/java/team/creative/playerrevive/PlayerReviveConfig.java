@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Items;
 import team.creative.creativecore.common.config.api.CreativeConfig;
 import team.creative.creativecore.common.config.converation.ConfigTypeConveration;
@@ -80,8 +80,7 @@ public class PlayerReviveConfig {
         public boolean shouldGlow = false;
         
         @CreativeConfig
-        public List<MobEffectConfig> bleedingEffects = Arrays.asList(new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, ResourceLocation.tryBuild("minecraft",
-            "slowness"), 2, 10, true));
+        public List<MobEffectConfig> bleedingEffects = Arrays.asList(new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, Identifier.tryBuild("minecraft", "slowness"), 2, 10, true));
         
         @CreativeConfig
         public boolean affectHunger = true;
@@ -150,8 +149,7 @@ public class PlayerReviveConfig {
         public boolean resetProgress = false;
         
         @CreativeConfig
-        public List<MobEffectConfig> revivedEffects = Arrays.asList(new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, ResourceLocation.tryBuild("minecraft",
-            "slowness"), 2, 1, true));
+        public List<MobEffectConfig> revivedEffects = Arrays.asList(new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, Identifier.tryBuild("minecraft", "slowness"), 2, 1, true));
         
         @CreativeConfig
         public CreativeIngredient reviveItem = new CreativeIngredientItem(Items.PAPER);
@@ -175,9 +173,9 @@ public class PlayerReviveConfig {
     public static class Sounds {
         
         @CreativeConfig
-        public SoundConfig death = new SoundConfig(ResourceLocation.tryBuild(PlayerRevive.MODID, "death"));
+        public SoundConfig death = new SoundConfig(Identifier.tryBuild(PlayerRevive.MODID, "death"));
         @CreativeConfig
-        public SoundConfig revived = new SoundConfig(ResourceLocation.tryBuild(PlayerRevive.MODID, "revived"));
+        public SoundConfig revived = new SoundConfig(Identifier.tryBuild(PlayerRevive.MODID, "revived"));
         
     }
     

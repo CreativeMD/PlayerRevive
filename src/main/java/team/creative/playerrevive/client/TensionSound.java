@@ -2,7 +2,7 @@ package team.creative.playerrevive.client;
 
 import net.minecraft.client.resources.sounds.AbstractSoundInstance;
 import net.minecraft.client.resources.sounds.TickableSoundInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
 
@@ -10,7 +10,7 @@ public class TensionSound extends AbstractSoundInstance implements TickableSound
     
     private boolean stopped;
     
-    public TensionSound(ResourceLocation resource, float volume, float pitch, boolean loop) {
+    public TensionSound(Identifier resource, float volume, float pitch, boolean loop) {
         super(resource, SoundSource.PLAYERS, RandomSource.create());
         this.looping = loop;
         this.volume = volume;
