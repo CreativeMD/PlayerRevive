@@ -39,4 +39,8 @@ public interface IBleeding extends ValueIOSerializable {
     
     public void setItemConsumed();
     
+    public void startSelfRevive();
+    
+    public boolean isSelfReviving();
+    
 }

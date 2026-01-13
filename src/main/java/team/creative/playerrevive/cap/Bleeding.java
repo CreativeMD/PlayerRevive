@@ -28,6 +28,8 @@ public class Bleeding implements IBleeding {
     private CombatTrackerClone trackerClone;
     private boolean itemConsumed = false;
     
+    private boolean selfReviving = false;
+    
     public final List<Player> revivingPlayers = new ArrayList<>();
     
     public Bleeding() {}
@@ -46,10 +48,12 @@ public class Bleeding implements IBleeding {
         //player.setPose(Pose.SWIMMING);
         if (revivingPlayers.isEmpty() || !PlayerRevive.CONFIG.revive.haltBleedTime)
             timeLeft--;
-        if (revivingPlayers.isEmpty() && PlayerRevive.CONFIG.revive.resetProgress)
+        if (revivingPlayers.isEmpty() && PlayerRevive.CONFIG.revive.resetProgress && !selfReviving)
             progress = 0;
         
         progress += revivingPlayers.size() * PlayerRevive.CONFIG.revive.progressPerPlayer;
+        if (selfReviving)
+            progress += PlayerRevive.CONFIG.revive.selfRevive.progress;
         downedTime++;
         
         if (PlayerRevive.CONFIG.revive.exhaustion > 0)
@@ -89,6 +93,7 @@ public class Bleeding implements IBleeding {
         output.putFloat("progress", progress);
         output.putBoolean("bleeding", bleeding);
         output.putBoolean("consumed", itemConsumed);
+        output.putBoolean("selfRevive", selfReviving);
     }
     
     @Override
@@ -97,6 +102,7 @@ public class Bleeding implements IBleeding {
         progress = input.getFloatOr("progress", 0);
         bleeding = input.getBooleanOr("bleeding", false);
         itemConsumed = input.getBooleanOr("consumed", false);
+        selfReviving = input.getBooleanOr("selfRevive", false);
     }
     
     @Override
@@ -123,6 +129,7 @@ public class Bleeding implements IBleeding {
         this.lastSource = null;
         this.trackerClone = null;
         this.itemConsumed = false;
+        this.selfReviving = false;
     }
     
     @Override
@@ -157,4 +164,13 @@ public class Bleeding implements IBleeding {
         itemConsumed = true;
     }
     
+    @Override
+    public void startSelfRevive() {
+        selfReviving = true;
+    }
+    
+    @Override
+    public boolean isSelfReviving() {
+        return selfReviving;
+    }
 }

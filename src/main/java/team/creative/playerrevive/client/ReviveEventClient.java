@@ -24,11 +24,13 @@ import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import team.creative.creativecore.common.util.mc.TooltipUtils;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.mixin.LocalPlayerAccessor;
 import team.creative.playerrevive.mixin.MinecraftAccessor;
 import team.creative.playerrevive.packet.GiveUpPacket;
+import team.creative.playerrevive.packet.StartSelfRevivePacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
 
 public class ReviveEventClient {
@@ -107,7 +109,7 @@ public class ReviveEventClient {
         if (player != null) {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
-            if (revive.isBleeding())
+            if (revive.isBleeding()) {
                 if (mc.options.keyAttack.isDown())
                     if (giveUpTimer > PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20) {
                         PlayerRevive.NETWORK.sendToServer(new GiveUpPacket());
@@ -116,7 +118,11 @@ public class ReviveEventClient {
                         giveUpTimer++;
                 else
                     giveUpTimer = 0;
-            else
+                
+                if (PlayerRevive.CONFIG.revive.selfRevive.enabled && mc.options.keyUse.isDown() && player.isHolding(x -> PlayerRevive.CONFIG.revive.selfRevive.item.is(player
+                        .level(), x)))
+                    PlayerRevive.NETWORK.sendToServer(new StartSelfRevivePacket());
+            } else
                 giveUpTimer = 0;
         }
     }
@@ -218,9 +224,12 @@ public class ReviveEventClient {
                     List<Component> list = new ArrayList<>();
                     IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                     list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
-                    list.add(Component.literal("" + bleeding.getProgress() + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
-                    list.add(Component.translatable("playerrevive.gui.hold", mc.options.keyAttack.getKey().getDisplayName(),
+                    list.add(Component.literal("" + TooltipUtils.print(bleeding.getProgress()) + "/" + PlayerRevive.CONFIG.revive.requiredReviveProgress));
+                    list.add(Component.translatable("playerrevive.gui.give_up.hold", mc.options.keyAttack.getKey().getDisplayName(),
                         ((PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20 - giveUpTimer) / 20) + 1));
+                    
+                    if (PlayerRevive.CONFIG.revive.selfRevive.enabled)
+                        list.add(Component.translatable("playerrevive.gui.self_revive.hold", PlayerRevive.CONFIG.revive.selfRevive.item.description()));
                     render(event.getGuiGraphics(), list);
                 }
             }

@@ -36,6 +36,7 @@ import team.creative.playerrevive.client.PlayerReviveClient;
 import team.creative.playerrevive.packet.GiveUpPacket;
 import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
+import team.creative.playerrevive.packet.StartSelfRevivePacket;
 import team.creative.playerrevive.server.PlayerReviveServer;
 import team.creative.playerrevive.server.ReviveEventServer;
 
@@ -78,6 +79,7 @@ public class PlayerRevive {
         NETWORK.registerType(ReviveUpdatePacket.class, ReviveUpdatePacket::new);
         NETWORK.registerType(HelperPacket.class, HelperPacket::new);
         NETWORK.registerType(GiveUpPacket.class, GiveUpPacket::new);
+        NETWORK.registerType(StartSelfRevivePacket.class, StartSelfRevivePacket::new);
         
         CreativeConfigRegistry.ROOT.registerValue(MODID, CONFIG = new PlayerReviveConfig());
         NeoForge.EVENT_BUS.register(new ReviveEventServer());

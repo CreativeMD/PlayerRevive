@@ -94,7 +94,7 @@ public class ReviveEventServer {
                 event.setCanceled(true);
                 
                 if (PlayerRevive.CONFIG.revive.teammatesOnly && !helper.getTeam().isAlliedTo(target.getTeam())) {
-                    helper.sendSystemMessage(Component.translatable("playerrevive.revive.other_team"));
+                    helper.displayClientMessage(Component.translatable("playerrevive.revive.other_team"), false);
                     return;
                 }
                 
