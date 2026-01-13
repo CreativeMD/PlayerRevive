@@ -136,9 +136,12 @@ public class PlayerReviveConfig {
     public static class Revive {
         
         @CreativeConfig
-        public float requiredReviveProgress = 100;
+        public SelfRevive selfRevive = new SelfRevive();
+        
         @CreativeConfig
-        public float progressPerPlayer = 1;
+        public double requiredReviveProgress = 100;
+        @CreativeConfig
+        public double progressPerPlayer = 1;
         @CreativeConfig
         public float exhaustion = 0.5F;
         
@@ -172,6 +175,24 @@ public class PlayerReviveConfig {
         
         @CreativeConfig
         public boolean forceLookAt = false;
+        
+    }
+    
+    public static class SelfRevive {
+        
+        @CreativeConfig
+        public boolean enabled = false;
+        
+        @CreativeConfig
+        public CreativeIngredient item = new CreativeIngredientItem(Items.PAPER);
+        @CreativeConfig
+        public boolean consumeItem = true;
+        
+        @CreativeConfig
+        public double progress = 0.1;
+        
+        @CreativeConfig
+        public SoundConfig sound = new SoundConfig(ResourceLocation.withDefaultNamespace("item.bundle.remove_one"));
         
     }
     

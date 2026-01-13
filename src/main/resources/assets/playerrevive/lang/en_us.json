@@ -1,7 +1,8 @@
 {
     "playerrevive.chat.bleeding": "%s is bleeding out and may need your help",
     "playerrevive.gui.label.time_left": "Time left: %s",
-    "playerrevive.gui.hold": "Wait for help or hold '%s' for %s seconds to give up",
+    "playerrevive.gui.give_up.hold": "Wait for help or hold '%s' for %s seconds to give up",
+    "playerrevive.gui.self_revive.hold": "Use '%s' to revive yourself",
     "playerrevive.revive.item": "You need %s",
     "playerrevive.revive.other_team": "You are not in the same team.",
     "playerrevive.chat.no_commands": "No commands allowed when bleeding",

@@ -40,4 +40,8 @@ public interface IBleeding extends INBTSerializable<CompoundTag> {
     
     public void setItemConsumed();
     
+    public void startSelfRevive();
+    
+    public boolean isSelfReviving();
+    
 }
