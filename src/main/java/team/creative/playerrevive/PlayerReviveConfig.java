@@ -159,6 +159,9 @@ public class PlayerReviveConfig {
         public boolean consumeReviveItem = false;
         
         @CreativeConfig
+        public boolean teammatesOnly = false;
+        
+        @CreativeConfig
         public double maxDistance = 3;
         
         @CreativeConfig

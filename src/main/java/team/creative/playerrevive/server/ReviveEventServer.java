@@ -92,6 +92,12 @@ public class ReviveEventServer {
             IBleeding revive = PlayerReviveServer.getBleeding(target);
             if (revive.isBleeding()) {
                 event.setCanceled(true);
+                
+                if (PlayerRevive.CONFIG.revive.teammatesOnly && !helper.getTeam().isAlliedTo(target.getTeam())) {
+                    helper.sendSystemMessage(Component.translatable("playerrevive.revive.other_team"));
+                    return;
+                }
+                
                 if (PlayerRevive.CONFIG.revive.needReviveItem) {
                     if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
                         if (PlayerRevive.CONFIG.revive.reviveItem.is(event.getLevel(), helper.getMainHandItem())) {
