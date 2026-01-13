@@ -1,3 +1,8 @@
+2.1.0
+Added self revive (which is disabled by default)
+Added config option teammatesOnly (which only allows you to revive players of the same team or the teams you are allied to)
+Added French localization for player revive messages (thanks to acorsicanfrog)
+
 2.0.37
 Added option forceLookAt which makes the reviving player lock to the bleeding player
 
