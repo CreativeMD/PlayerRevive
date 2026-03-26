@@ -94,7 +94,7 @@ public class ReviveEventServer {
                 event.setCanceled(true);
                 
                 if (PlayerRevive.CONFIG.revive.teammatesOnly && !helper.getTeam().isAlliedTo(target.getTeam())) {
-                    helper.displayClientMessage(Component.translatable("playerrevive.revive.other_team"), false);
+                    helper.sendSystemMessage(Component.translatable("playerrevive.revive.other_team"));
                     return;
                 }
                 
@@ -108,7 +108,7 @@ public class ReviveEventServer {
                             revive.setItemConsumed();
                         } else {
                             if (!helper.level().isClientSide())
-                                helper.displayClientMessage(Component.translatable("playerrevive.revive.item", PlayerRevive.CONFIG.revive.reviveItem.description()), false);
+                                helper.sendSystemMessage(Component.translatable("playerrevive.revive.item", PlayerRevive.CONFIG.revive.reviveItem.description()));
                             return;
                         }
                     } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(event.getLevel(), helper.getMainHandItem()))

@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.ChatScreen;
 import net.minecraft.client.gui.screens.DeathScreen;
 import net.minecraft.client.gui.screens.PauseScreen;
@@ -22,6 +24,7 @@ import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.InteractionKeyMappingTriggered;
 import net.neoforged.neoforge.client.event.RenderFrameEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
+import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import team.creative.creativecore.common.util.mc.TooltipUtils;
@@ -47,7 +50,7 @@ public class ReviveEventClient {
     private int giveUpTimer = 0;
     private boolean inPauseScreen = false;
     
-    public static void render(GuiGraphics graphics, List<Component> list) {
+    public static void render(GuiGraphicsExtractor graphics, List<Component> list) {
         int space = 15;
         int width = 0;
         for (int i = 0; i < list.size(); i++) {
@@ -57,7 +60,7 @@ public class ReviveEventClient {
         
         for (int i = 0; i < list.size(); i++) {
             String text = list.get(i).getString();
-            graphics.drawString(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow().getGuiScaledHeight() / 2 + ((list
+            graphics.text(mc.font, text, mc.getWindow().getGuiScaledWidth() / 2 - mc.font.width(text) / 2, mc.getWindow().getGuiScaledHeight() / 2 + ((list
                     .size() / 2) * space - space * (i + 1)), -2039584);
         }
     }
@@ -156,6 +159,19 @@ public class ReviveEventClient {
     }
     
     @SubscribeEvent
+    public void renderAfter(RenderLevelStageEvent.AfterLevel event) {
+        Player player = mc.player;
+        if (player != null) {
+            IBleeding revive = PlayerReviveServer.getBleeding(player);
+            
+            if (revive.isBleeding() && PlayerRevive.CONFIG.bleeding.hasShaderEffect) {
+                RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(mc.getMainRenderTarget().getDepthTexture(), 1.0);
+                mc.gameRenderer.processBlurEffect();
+            }
+        }
+    }
+    
+    @SubscribeEvent
     public void tick(RenderGuiLayerEvent.Post event) {
         Player player = mc.player;
         if (player != null) {
@@ -216,9 +232,6 @@ public class ReviveEventClient {
                 }
                 
                 addedEffect = true;
-                
-                if (PlayerRevive.CONFIG.bleeding.hasShaderEffect)
-                    mc.gameRenderer.processBlurEffect();
                 
                 if (!mc.options.hideGui && mc.screen == null) {
                     List<Component> list = new ArrayList<>();
