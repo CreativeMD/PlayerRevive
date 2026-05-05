@@ -12,9 +12,11 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.NeoForge;
 import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
+import team.creative.playerrevive.api.event.ReviveCancelEvent;
 import team.creative.playerrevive.packet.HelperPacket;
 
 public class Bleeding implements IBleeding {
@@ -41,6 +43,7 @@ public class Bleeding implements IBleeding {
         for (Iterator<Player> iterator = revivingPlayers.iterator(); iterator.hasNext();) {
             Player helper = iterator.next();
             if (helper.distanceTo(player) > PlayerRevive.CONFIG.revive.maxDistance) {
+                NeoForge.EVENT_BUS.post(new ReviveCancelEvent(helper, player));
                 PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
                 iterator.remove();
             }

@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.CommandEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
@@ -25,6 +26,7 @@ import team.creative.playerrevive.PlayerRevive;
 import team.creative.playerrevive.PlayerReviveConfig.DamageTypeConfig;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.api.PlayerExtender;
+import team.creative.playerrevive.api.event.ReviveStartEvent;
 import team.creative.playerrevive.packet.HelperPacket;
 
 public class ReviveEventServer {
@@ -117,6 +119,7 @@ public class ReviveEventServer {
                 
                 PlayerReviveServer.removePlayerAsHelper(helper);
                 revive.revivingPlayers().add(helper);
+                NeoForge.EVENT_BUS.post(new ReviveStartEvent(helper, target));
                 PlayerRevive.NETWORK.sendToClient(new HelperPacket(target.getUUID(), true), (ServerPlayer) helper);
             }
         }
@@ -193,7 +196,7 @@ public class ReviveEventServer {
                     if (revive.isBleeding())
                         PlayerRevive.CONFIG.sounds.death.play(player, SoundSource.PLAYERS);
                     for (Player helper : revive.revivingPlayers())
-                        PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
+                        PlayerReviveServer.cancelHelper(player, helper);
                     revive.revivingPlayers().clear();
                     return;
                 }
