@@ -15,6 +15,8 @@ import team.creative.playerrevive.api.CombatTrackerClone;
 import team.creative.playerrevive.api.IBleeding;
 import team.creative.playerrevive.api.event.PlayerBleedOutEvent;
 import team.creative.playerrevive.api.event.PlayerRevivedEvent;
+import team.creative.playerrevive.api.event.ReviveCancelEvent;
+import team.creative.playerrevive.api.event.ReviveCompleteEvent;
 import team.creative.playerrevive.cap.Bleeding;
 import team.creative.playerrevive.packet.HelperPacket;
 import team.creative.playerrevive.packet.ReviveUpdatePacket;
@@ -53,9 +55,22 @@ public class PlayerReviveServer {
         sendUpdatePacket(player);
     }
     
-    private static void resetPlayer(Player player, IBleeding revive) {
+    public static void cancelHelper(Player bleeding, Player helper) {
+        NeoForge.EVENT_BUS.post(new ReviveCancelEvent(helper, bleeding));
+        PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
+    }
+    
+    public static void completeHelper(Player bleeding, Player helper) {
+        NeoForge.EVENT_BUS.post(new ReviveCompleteEvent(helper, bleeding));
+        PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
+    }
+    
+    private static void resetPlayer(Player player, IBleeding revive, boolean successful) {
         for (Player helper : revive.revivingPlayers())
-            PlayerRevive.NETWORK.sendToClient(new HelperPacket(null, false), (ServerPlayer) helper);
+            if (successful)
+                completeHelper(player, helper);
+            else
+                cancelHelper(player, helper);
         revive.revivingPlayers().clear();
         
         player.getPersistentData().remove("playerrevive:bleeding");
@@ -69,7 +84,7 @@ public class PlayerReviveServer {
         for (MobEffectConfig effect : PlayerRevive.CONFIG.revive.revivedEffects)
             player.addEffect(effect.create());
         
-        resetPlayer(player, revive);
+        resetPlayer(player, revive, true);
         player.setHealth(PlayerRevive.CONFIG.revive.healthAfter);
         
         PlayerRevive.CONFIG.sounds.revived.play(player, SoundSource.PLAYERS);
@@ -91,7 +106,7 @@ public class PlayerReviveServer {
         player.setHealth(0.0F);
         revive.forceBledOut();
         player.die(source);
-        resetPlayer(player, revive);
+        resetPlayer(player, revive, false);
         revive.revive(); // Done for compatibility reason for rare scenarios the player will not die
         player.setForcedPose(null);
         
@@ -113,6 +128,7 @@ public class PlayerReviveServer {
         for (Iterator<ServerPlayer> iterator = player.getServer().getPlayerList().getPlayers().iterator(); iterator.hasNext();) {
             ServerPlayer member = iterator.next();
             IBleeding revive = getBleeding(member);
+            NeoForge.EVENT_BUS.post(new ReviveCancelEvent(player, member));
             revive.revivingPlayers().remove(player);
         }
         
