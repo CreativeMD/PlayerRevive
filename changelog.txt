@@ -1,3 +1,6 @@
+2.1.1
+Added start, cancel and complete revive events
+
 2.1.0
 Added self revive (which is disabled by default)
 Added config option teammatesOnly (which only allows you to revive players of the same team or the teams you are allied to)
