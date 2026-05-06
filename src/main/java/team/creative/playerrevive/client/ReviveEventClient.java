@@ -217,7 +217,7 @@ public class ReviveEventClient {
                 
                 addedEffect = true;
                 
-                if (PlayerRevive.CONFIG.bleeding.hasShaderEffect)
+                if (PlayerRevive.CONFIG.bleeding.hasShaderEffect && player.isAlive())
                     mc.gameRenderer.processBlurEffect();
                 
                 if (!mc.options.hideGui && mc.screen == null) {
