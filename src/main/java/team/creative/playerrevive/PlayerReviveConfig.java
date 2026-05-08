@@ -80,6 +80,9 @@ public class PlayerReviveConfig {
         public boolean shouldGlow = false;
         
         @CreativeConfig
+        public boolean disableJump = true;
+        
+        @CreativeConfig
         public List<MobEffectConfig> bleedingEffects = Arrays.asList(new MobEffectConfig(BuiltInRegistries.MOB_EFFECT, Identifier.tryBuild("minecraft", "slowness"), 2, 10, true));
         
         @CreativeConfig
@@ -157,6 +160,9 @@ public class PlayerReviveConfig {
         @CreativeConfig
         public CreativeIngredient reviveItem = new CreativeIngredientItem(Items.PAPER);
         @CreativeConfig
+        public int reviveItemCount = 1;
+        
+        @CreativeConfig
         public boolean needReviveItem = false;
         @CreativeConfig
         public boolean consumeReviveItem = false;
@@ -183,6 +189,10 @@ public class PlayerReviveConfig {
         
         @CreativeConfig
         public CreativeIngredient item = new CreativeIngredientItem(Items.PAPER);
+        
+        @CreativeConfig
+        public int itemCount = 1;
+        
         @CreativeConfig
         public boolean consumeItem = true;
         

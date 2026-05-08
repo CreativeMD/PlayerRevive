@@ -123,7 +123,7 @@ public class ReviveEventClient {
                     giveUpTimer = 0;
                 
                 if (PlayerRevive.CONFIG.revive.selfRevive.enabled && mc.options.keyUse.isDown() && player.isHolding(x -> PlayerRevive.CONFIG.revive.selfRevive.item.is(player
-                        .level(), x)))
+                        .level(), x) && x.getCount() >= PlayerRevive.CONFIG.revive.selfRevive.itemCount))
                     PlayerRevive.NETWORK.sendToServer(new StartSelfRevivePacket());
             } else
                 giveUpTimer = 0;
@@ -242,7 +242,8 @@ public class ReviveEventClient {
                         ((PlayerRevive.CONFIG.bleeding.giveUpSeconds * 20 - giveUpTimer) / 20) + 1));
                     
                     if (PlayerRevive.CONFIG.revive.selfRevive.enabled)
-                        list.add(Component.translatable("playerrevive.gui.self_revive.hold", PlayerRevive.CONFIG.revive.selfRevive.item.description()));
+                        list.add(Component.translatable("playerrevive.gui.self_revive.hold", PlayerRevive.CONFIG.revive.selfRevive.itemCount,
+                            PlayerRevive.CONFIG.revive.selfRevive.item.description()));
                     render(event.getGuiGraphics(), list);
                 }
             }

@@ -23,7 +23,7 @@ public interface IBleeding extends ValueIOSerializable {
     
     public boolean revived();
     
-    public void revive();
+    public void revive(Player player);
     
     public int timeLeft();
     

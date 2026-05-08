@@ -102,9 +102,10 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.revive.needReviveItem) {
                     if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
-                        if (PlayerRevive.CONFIG.revive.reviveItem.is(event.getLevel(), helper.getMainHandItem())) {
+                        if (PlayerRevive.CONFIG.revive.reviveItem.is(helper.level(), helper.getMainHandItem()) && helper.getMainHandItem()
+                                .getCount() >= PlayerRevive.CONFIG.revive.reviveItemCount) {
                             if (!helper.isCreative()) {
-                                helper.getMainHandItem().shrink(1);
+                                helper.getMainHandItem().shrink(PlayerRevive.CONFIG.revive.reviveItemCount);
                                 helper.getInventory().setChanged();
                             }
                             revive.setItemConsumed();
