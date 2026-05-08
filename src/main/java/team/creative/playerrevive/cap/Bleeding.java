@@ -10,9 +10,13 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.NeoForge;
 import team.creative.playerrevive.PlayerRevive;
@@ -22,6 +26,8 @@ import team.creative.playerrevive.api.event.ReviveCancelEvent;
 import team.creative.playerrevive.packet.HelperPacket;
 
 public class Bleeding implements IBleeding {
+    
+    private static final ResourceLocation JUMP_HEIGHT = ResourceLocation.tryBuild(PlayerRevive.MODID, "stopjump");
     
     private boolean bleeding;
     private float progress;
@@ -125,10 +131,12 @@ public class Bleeding implements IBleeding {
         this.timeLeft = PlayerRevive.CONFIG.bleeding.bleedTime;
         this.lastSource = source;
         this.trackerClone = new CombatTrackerClone(player.getCombatTracker());
+        if (PlayerRevive.CONFIG.bleeding.disableJump)
+            player.getAttribute(Attributes.JUMP_STRENGTH).addTransientModifier(new AttributeModifier(JUMP_HEIGHT, -1, Operation.ADD_MULTIPLIED_TOTAL));
     }
     
     @Override
-    public void revive() {
+    public void revive(Player player) {
         this.bleeding = false;
         this.progress = 0;
         this.timeLeft = 0;
@@ -137,6 +145,7 @@ public class Bleeding implements IBleeding {
         this.trackerClone = null;
         this.itemConsumed = false;
         this.selfReviving = false;
+        player.getAttribute(Attributes.JUMP_STRENGTH).removeModifier(JUMP_HEIGHT);
     }
     
     @Override

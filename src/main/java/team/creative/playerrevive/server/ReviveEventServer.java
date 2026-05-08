@@ -102,15 +102,17 @@ public class ReviveEventServer {
                 
                 if (PlayerRevive.CONFIG.revive.needReviveItem) {
                     if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
-                        if (PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem())) {
+                        if (PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()) && helper.getMainHandItem()
+                                .getCount() >= PlayerRevive.CONFIG.revive.reviveItemCount) {
                             if (!helper.isCreative()) {
-                                helper.getMainHandItem().shrink(1);
+                                helper.getMainHandItem().shrink(PlayerRevive.CONFIG.revive.reviveItemCount);
                                 helper.getInventory().setChanged();
                             }
                             revive.setItemConsumed();
                         } else {
                             if (!helper.level().isClientSide)
-                                helper.sendSystemMessage(Component.translatable("playerrevive.revive.item", PlayerRevive.CONFIG.revive.reviveItem.description()));
+                                helper.sendSystemMessage(Component.translatable("playerrevive.revive.item", PlayerRevive.CONFIG.revive.reviveItemCount,
+                                    PlayerRevive.CONFIG.revive.reviveItem.description()));
                             return;
                         }
                     } else if (!PlayerRevive.CONFIG.revive.reviveItem.is(helper.getMainHandItem()))

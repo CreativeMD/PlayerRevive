@@ -24,7 +24,7 @@ public interface IBleeding extends INBTSerializable<CompoundTag> {
     
     public boolean revived();
     
-    public void revive();
+    public void revive(Player player);
     
     public int timeLeft();
     

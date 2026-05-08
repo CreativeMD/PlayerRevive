@@ -79,7 +79,7 @@ public class PlayerReviveServer {
     
     public static void revive(Player player) {
         IBleeding revive = getBleeding(player);
-        revive.revive();
+        revive.revive(player);
         
         for (MobEffectConfig effect : PlayerRevive.CONFIG.revive.revivedEffects)
             player.addEffect(effect.create());
@@ -107,7 +107,7 @@ public class PlayerReviveServer {
         revive.forceBledOut();
         player.die(source);
         resetPlayer(player, revive, false);
-        revive.revive(); // Done for compatibility reason for rare scenarios the player will not die
+        revive.revive(player); // Done for compatibility reason for rare scenarios the player will not die
         player.setForcedPose(null);
         
         PlayerRevive.CONFIG.sounds.death.play(player, SoundSource.PLAYERS);

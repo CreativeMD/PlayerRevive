@@ -23,17 +23,18 @@ public class StartSelfRevivePacket extends CreativePacket {
             return;
         
         boolean consumed = false;
-        if (PlayerRevive.CONFIG.revive.selfRevive.item.is(player.getMainHandItem())) {
+        if (PlayerRevive.CONFIG.revive.selfRevive.item.is(player.getMainHandItem()) && player.getMainHandItem().getCount() >= PlayerRevive.CONFIG.revive.selfRevive.itemCount) {
             if (PlayerRevive.CONFIG.revive.selfRevive.consumeItem) {
-                player.getInventory().items.get(player.getInventory().selected).shrink(1);
+                player.getInventory().items.get(player.getInventory().selected).shrink(PlayerRevive.CONFIG.revive.selfRevive.itemCount);
                 player.getInventory().setChanged();
             }
             consumed = true;
         }
         
-        if (!consumed && PlayerRevive.CONFIG.revive.selfRevive.item.is(player.getOffhandItem())) {
+        if (!consumed && PlayerRevive.CONFIG.revive.selfRevive.item.is(player.getOffhandItem()) && player.getOffhandItem()
+                .getCount() >= PlayerRevive.CONFIG.revive.selfRevive.itemCount) {
             if (PlayerRevive.CONFIG.revive.selfRevive.consumeItem) {
-                player.getInventory().offhand.getFirst().shrink(1);
+                player.getInventory().offhand.getFirst().shrink(PlayerRevive.CONFIG.revive.selfRevive.itemCount);
                 player.getInventory().setChanged();
             }
             consumed = true;
