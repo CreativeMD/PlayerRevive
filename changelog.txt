@@ -1,3 +1,7 @@
+2.1.2
+Added count config to revive item and self revive item
+Added option to block jumping while bleeding (enabled by default)
+
 2.1.1
 Added start, cancel and complete revive events
 
