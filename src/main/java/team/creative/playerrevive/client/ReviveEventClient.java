@@ -165,7 +165,7 @@ public class ReviveEventClient {
             IBleeding revive = PlayerReviveServer.getBleeding(player);
             
             if (revive.isBleeding() && PlayerRevive.CONFIG.bleeding.hasShaderEffect) {
-                RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(mc.getMainRenderTarget().getDepthTexture(), 1.0);
+                RenderSystem.getDevice().createCommandEncoder().clearDepthTexture(mc.gameRenderer.mainRenderTarget().getDepthTexture(), 1.0);
                 mc.gameRenderer.processBlurEffect();
             }
         }
@@ -190,7 +190,7 @@ public class ReviveEventClient {
                     sound = null;
                 }
                 
-                if (helpActive && !mc.options.hideGui && mc.screen == null) {
+                if (helpActive && !mc.gui.hud.isHidden() && mc.gui.screen() == null) {
                     Player other = player.level().getPlayerByUUID(helpTarget);
                     if (other != null) {
                         List<Component> list = new ArrayList<>();
@@ -233,7 +233,7 @@ public class ReviveEventClient {
                 
                 addedEffect = true;
                 
-                if (!mc.options.hideGui && mc.screen == null) {
+                if (!mc.gui.hud.isHidden() && mc.gui.screen() == null) {
                     List<Component> list = new ArrayList<>();
                     IBleeding bleeding = PlayerReviveServer.getBleeding(player);
                     list.add(Component.translatable("playerrevive.gui.label.time_left", formatTime(bleeding.timeLeft())));
