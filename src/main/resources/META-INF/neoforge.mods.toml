@@ -1,16 +1,16 @@
 modLoader="javafml"
 loaderVersion="[1,)"
-issueTrackerURL="https://github.com/CreativeMD/PlayerRevive/issues"
+issueTrackerURL="https://github.com/xAlamaos/PlayerRevive/issues"
 license="LGPL-3.0-only"
 
 [[mods]]
     modId="playerrevive"
     iconFile="playerrevive.png"
-    version="2.1.2"
-    displayName="PlayerRevive"
-    displayURL="https://modrinth.com/mod/playerrevive"
-    authors="CreativeMD"
-    description='''Help your friends in need and revive them.'''
+    version="2.1.2-alamaos.1"
+    displayName="PlayerRevive - Alamaos Edition"
+    displayURL="https://www.curseforge.com/minecraft/mc-mods/playerrevive-alamaos-edition/"
+    authors="CreativeMD, Alamaos"
+    description='''An unofficial maintained fork of PlayerRevive providing bug fixes, compatibility improvements, and backports.'''
 
 [[dependencies.playerrevive]]
     modId="neoforge"
