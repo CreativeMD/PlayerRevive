@@ -2,7 +2,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'com.modrinth.minotaur' version '2.+'
-    id 'net.neoforged.gradle.userdev' version '7.1.+'
+    id 'net.neoforged.moddev' version '2.0.+'
 }
 
 group= "team.creative" + project.mod_id
@@ -11,26 +11,31 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(25)
 
 project.evaluationDependsOn(":CreativeCore")
 
-runs {  
-    configureEach {
-        workingDirectory project.file('run')
-        systemProperty 'forge.logging.console.level', 'debug'
-        
-        modSource project(":CreativeCore").sourceSets.main
-        modSource project.sourceSets.main
+neoForge {
+    version = "${forge_version}"
+    validateAccessTransformers = true
+
+    runs {
+        client {
+            client()
+            programArguments.addAll('--username', '"Dev###"')
+        }
+        server {
+            server()
+        }
     }
-    
-    client {
-        arguments '--username', '"Dev###"'
-    }
-    
-    server {
+
+    mods {
+        PlayerRevive {
+            sourceSet sourceSets.main
+        }
+        CreativeCore {
+            sourceSet project(':CreativeCore').sourceSets.main
+        }
     }
 }
 
 dependencies {
-    implementation "net.neoforged:neoforge:${forge_version}"
-    
     implementation project(':CreativeCore')
 }
 
