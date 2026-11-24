@@ -1,3 +1,6 @@
+2.1.4
+Added reviveItemSpeedMultiplier which multiplies revive speed when revive item is consumed
+
 2.1.3
 Fixed Duplicated Revive HUD Rendering on NeoForge 26.2 (by xAlamaos)
 
