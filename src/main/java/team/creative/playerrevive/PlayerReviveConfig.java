@@ -161,11 +161,12 @@ public class PlayerReviveConfig {
         public CreativeIngredient reviveItem = new CreativeIngredientItem(Items.PAPER);
         @CreativeConfig
         public int reviveItemCount = 1;
-        
         @CreativeConfig
         public boolean needReviveItem = false;
         @CreativeConfig
         public boolean consumeReviveItem = false;
+        @CreativeConfig
+        public double reviveItemSpeedMultiplier = 1;
         
         @CreativeConfig
         public boolean teammatesOnly = false;

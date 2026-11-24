@@ -100,7 +100,7 @@ public class ReviveEventServer {
                     return;
                 }
                 
-                if (PlayerRevive.CONFIG.revive.needReviveItem) {
+                if (PlayerRevive.CONFIG.revive.needReviveItem || PlayerRevive.CONFIG.revive.reviveItemSpeedMultiplier > 1) {
                     if (PlayerRevive.CONFIG.revive.consumeReviveItem && !revive.isItemConsumed()) {
                         if (PlayerRevive.CONFIG.revive.reviveItem.is(helper.level(), helper.getMainHandItem()) && helper.getMainHandItem()
                                 .getCount() >= PlayerRevive.CONFIG.revive.reviveItemCount) {
